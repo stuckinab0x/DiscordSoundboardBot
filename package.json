@@ -1,0 +1,24 @@
+{
+  "name": "discord-soundboard-bot",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "https://github.com/UncleDave/DiscordSoundboardBot.git",
+  "author": "Dave Pringle <3244206+UncleDave@users.noreply.github.com>",
+  "license": "MIT",
+  "private": true,
+  "homepage": "https://github.com/UncleDave/DiscordSoundboardBot",
+  "scripts": {
+    "start": "node %NODE_DEBUG_OPTION% src/index.js"
+  },
+  "dependencies": {
+    "bufferutil": "^4.0.1",
+    "discord.js": "^11.4.2",
+    "erlpack": "hammerandchisel/erlpack",
+    "ffmpeg-binaries": "^4.0.0",
+    "libsodium-wrappers": "^0.7.4",
+    "node-opus": "^0.3.1"
+  },
+  "devDependencies": {
+    "dotenv": "^6.2.0"
+  }
+}
