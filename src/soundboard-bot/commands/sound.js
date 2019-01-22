@@ -1,23 +1,22 @@
 const Command = require('./command');
+const constants = require('../constants');
 const { loadFiles } = require('../utils');
 
-const soundsDirectory = './sounds/';
-
-const sound = new Command('sound', async function (message, context) {
-  const argument = message.content.toLowerCase().split(' ')[1];
+async function execFunc(message, context) {
+  const argument = message.content.toLowerCase().split(' ').slice(1).join(' ');
   const voiceChannel = message.member.voiceChannel;
 
   if (!argument) {
-    message.reply('command usage: "!sound <filename>".');
+    message.reply(`command usage: "${constants.messagePrefix}sound <filename>".`);
     return;
   }
 
   if (!voiceChannel) {
-    message.reply('you must be in a voice channel to use this command, also Lewis is a cunt.');
+    message.reply('you must be in a voice channel to use this command.');
     return;
   }
 
-  const availableFiles = await loadFiles(soundsDirectory);
+  const availableFiles = await loadFiles(constants.soundsDirectory);
   const soundFile = availableFiles.find(x => x.name === argument);
 
   if (!soundFile) {
@@ -37,7 +36,7 @@ const sound = new Command('sound', async function (message, context) {
   while (context.soundQueue.length) {
     const current = context.soundQueue.shift();
     const connection = await current.channel.join();
-    const dispatcher = connection.playFile(soundsDirectory + current.sound.fullName);
+    const dispatcher = connection.playFile(constants.soundsDirectory + current.sound.fullName);
 
     await new Promise(resolve => dispatcher.on('end', () => {
       if (!context.soundQueue.length) {
@@ -49,6 +48,8 @@ const sound = new Command('sound', async function (message, context) {
   }
 
   context.soundPlaying = false;
-});
+}
+
+const sound = new Command('sound', execFunc, { serverOnly: true });
 
 module.exports = sound;

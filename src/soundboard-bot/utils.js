@@ -17,6 +17,16 @@ function loadFiles(directory) {
   });
 }
 
+function checkFileExtensions(attachments, allowedExtensions) {
+  const validAttachments = attachments.filter(x => allowedExtensions.some(ext => x.filename.endsWith(ext)));
+
+  return {
+    validAttachments,
+    invalidCount: attachments.length - validAttachments.length
+  };
+}
+
 module.exports = {
-  loadFiles
+  loadFiles,
+  checkFileExtensions
 };

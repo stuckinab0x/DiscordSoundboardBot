@@ -16,9 +16,11 @@
     "erlpack": "discordapp/erlpack",
     "ffmpeg-binaries": "^4.0.0",
     "libsodium-wrappers": "^0.7.4",
-    "node-opus": "^0.2.7"
+    "node-opus": "^0.2.7",
+    "request": "^2.88.0"
   },
   "devDependencies": {
+    "@types/request": "^2.48.1",
     "dotenv": "^6.2.0"
   }
 }

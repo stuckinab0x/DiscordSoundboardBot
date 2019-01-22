@@ -2,7 +2,8 @@ const Discord = require('discord.js');
 const constants = require('./constants');
 
 const availableCommands = [
-  require('./commands/sound')
+  require('./commands/sound'),
+  require('./commands/addsound')
 ];
 
 class Bot {
@@ -30,7 +31,7 @@ class Bot {
     const messageContentWithoutPrefix = message.content.replace(constants.messagePrefix, '').toLowerCase();
 
     availableCommands.some(command => {
-      if (command.matches(messageContentWithoutPrefix)) {
+      if (command.matches(messageContentWithoutPrefix) && command.isValid(message)) {
         command.exec(message, this.context);
         return true;
       }
