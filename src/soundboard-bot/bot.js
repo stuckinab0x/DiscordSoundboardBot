@@ -11,6 +11,8 @@ class Bot {
 
     this._client.on('ready', () => this._onReady());
     this._client.on('message', message => this._onMessage(message));
+
+    this.context = { soundQueue: [] };
   }
 
   start() {
@@ -29,7 +31,7 @@ class Bot {
 
     availableCommands.some(command => {
       if (command.matches(messageContentWithoutPrefix)) {
-        command.exec(message);
+        command.exec(message, this.context);
         return true;
       }
     });

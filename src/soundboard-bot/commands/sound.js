@@ -3,7 +3,7 @@ const { loadFiles } = require('../utils');
 
 const soundsDirectory = './sounds/';
 
-const sound = new Command('sound', async function (message) {
+const sound = new Command('sound', async function (message, context) {
   const argument = message.content.toLowerCase().split(' ')[1];
   const voiceChannel = message.member.voiceChannel;
 
@@ -25,10 +25,30 @@ const sound = new Command('sound', async function (message) {
     return;
   }
 
-  const connection = await voiceChannel.join();
-  const dispatcher = connection.playFile(soundsDirectory + soundFile.fullName);
+  context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
 
-  dispatcher.on('end', () => voiceChannel.leave());
+  if (context.soundPlaying) {
+    message.reply(`your sound has been added to the queue at position #${context.soundQueue.length}.`);
+    return;
+  }
+
+  context.soundPlaying = true;
+
+  while (context.soundQueue.length) {
+    const current = context.soundQueue.shift();
+    const connection = await current.channel.join();
+    const dispatcher = connection.playFile(soundsDirectory + current.sound.fullName);
+
+    await new Promise(resolve => dispatcher.on('end', () => {
+      if (!context.soundQueue.length) {
+        current.channel.leave();
+      }
+
+      resolve();
+    }));
+  }
+
+  context.soundPlaying = false;
 });
 
 module.exports = sound;
