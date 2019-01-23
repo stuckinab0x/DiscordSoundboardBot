@@ -18,6 +18,7 @@ async function execFunc(message, context) {
 
   const availableFiles = await loadFiles(constants.soundsDirectory);
   const soundFile = availableFiles.find(x => x.name === argument);
+  // TODO: If file isn't found - find a file that starts with argument.
 
   if (!soundFile) {
     message.reply(`couldn't find sound "${argument}".`);

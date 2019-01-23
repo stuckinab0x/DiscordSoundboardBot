@@ -5,3 +5,5 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 new Bot().start();
+
+// TODO: Delete sound files from source control when testing is ovah.
