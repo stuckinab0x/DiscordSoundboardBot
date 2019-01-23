@@ -26,6 +26,6 @@ function execFunc(message) {
     .catch(error => message.reply(`an error occurred while saving your sound: ${error.message}`));
 }
 
-const addSound = new Command('addsound', execFunc, { serverOnly: true, requiredPermission: process.env.ADD_SOUND_PERMISSION });
+const addSound = new Command('addsound', execFunc, { serverOnly: true, requiredPermission: +process.env.ADD_SOUND_PERMISSION });
 
 module.exports = addSound;
