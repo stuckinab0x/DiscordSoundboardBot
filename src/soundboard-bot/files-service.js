@@ -3,7 +3,7 @@ const { loadFiles, splitFileName } = require('./utils');
 const constants = require('./constants');
 
 class FilesService {
-  getFiles() {
+  get files() {
     if (!this._files) {
       this._files = loadFiles(constants.soundsDirectory);
     }
@@ -12,7 +12,7 @@ class FilesService {
   }
 
   async saveFile(stream, name) {
-    const files = await this.getFiles();
+    const files = await this.files;
     const fileObj = splitFileName(name);
 
     return new Promise((resolve, reject) => {

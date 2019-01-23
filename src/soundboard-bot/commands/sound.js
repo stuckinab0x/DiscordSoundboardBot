@@ -1,7 +1,7 @@
 const Command = require('./command');
 const constants = require('../constants');
-const { loadFiles } = require('../utils');
 const logger = require('../../logger');
+const filesService = require('../files-service');
 
 async function execFunc(message, context) {
   const argument = message.content.toLowerCase().split(' ').slice(1).join(' ');
@@ -19,11 +19,12 @@ async function execFunc(message, context) {
     return;
   }
 
-  const availableFiles = await loadFiles(constants.soundsDirectory);
+  const availableFiles = await filesService.files;
   const soundFile = availableFiles.find(x => x.name === argument);
   // TODO: If file isn't found - find a file that starts with argument.
 
   if (!soundFile) {
+    logger.info('%s: No "%s" sound was found', message.id, argument);
     message.reply(`couldn't find sound "${argument}".`);
     return;
   }
