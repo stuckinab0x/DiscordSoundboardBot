@@ -1,17 +1,20 @@
 const Command = require('./command');
 const constants = require('../constants');
 const { loadFiles } = require('../utils');
+const logger = require('../../logger');
 
 async function execFunc(message, context) {
   const argument = message.content.toLowerCase().split(' ').slice(1).join(' ');
   const voiceChannel = message.member.voiceChannel;
 
   if (!argument) {
+    logger.info('%s: No <filename> argument was specified', message.id);
     message.reply(`command usage: "${constants.messagePrefix}sound <filename>".`);
     return;
   }
 
   if (!voiceChannel) {
+    logger.info('%s: User was not in a voice channel', message.id);
     message.reply('you must be in a voice channel to use this command.');
     return;
   }
