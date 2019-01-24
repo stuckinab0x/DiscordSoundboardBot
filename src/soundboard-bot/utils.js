@@ -10,7 +10,7 @@ function loadFiles(directory) {
       } else {
         logger.info('Loaded %s files', files.length);
         const processedFiles = files.map(x => {
-          logger.info('Loaded file "%s"', x);
+          logger.info('Loaded file "%s"', JSON.stringify(x));
           return splitFileName(x);
         });
 
