@@ -10,7 +10,7 @@ function loadFiles(directory) {
       } else {
         logger.info('Loaded %s files', files.length);
         const processedFiles = files.map(x => {
-          logger.info('Loaded file "%s"', JSON.stringify(x));
+          logger.info('Loaded file "%s"', x.name || x);
           return splitFileName(x);
         });
 
@@ -25,7 +25,7 @@ function checkFileExtension(attachment, allowedExtensions) {
 }
 
 function splitFileName(name) {
-  const fullName = name.toLowerCase();
+  const fullName = (name.name || name).toLowerCase();
   const splitName = fullName.split('.');
 
   return {
