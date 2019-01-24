@@ -1,8 +1,17 @@
 const fs = require('fs');
+const logger = require('../logger');
 
 function loadFiles(directory) {
-  return new Promise(resolve => {
-    fs.readdir(directory, { withFileTypes: true }, (err, files) => resolve(files.map(splitFileName)));
+  return new Promise((resolve, reject) => {
+    fs.readdir(directory, { withFileTypes: true }, (err, files) => {
+      if (err) {
+        logger.error('Failed to load files: %s', err.message);
+        reject(err);
+      } else {
+        logger.info('Loaded %s files', files.length);
+        resolve(files.map(splitFileName));
+      }
+    });
   });
 }
 

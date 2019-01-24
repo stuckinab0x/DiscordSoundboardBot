@@ -30,6 +30,7 @@ async function execFunc(message, context) {
   }
 
   context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
+  logger.info('%s: Sound "%s" added to queue, length: %s', message.id, argument, context.soundQueue.length);
 
   if (context.soundPlaying) {
     message.reply(`your sound has been added to the queue at position #${context.soundQueue.length}.`);
@@ -41,6 +42,9 @@ async function execFunc(message, context) {
   while (context.soundQueue.length) {
     const current = context.soundQueue.shift();
     const connection = await current.channel.join();
+
+    logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, context.soundQueue.length);
+
     const dispatcher = connection.playFile(constants.soundsDirectory + current.sound.fullName);
 
     await new Promise(resolve => dispatcher.on('end', () => {

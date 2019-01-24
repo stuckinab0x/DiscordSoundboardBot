@@ -3,9 +3,11 @@ const Command = require('./command');
 const constants = require('../constants');
 const filesService = require('../files-service');
 const { checkFileExtension } = require('../utils');
+const logger = require('../../logger');
 
 function execFunc(message) {
   if (!message.attachments.size) {
+    logger.info('%s: message had no attachment.', message.id);
     message.reply('this command must be used as the comment of a sound file attachment.');
     return;
   }
@@ -13,13 +15,20 @@ function execFunc(message) {
   const attachment = message.attachments.first();
 
   if (!checkFileExtension(attachment, constants.soundFileExtensions)) {
-    message.reply(`attachment was not a valid file type. Valid file types: ${constants.soundFileExtensions.join(', ')}.`);
+    const allowedExtensions = constants.soundFileExtensions.join(', ');
+    const splitAttachmentName = attachment.filename.split('.');
+    const extension = '.' + splitAttachmentName[splitAttachmentName.length - 1];
+
+    logger.info('%s: attachment was of type "%s", expected one of "%s".', message.id, extension, allowedExtensions);
+    message.reply(`attachment was not a valid file type. Valid file types: ${allowedExtensions}.`);
     return;
   }
 
   filesService
     .saveFile(
-      request(attachment.url).on('error', err => console.error(err)),
+      request(attachment.url).on('error', err => {
+        logger.error('%s: Failed to get attachment at "%s": %s', message.id, attachment.url, err.message);
+      }),
       attachment.filename.replace(/_/g, ' ').toLowerCase()
     )
     .then(() => message.reply('your sound has been added.'))
