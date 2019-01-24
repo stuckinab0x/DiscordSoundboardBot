@@ -9,7 +9,12 @@ function loadFiles(directory) {
         reject(err);
       } else {
         logger.info('Loaded %s files', files.length);
-        resolve(files.map(splitFileName));
+        const processedFiles = files.map(x => {
+          logger.info('Loaded file "%s"', x);
+          return splitFileName(x);
+        });
+
+        resolve(processedFiles);
       }
     });
   });
