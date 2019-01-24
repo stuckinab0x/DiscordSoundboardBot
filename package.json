@@ -8,7 +8,8 @@
   "private": true,
   "homepage": "https://github.com/UncleDave/DiscordSoundboardBot",
   "scripts": {
-    "start": "node %NODE_DEBUG_OPTION% src/index.js"
+    "start": "node src/index.js",
+    "debug": "node %NODE_DEBUG_OPTION% src/index.js"
   },
   "dependencies": {
     "bufferutil": "^3.0.3",
