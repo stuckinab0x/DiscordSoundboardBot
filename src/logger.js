@@ -1,7 +1,7 @@
 const winston = require('winston');
 const fs = require('fs');
 
-const logsDirectory = 'logs';
+const logsDirectory = (process.env.ROOT_PATH || '.') + '/logs';
 
 if (!fs.existsSync(logsDirectory)) {
   fs.mkdirSync(logsDirectory);
