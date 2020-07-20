@@ -1,12 +1,8 @@
 const logger = require('./logger');
-
-if (process.env.NODE_ENV !== 'production') {
-  logger.info('Not running in production environment');
-  require('dotenv').config();
-  logger.info('Environment variables loaded from file');
-}
-
+const constants = require('./soundboard-bot/constants');
 const Bot = require('./soundboard-bot/bot');
+
+logger.info('Starting in %s environment', constants.environment);
 
 new Bot()
   .start()
@@ -14,3 +10,5 @@ new Bot()
   .catch(logger.error);
 
 // TODO: Delete sound files from source control when testing is ovah.
+// TODO: Bind the bot to a specified channel. Join when a sound is requested (+ delay). Leave when the last person leaves.
+// TODO: Error handling & recovery.

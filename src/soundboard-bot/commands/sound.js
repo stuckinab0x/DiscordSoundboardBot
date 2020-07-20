@@ -5,7 +5,7 @@ const filesService = require('../files-service');
 
 async function execFunc(message, context) {
   const argument = message.content.toLowerCase().split(' ').slice(1).join(' ');
-  const voiceChannel = message.member.voiceChannel;
+  const voiceChannel = message.member.voice.channel;
 
   if (!argument) {
     logger.info('%s: No <filename> argument was specified', message.id);
@@ -45,9 +45,13 @@ async function execFunc(message, context) {
 
     logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, context.soundQueue.length);
 
-    const dispatcher = connection.playFile(constants.soundsDirectory + current.sound.fullName);
+    const soundFileName = constants.soundsDirectory + current.sound.fullName;
 
-    await new Promise(resolve => dispatcher.on('end', () => {
+    logger.debug('Attempting to play file %s', soundFileName)
+
+    const dispatcher = connection.play(soundFileName);
+
+    await new Promise(resolve => dispatcher.on('finish', () => {
       if (!context.soundQueue.length) {
         current.channel.leave();
       }

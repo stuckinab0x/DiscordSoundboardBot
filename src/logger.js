@@ -1,5 +1,6 @@
 const winston = require('winston');
 const fs = require('fs');
+const constants = require('./soundboard-bot/constants');
 
 const logsDirectory = (process.env.ROOT_PATH || '.') + '/logs';
 
@@ -8,18 +9,18 @@ if (!fs.existsSync(logsDirectory)) {
 }
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: constants.environment === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
     winston.format.align(),
     winston.format.splat(),
     winston.format.printf(info => {
-      return `${info.timestamp} ${info.level}: ${info.message}`;
+      return `${ info.timestamp } ${ info.level }: ${ info.message }`;
     })
   ),
   transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'logs/bot.log', maxFiles: 10, maxsize: 5 * 1000 * 1000, tailable: true, handleExceptions: true })
+    new winston.transports.Console({ handleExceptions: true, handleRejections: true }),
+    new winston.transports.File({ filename: 'logs/bot.log', maxFiles: 10, maxsize: 5 * 1000 * 1000, tailable: true, handleExceptions: true, handleRejections: true })
   ]
 });
 

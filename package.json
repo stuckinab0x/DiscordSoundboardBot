@@ -8,21 +8,17 @@
   "private": true,
   "homepage": "https://github.com/UncleDave/DiscordSoundboardBot",
   "scripts": {
-    "start": "node src/index.js",
-    "debug": "node %NODE_DEBUG_OPTION% src/index.js"
+    "start": "nodemon src/index.js"
   },
   "dependencies": {
-    "bufferutil": "^3.0.3",
-    "discord.js": "^11.4.2",
-    "erlpack": "discordapp/erlpack",
-    "ffmpeg-binaries": "^4.0.0",
-    "libsodium-wrappers": "^0.7.4",
-    "node-opus": "^0.2.7",
-    "request": "^2.88.0",
-    "winston": "^3.1.0"
+    "@discordjs/opus": "^0.3.2",
+    "discord.js": "^12.2.0",
+    "ffmpeg-static": "^4.2.6",
+    "nodemon": "^2.0.4",
+    "request": "^2.88.2",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@types/request": "^2.48.1",
-    "dotenv": "^6.2.0"
+    "@types/request": "^2.48.1"
   }
 }

@@ -19,7 +19,7 @@ class Bot {
 
   start() {
     logger.info('Starting bot, attempting to log in to Discord');
-    return this._client.login(process.env.BOT_TOKEN);
+    return this._client.login(process.env.BOT_TOKEN); // TODO: accept as argument.
   }
 
   _onReady() {

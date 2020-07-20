@@ -1,13 +1,21 @@
+// TODO: Replace fs with fs promises.
 const fs = require('fs');
 const { loadFiles, splitFileName } = require('./utils');
 const constants = require('./constants');
 const logger = require('../logger');
 
+// TODO: Create sounds directory on start.
+// TODO: Load one file by name.
+
 class FilesService {
   get files() {
     if (!this._files) {
       logger.info('Loading sound files');
-      this._files = loadFiles(constants.soundsDirectory);
+      this._files = loadFiles(constants.soundsDirectory)
+        .then(files => {
+          files.forEach(x => logger.debug('Loaded file: %s', JSON.stringify(x)));
+          return files;
+        });
     }
 
     return this._files;

@@ -20,19 +20,20 @@ function execFunc(message) {
     const extension = '.' + splitAttachmentName[splitAttachmentName.length - 1];
 
     logger.info('%s: attachment was of type "%s", expected one of "%s".', message.id, extension, allowedExtensions);
-    message.reply(`attachment was not a valid file type. Valid file types: ${allowedExtensions}.`);
+    message.reply(`Attachment was not a valid file type. Valid file types: ${ allowedExtensions }.`);
     return;
   }
 
   filesService
     .saveFile(
-      request(attachment.url).on('error', err => {
-        logger.error('%s: Failed to get attachment at "%s": %s', message.id, attachment.url, err.message);
-      }),
-      attachment.filename.replace(/_/g, ' ').toLowerCase()
+      request(attachment.url).on('error', err => logger.error('%s: Failed to get attachment at "%s": %s', message.id, attachment.url, err.message)),
+      attachment.name.replace(/_/g, ' ').toLowerCase()
     )
-    .then(() => message.reply('your sound has been added.'))
-    .catch(error => message.reply(`an error occurred while saving your sound: ${error.message}`));
+    .then(() => message.reply('Your sound has been added.'))
+    .catch(error => {
+      message.reply(`an error occurred while saving your sound: ${ error.message }`);
+      return Promise.reject(error);
+    });
 }
 
 const addSound = new Command('addsound', execFunc, { serverOnly: true, requiredPermission: +process.env.ADD_SOUND_PERMISSION });
