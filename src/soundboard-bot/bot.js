@@ -17,9 +17,9 @@ class Bot {
     this.context = { soundQueue: [] };
   }
 
-  start() {
+  start(token) {
     logger.info('Starting bot, attempting to log in to Discord');
-    return this._client.login(process.env.BOT_TOKEN); // TODO: accept as argument.
+    return this._client.login(token);
   }
 
   _onReady() {

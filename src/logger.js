@@ -1,6 +1,6 @@
 const winston = require('winston');
 const fs = require('fs');
-const constants = require('./soundboard-bot/constants');
+const environment = require('./environment');
 
 const logsDirectory = (process.env.ROOT_PATH || '.') + '/logs';
 
@@ -9,7 +9,7 @@ if (!fs.existsSync(logsDirectory)) {
 }
 
 const logger = winston.createLogger({
-  level: constants.environment === 'production' ? 'info' : 'debug',
+  level: environment.environment === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
     winston.format.align(),

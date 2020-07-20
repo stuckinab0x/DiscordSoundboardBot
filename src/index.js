@@ -1,11 +1,11 @@
 const logger = require('./logger');
-const constants = require('./soundboard-bot/constants');
+const environment = require('./environment');
 const Bot = require('./soundboard-bot/bot');
 
-logger.info('Starting in %s environment', constants.environment);
+logger.info('Starting in %s environment', environment.environment);
 
 new Bot()
-  .start()
+  .start(environment.botToken)
   .then(() => logger.info('Bot started'))
   .catch(logger.error);
 
