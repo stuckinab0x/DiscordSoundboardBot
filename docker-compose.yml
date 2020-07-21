@@ -1,8 +1,12 @@
 ﻿version: '3'
 services:
   bot:
-    build: .
+    build:
+      context: .
+      args:
+        NODE_ENV: development
     env_file: .env
     volumes:
-    - ./src:/app/src
-    - ./sounds:/app/sounds
+      - ./src:/app/src
+      - ./sounds:/app/sounds
+    entrypoint: ["yarn", "run", "start:dev"]

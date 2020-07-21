@@ -8,17 +8,19 @@
   "private": true,
   "homepage": "https://github.com/UncleDave/DiscordSoundboardBot",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "start:dev": "docker-compose up",
-    "start:dev:build": "yarn run start:dev --build"
+    "start": "node src/index.js",
+    "start:dev": "nodemon src/index.js",
+    "start:docker": "docker-compose up",
+    "start:docker:build": "yarn run start:docker --build"
   },
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "axios": "^0.19.2",
     "discord.js": "^12.2.0",
     "ffmpeg-static": "^4.2.6",
-    "nodemon": "^2.0.4",
     "winston": "^3.3.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
 }
