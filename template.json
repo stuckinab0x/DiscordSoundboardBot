@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "imageRegistryPassword": {
+      "type": "securestring"
+    },
+    "botToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2018-10-01",
+      "name": "botman-p",
+      "location": "uksouth",
+      "properties": {
+        "containers": [
+          {
+            "name": "botman-p",
+            "properties": {
+              "image": "uncledave/botman:latest",
+              "ports": [],
+              "environmentVariables": [
+                {
+                  "name": "BOT_TOKEN",
+                  "secureValue": "[parameters('botToken')]"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 0.5,
+                  "cpu": 1
+                }
+              }
+            }
+          }
+        ],
+        "imageRegistryCredentials": [
+          {
+            "server": "index.docker.io",
+            "username": "uncledave",
+            "password": "[parameters('imageRegistryPassword')]"
+          }
+        ],
+        "restartPolicy": "OnFailure",
+        "osType": "Linux"
+      }
+    }
+  ]
+}
