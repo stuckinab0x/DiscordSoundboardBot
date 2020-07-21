@@ -9,4 +9,5 @@ services:
     volumes:
       - ./src:/app/src
       - ./sounds:/app/sounds
+      - ./logs:/app/logs
     entrypoint: ["yarn", "run", "start:dev"]

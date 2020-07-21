@@ -62,4 +62,4 @@ typings/
 
 .idea/
 sounds/
-deploy.bat
+deploy.ps1

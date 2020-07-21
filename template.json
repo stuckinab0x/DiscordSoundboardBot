@@ -42,6 +42,10 @@
                 {
                   "mountPath": "/app/sounds/",
                   "name": "soundsvolume"
+                },
+                {
+                  "mountPath": "/app/logs/",
+                  "name": "logsvolume"
                 }
               ]
             }
@@ -61,6 +65,14 @@
             "name": "soundsvolume",
             "azureFile": {
               "sharename": "botman-sounds",
+              "storageAccountName": "botmanp",
+              "storageAccountKey": "[parameters('storageAccountKey')]"
+            }
+          },
+          {
+            "name": "logsvolume",
+            "azureFile": {
+              "sharename": "botman-logs",
               "storageAccountName": "botmanp",
               "storageAccountKey": "[parameters('storageAccountKey')]"
             }
