@@ -21,15 +21,15 @@ function execFunc(message) {
     const extension = '.' + splitAttachmentName[splitAttachmentName.length - 1];
 
     logger.info('%s: attachment was of type "%s", expected one of "%s".', message.id, extension, allowedExtensions);
-    message.reply(`Attachment was not a valid file type. Valid file types: ${ allowedExtensions }.`);
+    message.reply(`attachment was not a valid file type. Valid file types: ${ allowedExtensions }.`);
     return;
   }
 
   axios(attachment.url, { responseType: 'stream' })
     .then(({ data }) => filesService.saveFile(data, attachment.name.replace(/_/g, ' ').toLowerCase()))
-    .then(() => message.reply('Your sound has been added.'))
+    .then(() => message.reply('your sound has been added.'))
     .catch(error => {
-      message.reply(`An error occurred while saving your sound: ${ error.message }`);
+      message.reply(`an error occurred while saving your sound: ${ error.message }`);
       return Promise.reject(error);
     });
 }

@@ -7,6 +7,9 @@
     },
     "botToken": {
       "type": "securestring"
+    },
+    "storageAccountKey": {
+      "type": "securestring"
     }
   },
   "variables": {},
@@ -34,7 +37,13 @@
                   "memoryInGB": 0.5,
                   "cpu": 1
                 }
-              }
+              },
+              "volumeMounts": [
+                {
+                  "mountPath": "/app/sounds/",
+                  "name": "soundsvolume"
+                }
+              ]
             }
           }
         ],
@@ -46,7 +55,17 @@
           }
         ],
         "restartPolicy": "OnFailure",
-        "osType": "Linux"
+        "osType": "Linux",
+        "volumes": [
+          {
+            "name": "soundsvolume",
+            "azureFile": {
+              "sharename": "botman-sounds",
+              "storageAccountName": "botmanp",
+              "storageAccountKey": "[parameters('storageAccountKey')]"
+            }
+          }
+        ]
       }
     }
   ]

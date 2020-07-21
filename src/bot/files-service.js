@@ -11,7 +11,7 @@ class FilesService {
   get files() {
     if (!this._files) {
       logger.info('Loading sound files');
-      this._files = loadFiles('./noo')
+      this._files = loadFiles(this._directory)
         .then(files => {
           files.forEach(x => logger.debug('Loaded file: %s', JSON.stringify(x)));
           return files;
