@@ -41,11 +41,11 @@
               "volumeMounts": [
                 {
                   "mountPath": "/app/sounds/",
-                  "name": "soundsvolume"
+                  "name": "sounds"
                 },
                 {
                   "mountPath": "/app/logs/",
-                  "name": "logsvolume"
+                  "name": "logs"
                 }
               ]
             }
@@ -62,7 +62,7 @@
         "osType": "Linux",
         "volumes": [
           {
-            "name": "soundsvolume",
+            "name": "sounds",
             "azureFile": {
               "sharename": "botman-sounds",
               "storageAccountName": "botmanp",
@@ -70,7 +70,7 @@
             }
           },
           {
-            "name": "logsvolume",
+            "name": "logs",
             "azureFile": {
               "sharename": "botman-logs",
               "storageAccountName": "botmanp",
