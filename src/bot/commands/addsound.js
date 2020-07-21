@@ -4,6 +4,7 @@ const constants = require('../constants');
 const filesService = require('../files-service');
 const { checkFileExtension } = require('../utils');
 const logger = require('../../logger');
+const Discord = require('discord.js');
 
 function execFunc(message) {
   if (!message.attachments.size) {
@@ -33,6 +34,6 @@ function execFunc(message) {
     });
 }
 
-const addSound = new Command('addsound', execFunc, { serverOnly: true, requiredPermission: +process.env.ADD_SOUND_PERMISSION });
+const addSound = new Command('addsound', execFunc, { serverOnly: true, requiredPermission: Discord.Permissions.FLAGS.MANAGE_GUILD });
 
 module.exports = addSound;

@@ -25,7 +25,7 @@ class Command {
       return false;
     }
 
-    if (this.options.requiredPermission && !message.member.roles.some(x => x.hasPermission(this.options.requiredPermission))) {
+    if (this.options.requiredPermission && !message.member.hasPermission(this.options.requiredPermission)) {
       logger.info('%s: Command "%s" requires permission "%s", but user "%s" did not have it', message.id, message.content, this.options.requiredPermission, message.author.username);
       message.reply('you do not have permission to use this command.');
       return false;
