@@ -1,6 +1,6 @@
 const logger = require('./logger');
 const environment = require('./environment');
-const Bot = require('./soundboard-bot/bot');
+const Bot = require('./bot/bot');
 
 logger.info('Starting in %s environment', environment.environment);
 

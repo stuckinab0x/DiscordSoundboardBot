@@ -13,10 +13,16 @@ class FilesService {
   get files() {
     if (!this._files) {
       logger.info('Loading sound files');
-      this._files = loadFiles(this._directory)
+      this._files = loadFiles('./noo')
         .then(files => {
           files.forEach(x => logger.debug('Loaded file: %s', JSON.stringify(x)));
           return files;
+        })
+        .catch(err => {
+          if (err.code !== 'ENOENT')
+            return Promise.reject(err);
+
+          return fs.promises.mkdir(this._directory).then(() => []);
         });
     }
 
