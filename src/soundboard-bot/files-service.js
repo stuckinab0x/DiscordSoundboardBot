@@ -1,17 +1,19 @@
-// TODO: Replace fs with fs promises.
 const fs = require('fs');
 const { loadFiles, splitFileName } = require('./utils');
 const constants = require('./constants');
 const logger = require('../logger');
 
 // TODO: Create sounds directory on start.
-// TODO: Load one file by name.
 
 class FilesService {
+  constructor(directory) {
+    this._directory = directory;
+  }
+
   get files() {
     if (!this._files) {
       logger.info('Loading sound files');
-      this._files = loadFiles(constants.soundsDirectory)
+      this._files = loadFiles(this._directory)
         .then(files => {
           files.forEach(x => logger.debug('Loaded file: %s', JSON.stringify(x)));
           return files;
@@ -33,7 +35,7 @@ class FilesService {
       }
 
       stream.pipe(
-        fs.createWriteStream(constants.soundsDirectory + name)
+        fs.createWriteStream(this._directory + name)
           .on('error', error => {
             logger.error('Failed to write file "%s": %s', name, error.message);
             reject(error);
@@ -48,4 +50,4 @@ class FilesService {
   }
 }
 
-module.exports = new FilesService();
+module.exports = new FilesService(constants.soundsDirectory);
