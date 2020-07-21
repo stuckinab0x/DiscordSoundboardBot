@@ -3,8 +3,6 @@ const { loadFiles, splitFileName } = require('./utils');
 const constants = require('./constants');
 const logger = require('../logger');
 
-// TODO: Create sounds directory on start.
-
 class FilesService {
   constructor(directory) {
     this._directory = directory;
