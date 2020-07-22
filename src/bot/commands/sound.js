@@ -4,12 +4,12 @@ const logger = require('../../logger');
 const filesService = require('../files-service');
 
 async function execFunc(message, context) {
-  const argument = message.content.toLowerCase().split(' ').slice(1).join(' ');
+  const argument = message.content.toLowerCase().split(' ').slice(2).join(' ');
   const voiceChannel = message.member.voice.channel;
 
   if (!argument) {
     logger.info('%s: No <filename> argument was specified', message.id);
-    message.reply(`command usage: "${constants.messagePrefix}sound <filename>".`);
+    message.reply(`command usage: "${constants.messagePrefix} sound <filename>".`);
     return;
   }
 
