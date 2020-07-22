@@ -1,18 +1,17 @@
-const constants = require('../constants');
 const logger = require('../../logger');
 
 class Command {
-  constructor(text, execFunc, options = {}) {
-    this.text = text;
-    this.exec = execFunc;
+  constructor(name, execFunc, options = {}) {
+    this.name = name;
+    this._exec = execFunc;
     this.options = options;
   }
 
   matches(message) {
-    const matches = message.content.replace(constants.messagePrefix, '').toLowerCase().startsWith(this.text);
+    const matches = message.content.split(' ')[1].toLowerCase() === this.name;
 
     if (matches) {
-      logger.info('%s: Matched command "%s"', message.id, this.text);
+      logger.info('%s: Matched command "%s"', message.id, this.name);
     }
 
     return matches;
@@ -34,6 +33,15 @@ class Command {
     logger.info('%s: Command "%s" was valid', message.id, message.content);
 
     return true;
+  }
+
+  async exec(message, context) {
+    try {
+      await this._exec(message, context);
+    } catch (err) {
+      logger.error('%s: An error occurred while executing command "%s"', message.id, message.content);
+      logger.error(err);
+    }
   }
 }
 

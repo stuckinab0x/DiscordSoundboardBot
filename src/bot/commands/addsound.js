@@ -25,7 +25,7 @@ function execFunc(message) {
     return;
   }
 
-  axios(attachment.url, { responseType: 'stream' })
+  return axios(attachment.url, { responseType: 'stream' })
     .then(({ data }) => filesService.saveFile(data, attachment.name.replace(/_/g, ' ').toLowerCase()))
     .then(() => message.reply('your sound has been added.'))
     .catch(error => {

@@ -1,5 +1,5 @@
 module.exports = {
-  messagePrefix: '!', // TODO: Change prefix to !botman.
+  messagePrefix: '!bm',
   soundsDirectory: './sounds/',
-  soundFileExtensions: ['.mp3', '.wav']
+  soundFileExtensions: ['.mp3', '.wav', '.ogg', '.webm']
 };

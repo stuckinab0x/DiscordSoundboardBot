@@ -10,4 +10,3 @@ new Bot()
   .catch(logger.error);
 
 // TODO: Bind the bot to a specified channel. Join when a sound is requested (+ delay). Leave when the last person leaves.
-// TODO: Error handling & recovery.

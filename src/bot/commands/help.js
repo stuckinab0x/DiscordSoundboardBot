@@ -1,5 +1,7 @@
 const Command = require('./command');
 
+// TODO: Help command
+
 const help = new Command('help', function (message) {
   message.reply({
     embed: {

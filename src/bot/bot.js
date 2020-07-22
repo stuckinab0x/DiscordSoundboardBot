@@ -4,15 +4,18 @@ const logger = require('../logger');
 
 const availableCommands = [
   require('./commands/sound'),
+  require('./commands/sounds'),
   require('./commands/addsound')
 ];
 
 class Bot {
   constructor() {
-    this._client = new Discord.Client();
+    this._client = new Discord.Client({ presence: { activity: { name: 'you', type: 'WATCHING' } } });
 
     this._client.on('ready', () => this._onReady());
-    this._client.on('message', message => this._onMessage(message));
+    this._client.on('message', m => this._onMessage(m));
+    this._client.on('warn', m => logger.log('warn', m));
+    this._client.on('error', m => logger.log('error', m));
 
     this.context = { soundQueue: [] };
   }
@@ -29,6 +32,9 @@ class Bot {
   _onMessage(message) {
     if (!message.content.startsWith(constants.messagePrefix))
       return;
+
+    // if (message.content === constants.messagePrefix)
+    // print help
 
     logger.info('%s: Received potential command "%s" from "%s"', message.id, message.content, message.author.username);
 

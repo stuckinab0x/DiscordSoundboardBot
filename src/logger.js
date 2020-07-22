@@ -12,10 +12,10 @@ const logger = winston.createLogger({
   level: environment.environment === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
-    winston.format.align(),
+    winston.format.padLevels(),
     winston.format.splat(),
     winston.format.printf(info => {
-      return `${ info.timestamp } ${ info.level }: ${ info.message }`;
+      return `${ info.timestamp } ${ info.level }: ${ info.message }${ info.stack ? '\n' + info.stack : '' }`;
     })
   ),
   transports: [
