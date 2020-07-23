@@ -9,7 +9,7 @@ async function execFunc(message, context) {
 
   if (!argument) {
     logger.info('%s: No <filename> argument was specified', message.id);
-    message.reply(`command usage: "${constants.messagePrefix} sound <filename>".`);
+    message.reply(`command usage: "${ constants.messagePrefix } sound <filename>".`);
     return;
   }
 
@@ -25,7 +25,7 @@ async function execFunc(message, context) {
 
   if (!soundFile) {
     logger.info('%s: No "%s" sound was found', message.id, argument);
-    message.reply(`couldn't find sound "${argument}".`);
+    message.reply(`couldn't find sound "${ argument }".`);
     return;
   }
 
@@ -33,7 +33,7 @@ async function execFunc(message, context) {
   logger.info('%s: Sound "%s" added to queue, length: %s', message.id, argument, context.soundQueue.length);
 
   if (context.soundPlaying) {
-    message.reply(`your sound has been added to the queue at position #${context.soundQueue.length}.`);
+    message.reply(`your sound has been added to the queue at position #${ context.soundQueue.length }.`);
     return;
   }
 
@@ -51,13 +51,7 @@ async function execFunc(message, context) {
 
     const dispatcher = connection.play(soundFileName);
 
-    await new Promise(resolve => dispatcher.on('finish', () => {
-      if (!context.soundQueue.length) {
-        current.channel.leave();
-      }
-
-      resolve();
-    }));
+    await new Promise(resolve => dispatcher.on('finish', resolve));
   }
 
   context.soundPlaying = false;
