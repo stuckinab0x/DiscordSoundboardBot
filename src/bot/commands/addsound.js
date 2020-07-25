@@ -34,6 +34,6 @@ function execFunc(message) {
     });
 }
 
-const addSound = new Command('addsound', execFunc, { serverOnly: true, requiredPermission: Discord.Permissions.FLAGS.MANAGE_GUILD });
+const addSound = new Command('addsound', `${constants.messagePrefix} addsound`, 'Used as the comment with a sound file attachment', execFunc, { serverOnly: true, requiredPermission: Discord.Permissions.FLAGS.MANAGE_GUILD });
 
 module.exports = addSound;

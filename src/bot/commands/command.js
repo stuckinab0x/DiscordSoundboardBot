@@ -2,12 +2,17 @@ const logger = require('../../logger');
 
 class Command {
   name;
+  usage;
+  description;
 
   #options;
   #exec;
 
-  constructor(name, execFunc, options = {}) {
+  constructor(name, usage, description, execFunc, options = {}) {
     this.name = name;
+    this.usage = usage;
+    this.description = description;
+
     this.#options = options;
     this.#exec = execFunc;
   }

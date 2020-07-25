@@ -1,6 +1,7 @@
 const filesService = require('../files-service');
 const Discord = require('discord.js');
 const Command = require('./command');
+const constants = require('../constants');
 
 async function execFunc(message) {
   const files = await filesService.files;
@@ -13,4 +14,4 @@ async function execFunc(message) {
   return message.reply(messageEmbed);
 }
 
-module.exports = new Command('sounds', execFunc);
+module.exports = new Command('sounds', `${constants.messagePrefix} sounds`, 'Display the list of available sounds', execFunc);

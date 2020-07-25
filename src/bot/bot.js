@@ -8,6 +8,10 @@ const availableCommands = [
   require('./commands/addsound')
 ];
 
+const helpCommand = require('./commands/help')(availableCommands);
+
+availableCommands.push(helpCommand);
+
 class Bot {
   #client;
   #context = { soundQueue: [] };
@@ -35,8 +39,8 @@ class Bot {
     if (!message.content.startsWith(constants.messagePrefix))
       return;
 
-    // if (message.content === constants.messagePrefix)
-    // print help
+    if (message.content === constants.messagePrefix)
+      return helpCommand.exec(message, this.#context);
 
     logger.info('%s: Received potential command "%s" from "%s"', message.id, message.content, message.author.username);
 

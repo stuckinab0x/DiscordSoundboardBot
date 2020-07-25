@@ -1,17 +1,32 @@
 const Command = require('./command');
+const Discord = require('discord.js');
+const constants = require('../constants');
 
-// TODO: Help command
+const ZERO_WIDTH_SPACE = '\u200B';
 
-const help = new Command('help', function (message) {
-  message.reply({
-    embed: {
-      title: 'Available commands:',
-      fields: [
-        { name: 'Command', value: '', inline: true },
-        { name: 'Description', value: '', inline: true }
-      ]
-    }
+module.exports = function helpConstructor(commands) {
+  let helpMessage;
+  const helpCommand = new Command('help', `${ constants.messagePrefix } help`, 'Display the available commands', message => message.reply(helpMessage));
+  const firstCommand = commands[0];
+  const otherCommands = commands
+    .slice(1)
+    .concat(helpCommand)
+    .map(x => [
+      { name: ZERO_WIDTH_SPACE, value: x.name, inline: true },
+      { name: ZERO_WIDTH_SPACE, value: x.usage, inline: true },
+      { name: ZERO_WIDTH_SPACE, value: x.description, inline: true }
+    ])
+    .flat();
+
+  helpMessage = new Discord.MessageEmbed({
+    title: 'Available commands',
+    fields: [
+      { name: 'Command', value: firstCommand.name, inline: true },
+      { name: 'Usage', value: firstCommand.usage, inline: true },
+      { name: 'Description', value: firstCommand.description, inline: true },
+      ...otherCommands
+    ]
   });
-});
 
-module.exports = help;
+  return helpCommand;
+};

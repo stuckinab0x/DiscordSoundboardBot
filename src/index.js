@@ -8,5 +8,3 @@ new Bot()
   .start(environment.botToken)
   .then(() => logger.info('Bot started'))
   .catch(logger.error);
-
-// TODO: Bind the bot to a specified channel. Join when a sound is requested (+ delay). Leave when the last person leaves.
