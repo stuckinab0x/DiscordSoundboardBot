@@ -19,6 +19,7 @@ class Bot {
     this.#client.on('message', m => this._onMessage(m));
     this.#client.on('warn', m => logger.log('warn', m));
     this.#client.on('error', m => logger.log('error', m));
+    this.#client.on('voiceStateUpdate', oldState => this._onVoiceStateUpdate(oldState));
   }
 
   start(token) {
@@ -49,6 +50,13 @@ class Bot {
       }
     })) {
       logger.info('%s: Command "%s" did not match any available commands', message.id, message.content);
+    }
+  }
+
+  _onVoiceStateUpdate(oldState) {
+    if (oldState.channel && oldState.channel.members.every(x => x.id === this.#client.user.id)) {
+      this.#context.soundQueue = [];
+      oldState.channel.leave();
     }
   }
 }
