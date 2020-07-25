@@ -9,24 +9,25 @@ const availableCommands = [
 ];
 
 class Bot {
+  #client;
+  #context = { soundQueue: [] };
+
   constructor() {
-    this._client = new Discord.Client({ presence: { activity: { name: 'you', type: 'WATCHING' } } });
+    this.#client = new Discord.Client({ presence: { activity: { name: 'you', type: 'WATCHING' } } });
 
-    this._client.on('ready', () => this._onReady());
-    this._client.on('message', m => this._onMessage(m));
-    this._client.on('warn', m => logger.log('warn', m));
-    this._client.on('error', m => logger.log('error', m));
-
-    this.context = { soundQueue: [] };
+    this.#client.on('ready', () => this._onReady());
+    this.#client.on('message', m => this._onMessage(m));
+    this.#client.on('warn', m => logger.log('warn', m));
+    this.#client.on('error', m => logger.log('error', m));
   }
 
   start(token) {
     logger.info('Starting bot, attempting to log in to Discord');
-    return this._client.login(token);
+    return this.#client.login(token);
   }
 
   _onReady() {
-    logger.info('Logged in as %s', this._client.user.tag);
+    logger.info('Logged in as %s', this.#client.user.tag);
   }
 
   _onMessage(message) {
@@ -41,7 +42,7 @@ class Bot {
     if (!availableCommands.some(command => {
       if (command.matches(message)) {
         if (command.isValid(message)) {
-          command.exec(message, this.context);
+          command.exec(message, this.#context);
         }
 
         return true;

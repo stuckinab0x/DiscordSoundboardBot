@@ -4,14 +4,17 @@ const constants = require('./constants');
 const logger = require('../logger');
 
 class FilesService {
+  #directory;
+  #files;
+
   constructor(directory) {
-    this._directory = directory;
+    this.#directory = directory;
   }
 
   get files() {
-    if (!this._files) {
+    if (!this.#files) {
       logger.info('Loading sound files');
-      this._files = loadFiles(this._directory)
+      this.#files = loadFiles(this.#directory)
         .then(files => {
           files.forEach(x => logger.debug('Loaded file: %s', JSON.stringify(x)));
           return files;
@@ -20,11 +23,11 @@ class FilesService {
           if (err.code !== 'ENOENT')
             return Promise.reject(err);
 
-          return fs.promises.mkdir(this._directory).then(() => []);
+          return fs.promises.mkdir(this.#directory).then(() => []);
         });
     }
 
-    return this._files;
+    return this.#files;
   }
 
   async saveFile(stream, name) {
@@ -39,7 +42,7 @@ class FilesService {
       }
 
       stream.pipe(
-        fs.createWriteStream(this._directory + name)
+        fs.createWriteStream(this.#directory + name)
           .on('error', error => {
             logger.error('Failed to write file "%s": %s', name, error.message);
             reject(error);
