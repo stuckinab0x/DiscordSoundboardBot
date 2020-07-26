@@ -1,6 +1,7 @@
 ﻿FROM alpine
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
+EXPOSE 80
 WORKDIR app/
 COPY package.json LICENSE yarn.lock ./
 COPY src/ src/

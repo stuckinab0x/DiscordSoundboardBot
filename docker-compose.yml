@@ -11,3 +11,5 @@ services:
       - ./sounds:/app/sounds
       - ./logs:/app/logs
     entrypoint: ["yarn", "run", "start:dev"]
+    ports:
+      - 8000:80

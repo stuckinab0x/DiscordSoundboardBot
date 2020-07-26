@@ -57,6 +57,6 @@ async function execFunc(message, context) {
   context.soundPlaying = false;
 }
 
-const sound = new Command('sound', `${constants.messagePrefix} sound <sound name>`, 'Play a sound in your current voice channel', execFunc, { serverOnly: true });
+const sound = new Command('sound', `${ constants.messagePrefix } sound <sound name>`, 'Play a sound in your current voice channel', execFunc, { serverOnly: true });
 
 module.exports = sound;
