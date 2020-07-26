@@ -6,4 +6,4 @@ async function execFunc(message) {
     message.guild.voice.connection.disconnect();
 }
 
-module.exports = new Command('disconnect', `${ constants.messagePrefix } disconnect`, 'Disconnect the bot from a voice channel', execFunc);
+module.exports = new Command('disconnect', `${ constants.messagePrefix } disconnect`, 'Disconnect the bot from a voice channel', execFunc, { serverOnly: true });
