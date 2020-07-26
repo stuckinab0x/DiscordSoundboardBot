@@ -6,7 +6,7 @@ module.exports = function helpConstructor(commands) {
   let helpMessage;
 
   const helpCommand = new Command('help', `${ constants.messagePrefix } help`, 'Display the available commands', message => message.reply(helpMessage));
-  const allCommands = commands.concat(helpCommand);
+  const allCommands = [helpCommand].concat(commands);
 
   const fields = allCommands.reduce((fields, command) => {
     fields[0].value += `${ command.name }\n`;

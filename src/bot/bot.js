@@ -5,7 +5,8 @@ const logger = require('../logger');
 const availableCommands = [
   require('./commands/sound'),
   require('./commands/sounds'),
-  require('./commands/addsound')
+  require('./commands/addsound'),
+  require('./commands/disconnect')
 ];
 
 const helpCommand = require('./commands/help')(availableCommands);
