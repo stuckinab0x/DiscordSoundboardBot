@@ -1,9 +1,9 @@
-const Command = require('./command');
-const Discord = require('discord.js');
-const constants = require('../constants');
+import { MessageEmbed } from 'discord.js';
+import constants from '../constants';
+import Command from './command';
 
-module.exports = function helpConstructor(commands) {
-  let helpMessage;
+export default function helpConstructor(commands: Command[]): Command {
+  let helpMessage: MessageEmbed;
 
   const helpCommand = new Command('help', `${ constants.messagePrefix } help`, 'Display the available commands', message => message.reply(helpMessage));
   const allCommands = [helpCommand].concat(commands);
@@ -20,7 +20,7 @@ module.exports = function helpConstructor(commands) {
     { name: 'Description', value: '', inline: true }
   ]);
 
-  helpMessage = new Discord.MessageEmbed({
+  helpMessage = new MessageEmbed({
     title: 'Available commands',
     fields
   });

@@ -1,20 +1,20 @@
-const fs = require('fs');
-const { loadFiles, splitFileName } = require('./utils');
-const constants = require('./constants');
-const logger = require('../logger');
+import fs from 'fs';
+import { Stream } from 'stream';
+import logger from '../logger';
+import constants from './constants';
+import SoundFile from './sound-file';
+import { loadFiles, splitFileName } from './utils';
 
 class FilesService {
-  #directory;
-  #files;
+  private _files: Promise<SoundFile[]>;
 
-  constructor(directory) {
-    this.#directory = directory;
+  constructor(private directory: string) {
   }
 
-  get files() {
-    if (!this.#files) {
+  get files(): Promise<SoundFile[]> {
+    if (!this._files) {
       logger.info('Loading sound files');
-      this.#files = loadFiles(this.#directory)
+      this._files = loadFiles(this.directory)
         .then(files => {
           files.forEach(x => logger.debug('Loaded file: %s', JSON.stringify(x)));
           return files;
@@ -23,14 +23,14 @@ class FilesService {
           if (err.code !== 'ENOENT')
             return Promise.reject(err);
 
-          return fs.promises.mkdir(this.#directory).then(() => []);
+          return fs.promises.mkdir(this.directory).then(() => []);
         });
     }
 
-    return this.#files;
+    return this._files;
   }
 
-  async saveFile(stream, name) {
+  async saveFile(stream: Stream, name: string): Promise<void> {
     const files = await this.files;
     const fileObj = splitFileName(name);
 
@@ -42,7 +42,7 @@ class FilesService {
       }
 
       stream.pipe(
-        fs.createWriteStream(this.#directory + name)
+        fs.createWriteStream(this.directory + name)
           .on('error', error => {
             logger.error('Failed to write file "%s": %s', name, error.message);
             reject(error);
@@ -57,4 +57,4 @@ class FilesService {
   }
 }
 
-module.exports = new FilesService(constants.soundsDirectory);
+export default new FilesService(constants.soundsDirectory);

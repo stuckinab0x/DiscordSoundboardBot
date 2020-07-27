@@ -1,7 +1,7 @@
-const logger = require('./logger');
-const environment = require('./environment');
-const Bot = require('./bot/bot');
-const http = require('http');
+import http from 'http';
+import Bot from './bot/bot';
+import environment from './environment';
+import logger from './logger';
 
 logger.info('Starting in %s environment', environment.environment);
 
@@ -16,3 +16,6 @@ http
     res.end();
   })
   .listen(80);
+
+// TODO: Popular sounds
+// TODO: Fuzzy matching

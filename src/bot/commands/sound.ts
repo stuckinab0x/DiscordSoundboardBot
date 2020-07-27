@@ -1,22 +1,20 @@
-const Command = require('./command');
-const constants = require('../constants');
-const logger = require('../../logger');
-const filesService = require('../files-service');
+import logger from '../../logger';
+import constants from '../constants';
+import filesService from '../files-service';
+import Command, { CommandExecFunc } from './command';
 
-async function execFunc(message, context) {
+const execFunc: CommandExecFunc = async (message, context) => {
   const argument = message.content.toLowerCase().split(' ').slice(2).join(' ');
   const voiceChannel = message.member.voice.channel;
 
   if (!argument) {
     logger.info('%s: No <filename> argument was specified', message.id);
-    message.reply(`command usage: "${ constants.messagePrefix } sound <filename>".`);
-    return;
+    return message.reply(`command usage: "${ constants.messagePrefix } sound <filename>".`);
   }
 
   if (!voiceChannel) {
     logger.info('%s: User was not in a voice channel', message.id);
-    message.reply('you must be in a voice channel to use this command.');
-    return;
+    return message.reply('you must be in a voice channel to use this command.');
   }
 
   const availableFiles = await filesService.files;
@@ -25,16 +23,14 @@ async function execFunc(message, context) {
 
   if (!soundFile) {
     logger.info('%s: No "%s" sound was found', message.id, argument);
-    message.reply(`couldn't find sound "${ argument }".`);
-    return;
+    return message.reply(`couldn't find sound "${ argument }".`);
   }
 
   context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
   logger.info('%s: Sound "%s" added to queue, length: %s', message.id, argument, context.soundQueue.length);
 
   if (context.soundPlaying) {
-    message.reply(`your sound has been added to the queue at position #${ context.soundQueue.length }.`);
-    return;
+    return message.reply(`your sound has been added to the queue at position #${ context.soundQueue.length }.`);
   }
 
   context.soundPlaying = true;
@@ -47,7 +43,7 @@ async function execFunc(message, context) {
 
     const soundFileName = constants.soundsDirectory + current.sound.fullName;
 
-    logger.debug('Attempting to play file %s', soundFileName)
+    logger.debug('Attempting to play file %s', soundFileName);
 
     const dispatcher = connection.play(soundFileName);
 
@@ -55,8 +51,6 @@ async function execFunc(message, context) {
   }
 
   context.soundPlaying = false;
-}
+};
 
-const sound = new Command('sound', `${ constants.messagePrefix } sound <sound name>`, 'Play a sound in your current voice channel', execFunc, { serverOnly: true });
-
-module.exports = sound;
+export default new Command('sound', `${ constants.messagePrefix } sound <sound name>`, 'Play a sound in your current voice channel', execFunc, { serverOnly: true });
