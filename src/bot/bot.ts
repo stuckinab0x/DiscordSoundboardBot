@@ -32,14 +32,14 @@ export default class Bot {
       return;
 
     if (message.content === constants.messagePrefix)
-      return helpCommand.exec(message, this.context);
+      return helpCommand.execute(message, this.context);
 
     logger.info('%s: Received potential command "%s" from "%s"', message.id, message.content, message.author.username);
 
     if (!commands.some(command => {
       if (command.matches(message)) {
         if (command.isValid(message)) {
-          command.exec(message, this.context);
+          command.execute(message, this.context);
         }
 
         return true;

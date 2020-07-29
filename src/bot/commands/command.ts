@@ -1,16 +1,16 @@
 import { Message, PermissionResolvable } from 'discord.js';
 import logger from '../../logger';
 import BotContext from '../bot-context';
-
-export type CommandExecFunc = (message: Message, context: BotContext) => Promise<any> | any;
+import withErrorHandling from './error-handling-command';
 
 export interface CommandOptions {
   serverOnly?: boolean;
   requiredPermission?: PermissionResolvable;
 }
 
-export default class Command {
-  constructor(public name: string, public usage: string, public description: string, private execFunc: CommandExecFunc, private options: CommandOptions = {}) {
+export default abstract class Command {
+  protected constructor(public name: string, public usage: string, public description: string, private options: CommandOptions = {}) {
+    withErrorHandling(this);
   }
 
   matches(message: Message): boolean {
@@ -41,14 +41,5 @@ export default class Command {
     return true;
   }
 
-  async exec(message: Message, context: BotContext): Promise<void> {
-    try {
-      await this.execFunc(message, context);
-    } catch (err) {
-      logger.error('%s: An error occurred while executing command "%s"', message.id, message.content);
-      logger.error(err);
-    }
-  }
+  abstract execute(message: Message, context: BotContext): any;
 }
-
-// TODO: Turn this into an abstract class

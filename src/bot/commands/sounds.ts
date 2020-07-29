@@ -1,17 +1,23 @@
-import { MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import constants from '../constants';
 import filesService from '../files-service';
-import Command, { CommandExecFunc } from './command';
+import Command from './command';
 
-const execFunc: CommandExecFunc = async message => {
-  const files = await filesService.files;
+export class SoundsCommand extends Command {
+  constructor() {
+    super('sounds', `${ constants.messagePrefix } sounds`, 'Display the list of available sounds');
+  }
 
-  const messageEmbed = new MessageEmbed({
-    title: 'Available sounds',
-    description: files.reduce((prev, curr) => prev + '\n' + curr.name, '')
-  });
+  async execute(message: Message): Promise<any> {
+    const files = await filesService.files;
 
-  return message.reply(messageEmbed);
-};
+    const messageEmbed = new MessageEmbed({
+      title: 'Available sounds',
+      description: files.reduce((prev, curr) => prev + '\n' + curr.name, '')
+    });
 
-export default new Command('sounds', `${ constants.messagePrefix } sounds`, 'Display the list of available sounds', execFunc);
+    return message.reply(messageEmbed);
+  }
+}
+
+export default new SoundsCommand();
