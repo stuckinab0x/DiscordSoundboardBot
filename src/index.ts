@@ -18,7 +18,6 @@ http
   .listen(80);
 
 
-// TODO: Fuzzy matching
 // TODO: Better argument passing
 
 // Requires database

@@ -19,3 +19,7 @@ export function splitFileName(name: string): SoundFile {
     fullName
   };
 }
+
+export function pickRandom<T>(collection: T[]): T {
+  return collection[Math.floor(Math.random() * collection.length)];
+}

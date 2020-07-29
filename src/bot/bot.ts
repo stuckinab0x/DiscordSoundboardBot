@@ -11,11 +11,11 @@ export default class Bot {
   constructor() {
     this.client = new Client({ presence: { activity: { name: 'you', type: 'WATCHING' } } });
 
-    this.client.on('ready', () => this._onReady());
-    this.client.on('message', m => this._onMessage(m));
+    this.client.on('ready', () => this.onReady());
+    this.client.on('message', m => this.onMessage(m));
     this.client.on('warn', m => logger.log('warn', m));
     this.client.on('error', m => logger.log('error', m));
-    this.client.on('voiceStateUpdate', oldState => this._onVoiceStateUpdate(oldState));
+    this.client.on('voiceStateUpdate', oldState => this.onVoiceStateUpdate(oldState));
   }
 
   start(token: string): Promise<string> {
@@ -23,11 +23,11 @@ export default class Bot {
     return this.client.login(token);
   }
 
-  _onReady() {
+  private onReady() {
     logger.info('Logged in as %s', this.client.user.tag);
   }
 
-  _onMessage(message: Message) {
+  private onMessage(message: Message) {
     if (!message.content.startsWith(constants.messagePrefix))
       return;
 
@@ -49,7 +49,7 @@ export default class Bot {
     }
   }
 
-  _onVoiceStateUpdate(oldState: VoiceState) {
+  private onVoiceStateUpdate(oldState: VoiceState) {
     if (oldState.channel && oldState.channel.members.every(x => x.id === this.client.user.id)) {
       this.context.soundQueue = [];
       oldState.channel.leave();
