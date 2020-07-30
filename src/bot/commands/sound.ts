@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import logger from '../../logger';
 import BotContext from '../bot-context';
+import CommandMessage from '../command-message';
 import constants from '../constants';
 import filesService from '../files-service';
 import SoundFile from '../sound-file';
@@ -14,11 +15,10 @@ export class SoundCommand extends Command {
     super('sound', `${ constants.messagePrefix } sound <sound name>`, 'Play a sound in your current voice channel', { serverOnly: true });
   }
 
-  async execute(message: Message, context: BotContext): Promise<any> {
-    const argument = message.content.toLowerCase().split(' ').slice(2).join(' ');
+  async execute(message: Message, commandMessage: CommandMessage, context: BotContext): Promise<any> {
     const voiceChannel = message.member.voice.channel;
 
-    if (!argument) {
+    if (!commandMessage.arguments) {
       logger.info('%s: No <filename> argument was specified', message.id);
       return message.reply(`command usage: "${ this.usage }"`);
     }
@@ -28,13 +28,13 @@ export class SoundCommand extends Command {
       return message.reply('you must be in a voice channel to use this command.');
     }
 
-    const soundFile = await this.getSoundFile(argument, message);
+    const soundFile = await this.getSoundFile(commandMessage.arguments, message);
 
     if (!soundFile)
-      return message.reply(`couldn't find sound "${ argument }".`);
+      return message.reply(`couldn't find sound "${ commandMessage.arguments }".`);
 
     context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
-    logger.info('%s: Sound "%s" added to queue, length: %s', message.id, argument, context.soundQueue.length);
+    logger.info('%s: Sound "%s" added to queue, length: %s', message.id, commandMessage.arguments, context.soundQueue.length);
 
     if (context.soundPlaying) {
       return message.reply(`your sound has been added to the queue at position #${ context.soundQueue.length }.`);

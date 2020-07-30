@@ -17,9 +17,6 @@ http
   })
   .listen(80);
 
-
-// TODO: Better argument passing
-
 // Requires database
 // TODO: Popular sounds
 // TODO: Volume

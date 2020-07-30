@@ -1,6 +1,7 @@
 import { Message, PermissionResolvable } from 'discord.js';
 import logger from '../../logger';
 import BotContext from '../bot-context';
+import CommandMessage from '../command-message';
 import withErrorHandling from './error-handling-command';
 
 export interface CommandOptions {
@@ -13,26 +14,16 @@ export default abstract class Command {
     withErrorHandling(this);
   }
 
-  matches(message: Message): boolean {
-    const matches = message.content.split(' ')[1].toLowerCase() === this.name;
-
-    if (matches) {
-      logger.info('%s: Matched command "%s"', message.id, this.name);
-    }
-
-    return matches;
-  }
-
-  isValid(message: Message): boolean {
+  async isValid(message: Message): Promise<boolean> {
     if (this.options.serverOnly && !message.member) {
       logger.info('%s: Command "%s" is a server-only command but was sent by direct message', message.id, message.content);
-      message.reply('This command cannot be sent by direct message, it must be sent via a server text channel.');
+      await message.reply('This command cannot be sent by direct message, it must be sent via a server text channel.');
       return false;
     }
 
     if (this.options.requiredPermission && !message.member.hasPermission(this.options.requiredPermission)) {
       logger.info('%s: Command "%s" requires permission "%s", but user "%s" did not have it', message.id, message.content, this.options.requiredPermission, message.author.username);
-      message.reply('you do not have permission to use this command.');
+      await message.reply('you do not have permission to use this command.');
       return false;
     }
 
@@ -41,5 +32,5 @@ export default abstract class Command {
     return true;
   }
 
-  abstract execute(message: Message, context: BotContext): any;
+  abstract execute(message: Message, commandMessage: CommandMessage, context: BotContext): any;
 }

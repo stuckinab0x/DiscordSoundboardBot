@@ -1,6 +1,7 @@
 import { Client, Message, VoiceState } from 'discord.js';
 import logger from '../logger';
 import BotContext from './bot-context';
+import CommandMessage from './command-message';
 import commands, { helpCommand } from './commands';
 import constants from './constants';
 
@@ -27,26 +28,27 @@ export default class Bot {
     logger.info('Logged in as %s', this.client.user.tag);
   }
 
-  private onMessage(message: Message) {
-    if (!message.content.startsWith(constants.messagePrefix))
+  private async onMessage(message: Message) {
+    const messageContent = message.content.toLowerCase();
+
+    if (!messageContent.startsWith(constants.messagePrefix))
       return;
 
-    if (message.content === constants.messagePrefix)
-      return helpCommand.execute(message, this.context);
+    if (messageContent === constants.messagePrefix)
+      return helpCommand.execute(message);
 
     logger.info('%s: Received potential command "%s" from "%s"', message.id, message.content, message.author.username);
 
-    if (!commands.some(command => {
-      if (command.matches(message)) {
-        if (command.isValid(message)) {
-          command.execute(message, this.context);
-        }
+    const commandMessage = Bot.splitMessageContent(messageContent);
+    const command = commands.find(x => x.name === commandMessage.command);
 
-        return true;
-      }
-    })) {
+    if (!command) {
       logger.info('%s: Command "%s" did not match any available commands', message.id, message.content);
+      return message.reply(`I didn't recognise that command, try "${ constants.messagePrefix } help".`);
     }
+
+    if (await command.isValid(message))
+      await command.execute(message, commandMessage, this.context);
   }
 
   private onVoiceStateUpdate(oldState: VoiceState) {
@@ -54,5 +56,15 @@ export default class Bot {
       this.context.soundQueue = [];
       oldState.channel.leave();
     }
+  }
+
+  private static splitMessageContent(messageContent: string): CommandMessage {
+    // [0] is the prefix, throw it away.
+    const splitMessage = messageContent.split(' ').slice(1);
+
+    return {
+      command: splitMessage[0],
+      arguments: splitMessage.slice(1).join(' ')
+    };
   }
 }
