@@ -8,7 +8,7 @@ import Command from './command';
 
 export class AddSoundCommand extends Command {
   constructor() {
-    super('addsound', `${ constants.messagePrefix } addsound`, 'Used as the comment with a sound file attachment', { serverOnly: true, requiredPermission: Discord.Permissions.FLAGS.MANAGE_GUILD });
+    super('addsound', `${ constants.messagePrefix } addsound`, 'Used as the comment with a sound file attachment', { serverOnly: true, requiredPermission: Discord.Permissions.FLAGS.MANAGE_EMOJIS });
   }
 
   execute(message: Message): Promise<any> {
