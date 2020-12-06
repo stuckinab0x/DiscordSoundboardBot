@@ -23,3 +23,13 @@ export function splitFileName(name: string): SoundFile {
 export function pickRandom<T>(collection: T[]): T {
   return collection[Math.floor(Math.random() * collection.length)];
 }
+
+export function sortFiles(files: SoundFile[]) {
+  files.sort((a, b) => {
+    return a.name < b.name
+      ? -1
+      : a.name > b.name
+        ? 1
+        : 0;
+  });
+}

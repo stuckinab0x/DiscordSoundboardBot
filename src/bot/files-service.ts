@@ -3,7 +3,7 @@ import { Stream } from 'stream';
 import logger from '../logger';
 import constants from './constants';
 import SoundFile from './sound-file';
-import { loadFiles, splitFileName } from './utils';
+import { loadFiles, sortFiles, splitFileName } from './utils';
 
 class FilesService {
   private _files: Promise<SoundFile[]>;
@@ -16,6 +16,7 @@ class FilesService {
       logger.info('Loading sound files');
       this._files = loadFiles(this.directory)
         .then(files => {
+          sortFiles(files);
           files.forEach(x => logger.debug('Loaded file: %s', JSON.stringify(x)));
           return files;
         })
@@ -50,6 +51,7 @@ class FilesService {
           .on('finish', () => {
             logger.info('Wrote file "%s"', name);
             files.push(fileObj);
+            sortFiles(files);
             resolve();
           })
       );
