@@ -1,4 +1,4 @@
-﻿FROM alpine
+﻿FROM alpine:3.12
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 EXPOSE 80
