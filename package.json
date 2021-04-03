@@ -14,7 +14,7 @@
     "start:docker:build": "yarn run start:docker --build"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.5.0",
     "axios": "^0.21.1",
     "discord.js": "^12.2.0",
     "ffmpeg-static": "^4.2.6",
