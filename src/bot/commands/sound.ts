@@ -36,11 +36,9 @@ export class SoundCommand extends Command {
     context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
     logger.info('%s: Sound "%s" added to queue, length: %s', message.id, commandMessage.arguments, context.soundQueue.length);
 
-    if (context.soundPlaying) {
+    if (context.soundQueue.length) {
       return message.reply(`your sound has been added to the queue at position #${ context.soundQueue.length }.`);
     }
-
-    return this.processSoundQueue(context);
   }
 
   private async getSoundFile(soundName: string, message: Message): Promise<SoundFile> {
@@ -88,28 +86,6 @@ export class SoundCommand extends Command {
     const choice = +message.content;
 
     return message.author.id === userId && Number.isInteger(choice) && choice > 0 && choice <= choiceCount;
-  }
-
-  // TODO: This probably doesn't belong here, perhaps in a sound processor
-  private async processSoundQueue(context: BotContext): Promise<void> {
-    context.soundPlaying = true;
-
-    while (context.soundQueue.length) {
-      const current = context.soundQueue.shift();
-      const connection = await current.channel.join();
-
-      logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, context.soundQueue.length);
-
-      const soundFileName = constants.soundsDirectory + current.sound.fullName;
-
-      logger.debug('Attempting to play file %s', soundFileName);
-
-      const dispatcher = connection.play(soundFileName);
-
-      await new Promise(resolve => dispatcher.on('finish', resolve));
-    }
-
-    context.soundPlaying = false;
   }
 }
 

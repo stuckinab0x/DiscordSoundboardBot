@@ -6,17 +6,18 @@ import commands, { helpCommand } from './commands';
 import constants from './constants';
 
 export default class Bot {
-  private client: Client;
-  private context: BotContext = { soundQueue: [] };
+  private client = new Client({ presence: { activity: { name: 'you', type: 'WATCHING' } } });
+  private context = new BotContext();
+  private soundPlaying = false;
 
   constructor() {
-    this.client = new Client({ presence: { activity: { name: 'you', type: 'WATCHING' } } });
-
     this.client.on('ready', () => this.onReady());
     this.client.on('message', m => this.onMessage(m));
     this.client.on('warn', m => logger.log('warn', m));
     this.client.on('error', m => logger.log('error', m));
     this.client.on('voiceStateUpdate', oldState => this.onVoiceStateUpdate(oldState));
+
+    this.context.soundQueue.onPush(() => this.onSoundQueuePush());
   }
 
   start(token: string): Promise<string> {
@@ -53,9 +54,33 @@ export default class Bot {
 
   private onVoiceStateUpdate(oldState: VoiceState) {
     if (oldState.channel && oldState.channel.members.every(x => x.id === this.client.user.id)) {
-      this.context.soundQueue = [];
+      this.context.soundQueue.clear();
       oldState.channel.leave();
     }
+  }
+
+  private async onSoundQueuePush() {
+    if (this.soundPlaying)
+      return;
+
+    this.soundPlaying = true;
+
+    while (this.context.soundQueue.length) {
+      const current = this.context.soundQueue.shift();
+      const connection = await current.channel.join();
+
+      logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, this.context.soundQueue.length);
+
+      const soundFileName = constants.soundsDirectory + current.sound.fullName;
+
+      logger.debug('Attempting to play file %s', soundFileName);
+
+      const dispatcher = connection.play(soundFileName);
+
+      await new Promise(resolve => dispatcher.on('finish', resolve));
+    }
+
+    this.soundPlaying = false;
   }
 
   private static splitMessageContent(messageContent: string): CommandMessage {
