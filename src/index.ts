@@ -16,7 +16,3 @@ http
     res.end();
   })
   .listen(80);
-
-// Requires database
-// TODO: Popular sounds
-// TODO: Volume

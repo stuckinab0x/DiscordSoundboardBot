@@ -8,13 +8,13 @@ import Command from './command';
 
 export class AddSoundCommand extends Command {
   constructor() {
-    super('addsound', `${ constants.messagePrefix } addsound`, 'Used as the comment with a sound file attachment', { serverOnly: true, requiredPermission: Discord.Permissions.FLAGS.MANAGE_EMOJIS });
+    super('addsound', `${ constants.messagePrefix } addsound`, 'Used as the message with a sound file upload', { serverOnly: true, requiredPermission: Discord.Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS });
   }
 
   execute(message: Message): Promise<any> {
     if (!message.attachments.size) {
       logger.info('%s: message had no attachment.', message.id);
-      return message.reply('this command must be used as the comment of a sound file attachment.');
+      return message.reply('This command must be used with a file upload.');
     }
 
     const attachment = message.attachments.first();
@@ -25,13 +25,13 @@ export class AddSoundCommand extends Command {
       const extension = '.' + splitAttachmentName.type;
 
       logger.info('%s: attachment was of type "%s", expected one of "%s".', message.id, extension, allowedExtensions);
-      return message.reply(`attachment was not a valid file type. Valid file types: ${ allowedExtensions }.`);
+      return message.reply(`Upload was not a valid file type. Valid file types: ${ allowedExtensions }.`);
     }
 
     return axios(attachment.url, { responseType: 'stream' })
       .then(({ data }) => filesService.saveFile(data, attachment.name.replace(/_/g, ' ').toLowerCase()))
-      .then(() => message.reply('your sound has been added.'))
-      .catch(error => message.reply(`an error occurred while saving your sound: ${ error.message }`)
+      .then(() => message.reply('Your sound has been added.'))
+      .catch(error => message.reply(`An error occurred while saving your sound: ${ error.message }`)
         .then(() => Promise.reject(error)));
   }
 }

@@ -1,9 +1,9 @@
-﻿import { VoiceChannel } from 'discord.js';
+﻿import { BaseGuildVoiceChannel } from 'discord.js';
 import SoundFile from './sound-file';
 
 export interface SoundQueueItem {
   sound: SoundFile;
-  channel: VoiceChannel;
+  channel: BaseGuildVoiceChannel;
 }
 
 export default class BotContext {

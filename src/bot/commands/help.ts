@@ -29,6 +29,6 @@ export default class HelpCommand extends Command {
   }
 
   execute(message: Message): Promise<any> {
-    return message.reply(this.helpMessage);
+    return message.reply({ embeds: [this.helpMessage] });
   }
 }

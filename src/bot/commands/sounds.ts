@@ -16,7 +16,7 @@ export class SoundsCommand extends Command {
       description: files.reduce((prev, curr) => prev + '\n' + curr.name, '')
     });
 
-    return message.reply(messageEmbed);
+    return message.reply({ embeds: [messageEmbed] });
   }
 }
 

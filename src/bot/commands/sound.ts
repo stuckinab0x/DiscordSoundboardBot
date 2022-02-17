@@ -20,24 +20,24 @@ export class SoundCommand extends Command {
 
     if (!commandMessage.arguments) {
       logger.info('%s: No <filename> argument was specified', message.id);
-      return message.reply(`command usage: "${ this.usage }"`);
+      return message.reply(`Command usage: "${ this.usage }"`);
     }
 
     if (!voiceChannel) {
       logger.info('%s: User was not in a voice channel', message.id);
-      return message.reply('you must be in a voice channel to use this command.');
+      return message.reply('You must be in a voice channel to use this command.');
     }
 
     const soundFile = await this.getSoundFile(commandMessage.arguments, message);
 
     if (!soundFile)
-      return message.reply(`couldn't find sound "${ commandMessage.arguments }".`);
+      return message.reply(`Couldn't find sound "${ commandMessage.arguments }".`);
 
     context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
     logger.info('%s: Sound "%s" added to queue, length: %s', message.id, commandMessage.arguments, context.soundQueue.length);
 
     if (context.soundQueue.length) {
-      return message.reply(`your sound has been added to the queue at position #${ context.soundQueue.length }.`);
+      return message.reply(`Your sound has been added to the queue at position #${ context.soundQueue.length }.`);
     }
   }
 
@@ -66,17 +66,23 @@ export class SoundCommand extends Command {
   private async getUserSoundChoice(searchTerm: string, message: Message, files: SoundFile[]): Promise<SoundFile> {
     const fileChoices = files.reduce((choices, file, i) => `${ choices }\n${ i + 1 }: ${ file.name }`, '');
 
-    await message.reply(`found multiple sounds that start with "${ searchTerm }", please choose one:${ fileChoices }`);
+    await message.reply(`Found multiple sounds that start with "${ searchTerm }", please choose one:${ fileChoices }`);
 
     try {
-      const collectedMessages = await message.channel.awaitMessages((x: Message) => SoundCommand.userSoundChoiceIsValid(x, message.author.id, files.length), { max: 1, time: 30000, errors: ['time'] });
+      const collectedMessages = await message.channel.awaitMessages({
+        filter: x => SoundCommand.userSoundChoiceIsValid(x, message.author.id, files.length),
+        max: 1,
+        time: 30000,
+        errors: ['time']
+      });
+
       const choice = collectedMessages.first();
       const chosenFileIndex = +choice.content - 1;
 
       return files[chosenFileIndex];
     } catch (err) {
       logger.info('%s: User failed to make a selection within the time limit', message.id);
-      await message.reply(`no selection was made in time, try again ${ pickRandom(insults) }.`);
+      await message.reply(`No selection was made in time, try again ${ pickRandom(insults) }.`);
 
       return Promise.reject('Timed out waiting for sound choice');
     }

@@ -1,20 +1,29 @@
-import { Client, Message, VoiceState } from 'discord.js';
+import { Client, Intents, Message, VoiceState } from 'discord.js';
 import logger from '../logger';
 import BotContext from './bot-context';
 import CommandMessage from './command-message';
 import commands, { helpCommand } from './commands';
 import constants from './constants';
+import { AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice';
+import { ActivityTypes } from 'discord.js/typings/enums';
 
 export default class Bot {
-  private client = new Client({ presence: { activity: { name: 'you', type: 'WATCHING' } } });
+  private client = new Client({
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES],
+    presence: { activities: [{ name: 'you', type: ActivityTypes.WATCHING }] }
+  });
   private context = new BotContext();
   private soundPlaying = false;
 
   constructor() {
     this.client.on('ready', () => this.onReady());
     this.client.on('message', m => this.onMessage(m));
-    this.client.on('warn', m => logger.log('warn', m));
-    this.client.on('error', m => logger.log('error', m));
+    this.client.on('warn', m => {
+      logger.log('warn', m);
+    });
+    this.client.on('error', m => {
+      logger.log('error', m);
+    });
     this.client.on('voiceStateUpdate', oldState => this.onVoiceStateUpdate(oldState));
 
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
@@ -55,7 +64,7 @@ export default class Bot {
   private onVoiceStateUpdate(oldState: VoiceState) {
     if (oldState.channel && oldState.channel.members.every(x => x.id === this.client.user.id)) {
       this.context.soundQueue.clear();
-      oldState.channel.leave();
+      oldState.disconnect();
     }
   }
 
@@ -67,7 +76,12 @@ export default class Bot {
 
     while (this.context.soundQueue.length) {
       const current = this.context.soundQueue.shift();
-      const connection = await current.channel.join();
+      const connection = joinVoiceChannel({
+        channelId: current.channel.id,
+        guildId: current.channel.guild.id,
+        adapterCreator: current.channel.guild.voiceAdapterCreator,
+        selfDeaf: false
+      });
 
       logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, this.context.soundQueue.length);
 
@@ -75,9 +89,13 @@ export default class Bot {
 
       logger.debug('Attempting to play file %s', soundFileName);
 
-      const dispatcher = connection.play(soundFileName);
+      const player = createAudioPlayer();
+      const resource = createAudioResource(soundFileName);
 
-      await new Promise(resolve => dispatcher.on('finish', resolve));
+      connection.subscribe(player);
+      player.play(resource);
+
+      await new Promise(resolve => player.on(AudioPlayerStatus.Idle, resolve));
     }
 
     this.soundPlaying = false;

@@ -8,8 +8,7 @@ export class DisconnectCommand extends Command {
   }
 
   execute(message: Message): void {
-    if (message.guild.voice && message.guild.voice.connection)
-      message.guild.voice.connection.disconnect();
+    message.guild.me.voice.disconnect();
   }
 }
 
