@@ -5,12 +5,11 @@ import CommandMessage from './command-message';
 import commands, { helpCommand } from './commands';
 import constants from './constants';
 import { AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice';
-import { ActivityTypes } from 'discord.js/typings/enums';
 
 export default class Bot {
   private client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES],
-    presence: { activities: [{ name: 'you', type: ActivityTypes.WATCHING }] }
+    presence: { activities: [{ name: 'you', type: 'WATCHING' }] }
   });
   private context = new BotContext();
   private soundPlaying = false;
