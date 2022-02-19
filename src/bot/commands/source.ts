@@ -1,14 +1,13 @@
-﻿import { Message } from 'discord.js';
-import constants from '../constants';
+﻿import { CommandInteraction } from 'discord.js';
 import Command from './command';
 
 export class SourceCommand extends Command {
   constructor() {
-    super('source', `${ constants.messagePrefix } source`, 'Display the URL to the source code for this bot');
+    super('source', 'Post a link to this bot\'s source code.');
   }
 
-  execute(message: Message): Promise<any> {
-    return message.reply('https://github.com/UncleDave/DiscordSoundboardBot');
+  execute(interaction: CommandInteraction): Promise<any> {
+    return interaction.reply('https://github.com/UncleDave/DiscordSoundboardBot');
   }
 }
 

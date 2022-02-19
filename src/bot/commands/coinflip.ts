@@ -1,5 +1,4 @@
-import { ColorResolvable, Message } from 'discord.js';
-import constants from '../constants';
+import { ColorResolvable, CommandInteraction } from 'discord.js';
 import Command from './command';
 import { pickRandom } from '../utils';
 
@@ -32,10 +31,10 @@ const tailMsg = [
 
 export class CoinCommand extends Command {
   constructor() {
-    super('coinflip', `${ constants.messagePrefix } coinflip`, 'Flip a coin to leave an important decision to chance!');
+    super('coinflip', 'Flip a coin to leave an important decision to chance!');
   }
 
-  execute(message: Message): Promise<any> {
+  execute(interaction: CommandInteraction): Promise<any> {
     let flip = Math.random();
     let textVar;
     let titleVar;
@@ -50,7 +49,7 @@ export class CoinCommand extends Command {
       colorVar = '#ff4242';
     }
 
-    return message.reply({
+    return interaction.reply({
       embeds: [{ title: titleVar, ...textVar, color: colorVar }]
     });
   }

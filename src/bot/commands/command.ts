@@ -1,7 +1,6 @@
-import { Message, PermissionResolvable } from 'discord.js';
+import { ChatInputApplicationCommandData, CommandInteraction, PermissionResolvable } from 'discord.js';
 import logger from '../../logger';
 import BotContext from '../bot-context';
-import CommandMessage from '../command-message';
 import withErrorHandling from './error-handling-command';
 
 export interface CommandOptions {
@@ -10,27 +9,40 @@ export interface CommandOptions {
 }
 
 export default abstract class Command {
-  protected constructor(public name: string, public usage: string, public description: string, private options: CommandOptions = {}) {
+  public commandData: ChatInputApplicationCommandData;
+
+  protected constructor(name: string, description: string, private options: CommandOptions = {}) {
     withErrorHandling(this);
+
+    this.commandData = {
+      name,
+      description
+    };
   }
 
-  async isValid(message: Message): Promise<boolean> {
-    if (this.options.serverOnly && !message.member) {
-      logger.info('%s: Command "%s" is a server-only command but was sent by direct message', message.id, message.content);
-      await message.reply('This command cannot be sent by direct message, it must be sent via a server text channel.');
+  async isValid(interaction: CommandInteraction): Promise<boolean> {
+    if (this.options.serverOnly && !interaction.inGuild()) {
+      logger.info('%s: Command "%s" is a server-only command but was sent by direct message', interaction.id, interaction.commandName);
+      await interaction.reply({
+        content: 'This command cannot be sent by direct message, it must be sent via a server text channel.',
+        ephemeral: true
+      });
       return false;
     }
 
-    if (this.options.requiredPermission && !message.member.permissions.has(this.options.requiredPermission)) {
-      logger.info('%s: Command "%s" requires permission "%s", but user "%s" did not have it', message.id, message.content, this.options.requiredPermission, message.author.username);
-      await message.reply('You do not have permission to use this command.');
+    if (this.options.requiredPermission && !interaction.memberPermissions.has(this.options.requiredPermission)) {
+      logger.info('%s: Command "%s" requires permission "%s", but user "%s" did not have it', interaction.id, interaction.commandName, this.options.requiredPermission, interaction.user.username);
+      await interaction.reply({
+        content: 'You do not have permission to use this command.',
+        ephemeral: true
+      });
       return false;
     }
 
-    logger.info('%s: Command "%s" was valid', message.id, message.content);
+    logger.info('%s: Command "%s" was valid', interaction.id, interaction.commandName);
 
     return true;
   }
 
-  abstract execute(message: Message, commandMessage: CommandMessage, context: BotContext): any;
+  abstract execute(interaction: CommandInteraction, context: BotContext): any;
 }

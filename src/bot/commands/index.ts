@@ -1,16 +1,10 @@
-﻿import addsound from './addsound';
-import disconnect from './disconnect';
-import HelpCommand from './help';
+﻿import disconnect from './disconnect';
 import sound from './sound';
 import sounds from './sounds';
 import source from './source';
 import coinflip from './coinflip';
+import Command from './command';
 
-const commands = [sound, sounds, addsound, disconnect, source, coinflip];
+const commands: Command[] = [sound, sounds, disconnect, source, coinflip];
 
-export const helpCommand = new HelpCommand(commands);
-
-export default [
-  ...commands,
-  helpCommand
-];
+export default commands;

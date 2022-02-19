@@ -1,54 +1,79 @@
-import { Message } from 'discord.js';
+import { CommandInteraction, GuildMember, Message } from 'discord.js';
 import logger from '../../logger';
 import BotContext from '../bot-context';
-import CommandMessage from '../command-message';
-import constants from '../constants';
 import filesService from '../files-service';
 import SoundFile from '../sound-file';
 import { pickRandom } from '../utils';
 import Command from './command';
 
 const insults = ['dingus', 'doofus', 'dumb dumb'];
+const soundOptionName = 'sound';
 
 export class SoundCommand extends Command {
   constructor() {
-    super('sound', `${ constants.messagePrefix } sound <sound name>`, 'Play a sound in your current voice channel', { serverOnly: true });
+    super('sound', 'Play a sound in your current voice channel.', { serverOnly: true });
+    this.commandData.options = [{
+      name: soundOptionName,
+      type: 'STRING',
+      required: true,
+      description: 'The sound to play'
+    }];
   }
 
-  async execute(message: Message, commandMessage: CommandMessage, context: BotContext): Promise<any> {
-    const voiceChannel = message.member.voice.channel;
-
-    if (!commandMessage.arguments) {
-      logger.info('%s: No <filename> argument was specified', message.id);
-      return message.reply(`Command usage: "${ this.usage }"`);
+  async execute(interaction: CommandInteraction, context: BotContext): Promise<any> {
+    if (!(interaction.member instanceof GuildMember)) {
+      logger.error('%s: Member wasn\'t real :(', interaction.id);
+      return interaction.reply({
+        content: 'Something went wrong :(.',
+        ephemeral: true
+      });
     }
+
+    const voiceChannel = interaction.member.voice.channel;
 
     if (!voiceChannel) {
-      logger.info('%s: User was not in a voice channel', message.id);
-      return message.reply('You must be in a voice channel to use this command.');
+      logger.info('%s: User was not in a voice channel', interaction.id);
+      return interaction.reply({
+        content: 'You must be in a voice channel to use this command.',
+        ephemeral: true
+      });
     }
 
-    const soundFile = await this.getSoundFile(commandMessage.arguments, message);
+    const soundName = interaction.options.getString(soundOptionName, true);
+
+    if (!soundName) {
+      logger.error('%s: No <soundname> argument was specified', interaction.id);
+      return interaction.reply({
+        content: 'You didn\'t tell me what to play!',
+        ephemeral: true
+      });
+    }
+
+    const soundFile = await this.getSoundFile(soundName, interaction);
 
     if (!soundFile)
-      return message.reply(`Couldn't find sound "${ commandMessage.arguments }".`);
+      return interaction.reply({
+        content: `Couldn't find sound "${ soundName }".`,
+        ephemeral: true
+      });
 
     context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
-    logger.info('%s: Sound "%s" added to queue, length: %s', message.id, commandMessage.arguments, context.soundQueue.length);
+    logger.info('%s: Sound "%s" added to queue, length: %s', interaction.id, soundName, context.soundQueue.length);
 
-    if (context.soundQueue.length) {
-      return message.reply(`Your sound has been added to the queue at position #${ context.soundQueue.length }.`);
-    }
+    return interaction.reply({
+      content: `Your sound has been added to the queue at position #${ context.soundQueue.length }.`,
+      ephemeral: true
+    });
   }
 
-  private async getSoundFile(soundName: string, message: Message): Promise<SoundFile> {
+  private async getSoundFile(soundName: string, interaction: CommandInteraction): Promise<SoundFile> {
     const availableFiles = await filesService.files;
     const soundFile = availableFiles.find(x => x.name === soundName);
 
     if (soundFile)
       return soundFile;
 
-    logger.info('%s: No "%s" sound was found', message.id, soundName);
+    logger.info('%s: No "%s" sound was found', interaction.id, soundName);
 
     const partialMatches = availableFiles.filter(x => x.name.startsWith(soundName));
 
@@ -58,19 +83,22 @@ export class SoundCommand extends Command {
     if (partialMatches.length === 1) {
       return partialMatches[0];
     } else {
-      logger.info('%s: Found %s partial matches for "%s"', message.id, partialMatches.length, soundName);
-      return this.getUserSoundChoice(soundName, message, partialMatches);
+      logger.info('%s: Found %s partial matches for "%s"', interaction.id, partialMatches.length, soundName);
+      return this.getUserSoundChoice(soundName, interaction, partialMatches);
     }
   }
 
-  private async getUserSoundChoice(searchTerm: string, message: Message, files: SoundFile[]): Promise<SoundFile> {
+  private async getUserSoundChoice(searchTerm: string, interaction: CommandInteraction, files: SoundFile[]): Promise<SoundFile> {
     const fileChoices = files.reduce((choices, file, i) => `${ choices }\n${ i + 1 }: ${ file.name }`, '');
 
-    await message.reply(`Found multiple sounds that start with "${ searchTerm }", please choose one:${ fileChoices }`);
+    await interaction.reply({
+      content: `Found multiple sounds that start with "${ searchTerm }", please choose one:${ fileChoices }`,
+      ephemeral: true
+    });
 
     try {
-      const collectedMessages = await message.channel.awaitMessages({
-        filter: x => SoundCommand.userSoundChoiceIsValid(x, message.author.id, files.length),
+      const collectedMessages = await interaction.channel.awaitMessages({
+        filter: x => SoundCommand.userSoundChoiceIsValid(x, interaction.user.id, files.length),
         max: 1,
         time: 30000,
         errors: ['time']
@@ -81,8 +109,11 @@ export class SoundCommand extends Command {
 
       return files[chosenFileIndex];
     } catch (err) {
-      logger.info('%s: User failed to make a selection within the time limit', message.id);
-      await message.reply(`No selection was made in time, try again ${ pickRandom(insults) }.`);
+      logger.info('%s: User failed to make a selection within the time limit', interaction.id);
+      await interaction.reply({
+        content: `No selection was made in time, try again ${ pickRandom(insults) }.`,
+        ephemeral: true
+      });
 
       return Promise.reject('Timed out waiting for sound choice');
     }

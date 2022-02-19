@@ -1,8 +1,7 @@
-import { Client, Intents, Message, VoiceState } from 'discord.js';
+import { Client, Intents, Interaction, VoiceState } from 'discord.js';
 import logger from '../logger';
 import BotContext from './bot-context';
-import CommandMessage from './command-message';
-import commands, { helpCommand } from './commands';
+import commands from './commands';
 import constants from './constants';
 import { AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice';
 
@@ -16,7 +15,7 @@ export default class Bot {
 
   constructor() {
     this.client.on('ready', () => this.onReady());
-    this.client.on('message', m => this.onMessage(m));
+    this.client.on('interactionCreate', interaction => this.onInteraction(interaction));
     this.client.on('warn', m => {
       logger.log('warn', m);
     });
@@ -35,35 +34,33 @@ export default class Bot {
 
   private onReady() {
     logger.info('Logged in as %s', this.client.user.tag);
+
+    commands.forEach(command => {
+      this.client.application.commands.create(command.commandData);
+    });
   }
 
-  private async onMessage(message: Message) {
-    const messageContent = message.content.toLowerCase();
-
-    if (!messageContent.startsWith(constants.messagePrefix))
+  private async onInteraction(interaction: Interaction) {
+    if (!interaction.isCommand())
       return;
 
-    if (messageContent === constants.messagePrefix)
-      return helpCommand.execute(message);
+    logger.info('%s: Received command "%s" from "%s"', interaction.id, interaction.commandName, interaction.user.username);
 
-    logger.info('%s: Received potential command "%s" from "%s"', message.id, message.content, message.author.username);
-
-    const commandMessage = Bot.splitMessageContent(messageContent);
-    const command = commands.find(x => x.name === commandMessage.command);
+    const command = commands.find(x => x.commandData.name === interaction.commandName);
 
     if (!command) {
-      logger.info('%s: Command "%s" did not match any available commands', message.id, message.content);
-      return message.reply(`I didn't recognise that command, try "${ constants.messagePrefix } help".`);
+      logger.error('%s: Command "%s" did not match any available commands', interaction.id, interaction.commandName);
+      return;
     }
 
-    if (await command.isValid(message))
-      await command.execute(message, commandMessage, this.context);
+    if (await command.isValid(interaction))
+      await command.execute(interaction, this.context);
   }
 
   private onVoiceStateUpdate(oldState: VoiceState) {
     if (oldState.channel && oldState.channel.members.every(x => x.id === this.client.user.id)) {
       this.context.soundQueue.clear();
-      oldState.disconnect();
+      oldState.guild.me.voice.disconnect();
     }
   }
 
@@ -98,15 +95,5 @@ export default class Bot {
     }
 
     this.soundPlaying = false;
-  }
-
-  private static splitMessageContent(messageContent: string): CommandMessage {
-    // [0] is the prefix, throw it away.
-    const splitMessage = messageContent.split(' ').slice(1);
-
-    return {
-      command: splitMessage[0],
-      arguments: splitMessage.slice(1).join(' ')
-    };
   }
 }
