@@ -12,7 +12,7 @@ export class SoundsCommand extends Command {
 
     const messageEmbed = new MessageEmbed({
       title: 'Available sounds',
-      description: files.reduce((prev, curr) => prev + '\n' + curr.name, '')
+      description: files.reduce((prev, curr) => `${ prev }\n${ curr.name }`, ''),
     });
 
     return interaction.reply({ embeds: [messageEmbed], ephemeral: true });

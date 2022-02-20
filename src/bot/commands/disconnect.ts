@@ -1,4 +1,4 @@
-﻿import { CommandInteraction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import Command from './command';
 import { pickRandom } from '../utils';
 
@@ -22,7 +22,7 @@ export class DisconnectCommand extends Command {
 
     return interaction.reply({
       content: reply,
-      ephemeral: true
+      ephemeral: true,
     });
   }
 }

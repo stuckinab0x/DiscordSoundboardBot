@@ -14,7 +14,7 @@ const headMsg = [
   { description: 'Is that him?' },
   { description: 'IT\'S HUGE' },
   { image: { url: 'https://i.imgur.com/M9sJim1.png' } },
-  { image: { url: 'https://i.imgur.com/jb268vM.gif' } }
+  { image: { url: 'https://i.imgur.com/jb268vM.gif' } },
 ];
 
 const tailMsg = [
@@ -26,7 +26,7 @@ const tailMsg = [
   { image: { url: 'https://i2-prod.chroniclelive.co.uk/incoming/article16374454.ece/ALTERNATES/s810/0_Wearmouth-Bridge.jpg' } },
   { image: { url: 'https://cdn.discordapp.com/attachments/535780263217594368/944317744046825502/Immervad-Bro.png' } },
   { description: '"You have been autofilled to Jungle"' },
-  { description: 'ff @15' }
+  { description: 'ff @15' },
 ];
 
 export class CoinCommand extends Command {
@@ -35,7 +35,7 @@ export class CoinCommand extends Command {
   }
 
   execute(interaction: CommandInteraction): Promise<any> {
-    let flip = Math.random();
+    const flip = Math.random();
     let textVar;
     let titleVar;
     let colorVar: ColorResolvable;
@@ -49,9 +49,7 @@ export class CoinCommand extends Command {
       colorVar = '#ff4242';
     }
 
-    return interaction.reply({
-      embeds: [{ title: titleVar, ...textVar, color: colorVar }]
-    });
+    return interaction.reply({ embeds: [{ title: titleVar, ...textVar, color: colorVar }] });
   }
 }
 

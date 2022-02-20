@@ -1,4 +1,4 @@
-﻿import disconnect from './disconnect';
+import disconnect from './disconnect';
 import sound from './sound';
 import sounds from './sounds';
 import source from './source';

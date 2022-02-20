@@ -16,7 +16,7 @@ export class SoundCommand extends Command {
       name: soundOptionName,
       type: 'STRING',
       required: true,
-      description: 'The sound to play'
+      description: 'The sound to play',
     }];
   }
 
@@ -25,7 +25,7 @@ export class SoundCommand extends Command {
       logger.error('%s: Member wasn\'t real :(', interaction.id);
       return interaction.reply({
         content: 'Something went wrong :(.',
-        ephemeral: true
+        ephemeral: true,
       });
     }
 
@@ -35,7 +35,7 @@ export class SoundCommand extends Command {
       logger.info('%s: User was not in a voice channel', interaction.id);
       return interaction.reply({
         content: 'You must be in a voice channel to use this command.',
-        ephemeral: true
+        ephemeral: true,
       });
     }
 
@@ -45,7 +45,7 @@ export class SoundCommand extends Command {
       logger.error('%s: No <soundname> argument was specified', interaction.id);
       return interaction.reply({
         content: 'You didn\'t tell me what to play!',
-        ephemeral: true
+        ephemeral: true,
       });
     }
 
@@ -54,7 +54,7 @@ export class SoundCommand extends Command {
     if (!soundFile)
       return interaction.reply({
         content: `Couldn't find sound "${ soundName }".`,
-        ephemeral: true
+        ephemeral: true,
       });
 
     context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
@@ -62,7 +62,7 @@ export class SoundCommand extends Command {
 
     return interaction.reply({
       content: `Your sound has been added to the queue at position #${ context.soundQueue.length }.`,
-      ephemeral: true
+      ephemeral: true,
     });
   }
 
@@ -80,12 +80,11 @@ export class SoundCommand extends Command {
     if (!partialMatches.length)
       return null;
 
-    if (partialMatches.length === 1) {
+    if (partialMatches.length === 1)
       return partialMatches[0];
-    } else {
-      logger.info('%s: Found %s partial matches for "%s"', interaction.id, partialMatches.length, soundName);
-      return this.getUserSoundChoice(soundName, interaction, partialMatches);
-    }
+
+    logger.info('%s: Found %s partial matches for "%s"', interaction.id, partialMatches.length, soundName);
+    return this.getUserSoundChoice(soundName, interaction, partialMatches);
   }
 
   private async getUserSoundChoice(searchTerm: string, interaction: CommandInteraction, files: SoundFile[]): Promise<SoundFile> {
@@ -93,7 +92,7 @@ export class SoundCommand extends Command {
 
     await interaction.reply({
       content: `Found multiple sounds that start with "${ searchTerm }", please choose one:${ fileChoices }`,
-      ephemeral: true
+      ephemeral: true,
     });
 
     try {
@@ -101,7 +100,7 @@ export class SoundCommand extends Command {
         filter: x => SoundCommand.userSoundChoiceIsValid(x, interaction.user.id, files.length),
         max: 1,
         time: 30000,
-        errors: ['time']
+        errors: ['time'],
       });
 
       const choice = collectedMessages.first();
@@ -112,10 +111,10 @@ export class SoundCommand extends Command {
       logger.info('%s: User failed to make a selection within the time limit', interaction.id);
       await interaction.reply({
         content: `No selection was made in time, try again ${ pickRandom(insults) }.`,
-        ephemeral: true
+        ephemeral: true,
       });
 
-      return Promise.reject('Timed out waiting for sound choice');
+      return Promise.reject(new Error('Timed out waiting for sound choice'));
     }
   }
 

@@ -8,8 +8,7 @@ import { loadFiles, sortFiles, splitFileName } from './utils';
 class FilesService {
   private _files: Promise<SoundFile[]>;
 
-  constructor(private directory: string) {
-  }
+  constructor(private directory: string) { }
 
   get files(): Promise<SoundFile[]> {
     if (!this._files) {
@@ -38,7 +37,7 @@ class FilesService {
     return new Promise((resolve, reject) => {
       if (files.some(x => x.name === fileObj.name)) {
         logger.info('A sound with the name "%s%" already exists.', fileObj.name);
-        reject({ message: 'A sound with that name already exists.' });
+        reject(new Error('A sound with that name already exists.'));
         return;
       }
 
@@ -53,7 +52,7 @@ class FilesService {
             files.push(fileObj);
             sortFiles(files);
             resolve();
-          })
+          }),
       );
     });
   }

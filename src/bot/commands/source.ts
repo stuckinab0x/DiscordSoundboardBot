@@ -1,4 +1,4 @@
-﻿import { CommandInteraction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import Command from './command';
 
 export class SourceCommand extends Command {

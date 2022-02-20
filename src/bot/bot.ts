@@ -1,16 +1,18 @@
 import { Client, Intents, Interaction, VoiceState } from 'discord.js';
+import { AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
 import constants from './constants';
-import { AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice';
 
 export default class Bot {
   private client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES],
-    presence: { activities: [{ name: 'you', type: 'WATCHING' }] }
+    presence: { activities: [{ name: 'you', type: 'WATCHING' }] },
   });
+
   private context = new BotContext();
+
   private soundPlaying = false;
 
   constructor() {
@@ -76,7 +78,7 @@ export default class Bot {
         channelId: current.channel.id,
         guildId: current.channel.guild.id,
         adapterCreator: current.channel.guild.voiceAdapterCreator,
-        selfDeaf: false
+        selfDeaf: false,
       });
 
       logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, this.context.soundQueue.length);
@@ -91,7 +93,11 @@ export default class Bot {
       connection.subscribe(player);
       player.play(resource);
 
-      await new Promise(resolve => player.on(AudioPlayerStatus.Idle, resolve));
+      // TODO: Refactor this - look into how AudioPlayer works and remove this await new Promise stuff with recursion.
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise(resolve => {
+        player.on(AudioPlayerStatus.Idle, resolve);
+      });
     }
 
     this.soundPlaying = false;

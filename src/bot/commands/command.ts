@@ -2,13 +2,14 @@ import { ChatInputApplicationCommandData, CommandInteraction, PermissionResolvab
 import logger from '../../logger';
 import BotContext from '../bot-context';
 import withErrorHandling from './error-handling-command';
+import Executable from './executable';
 
 export interface CommandOptions {
   serverOnly?: boolean;
   requiredPermission?: PermissionResolvable;
 }
 
-export default abstract class Command {
+export default abstract class Command implements Executable {
   public commandData: ChatInputApplicationCommandData;
 
   protected constructor(name: string, description: string, private options: CommandOptions = {}) {
@@ -16,7 +17,7 @@ export default abstract class Command {
 
     this.commandData = {
       name,
-      description
+      description,
     };
   }
 
@@ -25,7 +26,7 @@ export default abstract class Command {
       logger.info('%s: Command "%s" is a server-only command but was sent by direct message', interaction.id, interaction.commandName);
       await interaction.reply({
         content: 'This command cannot be sent by direct message, it must be sent via a server text channel.',
-        ephemeral: true
+        ephemeral: true,
       });
       return false;
     }
@@ -34,7 +35,7 @@ export default abstract class Command {
       logger.info('%s: Command "%s" requires permission "%s", but user "%s" did not have it', interaction.id, interaction.commandName, this.options.requiredPermission, interaction.user.username);
       await interaction.reply({
         content: 'You do not have permission to use this command.',
-        ephemeral: true
+        ephemeral: true,
       });
       return false;
     }

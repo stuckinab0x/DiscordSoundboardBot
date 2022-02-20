@@ -1,12 +1,13 @@
-﻿import { CommandInteraction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import logger from '../../logger';
 import BotContext from '../bot-context';
-import Command from './command';
+import Executable from './executable';
 
-export default function withErrorHandling(command: Command) {
-  const exec = command.execute.bind(command);
+export default function withErrorHandling(executable: Executable) {
+  const exec = executable.execute.bind(executable);
 
-  command.execute = async function (interaction: CommandInteraction, context: BotContext): Promise<void> {
+  // eslint-disable-next-line no-param-reassign
+  executable.execute = async function execute(interaction: CommandInteraction, context: BotContext): Promise<void> {
     try {
       await exec(interaction, context);
     } catch (err) {
