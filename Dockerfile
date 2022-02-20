@@ -2,7 +2,7 @@
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 EXPOSE 80
-RUN apk add yarn
+RUN apk add git yarn
 WORKDIR app/
 COPY package.json yarn.lock ./
 RUN yarn
