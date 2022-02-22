@@ -58,6 +58,7 @@
     ],
     "no-nested-ternary": "off",
     "implicit-arrow-linebreak": "off",
-    "no-confusing-arrow": "off"
+    "no-confusing-arrow": "off",
+    "linebreak-style": "off"
   }
 }
