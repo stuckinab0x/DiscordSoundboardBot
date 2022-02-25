@@ -13,8 +13,8 @@ const headMsg = [
   { description: 'You is am good video gamer, buddy.' },
   { description: 'Is that him?' },
   { description: 'IT\'S HUGE' },
-  { image: { url: 'https://i.imgur.com/M9sJim1.png' } },
-  { image: { url: 'https://i.imgur.com/jb268vM.gif' } },
+  { image: { url: 'https://i.imgur.com/M9sJim1.png' } }, // Winrar logo
+  { image: { url: 'https://i.imgur.com/jb268vM.gif' } }, // Thumbs up guy
 ];
 
 const tailMsg = [
@@ -23,10 +23,11 @@ const tailMsg = [
   { description: 'Aw nuts.' },
   { description: 'IT\'S A DISASTER!' },
   { description: 'Hold on, I\'m pulling up directions to the bridge on Google maps.' },
-  { image: { url: 'https://i2-prod.chroniclelive.co.uk/incoming/article16374454.ece/ALTERNATES/s810/0_Wearmouth-Bridge.jpg' } },
-  { image: { url: 'https://cdn.discordapp.com/attachments/535780263217594368/944317744046825502/Immervad-Bro.png' } },
+  { image: { url: 'https://i2-prod.chroniclelive.co.uk/incoming/article16374454.ece/ALTERNATES/s810/0_Wearmouth-Bridge.jpg' } }, // Wearmouth bridge
+  { image: { url: 'https://cdn.discordapp.com/attachments/535780263217594368/944317744046825502/Immervad-Bro.png' } }, // Low pedestrian bridge
   { description: '"You have been autofilled to Jungle"' },
   { description: 'ff @15' },
+  { description: 'THANKS OBAMA' },
 ];
 
 export class CoinCommand extends Command {
