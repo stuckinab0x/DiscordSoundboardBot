@@ -2,12 +2,6 @@ import { ColorResolvable, CommandInteraction } from 'discord.js';
 import Command from './command';
 import { pickRandom } from '../utils';
 
-/*
-interface DescriptionReply {description: string}
-interface ImageReply {image: {url: string}}
-type CoinflipReply = DescriptionReply | ImageReply
-*/
-
 const headMsg = [
   { description: 'You\'re in WINNERS QUEUE BABYYYYYYY' },
   { description: 'You is am good video gamer, buddy.' },

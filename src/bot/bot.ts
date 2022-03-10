@@ -1,5 +1,5 @@
 import { Client, Intents, Interaction, VoiceState } from 'discord.js';
-import { AudioPlayerStatus, createAudioPlayer, createAudioResource, joinVoiceChannel } from '@discordjs/voice';
+import { joinVoiceChannel } from '@discordjs/voice';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
@@ -81,23 +81,12 @@ export default class Bot {
         selfDeaf: false,
       });
 
+      this.context.botAudioPlayer.subscribe(connection);
       logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, this.context.soundQueue.length);
 
       const soundFileName = constants.soundsDirectory + current.sound.fullName;
-
-      logger.debug('Attempting to play file %s', soundFileName);
-
-      const player = createAudioPlayer();
-      const resource = createAudioResource(soundFileName);
-
-      connection.subscribe(player);
-      player.play(resource);
-
-      // TODO: Refactor this - look into how AudioPlayer works and remove this await new Promise stuff with recursion.
       // eslint-disable-next-line no-await-in-loop
-      await new Promise(resolve => {
-        player.on(AudioPlayerStatus.Idle, resolve);
-      });
+      await this.context.botAudioPlayer.play(soundFileName);
     }
 
     this.soundPlaying = false;
