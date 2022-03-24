@@ -8,21 +8,40 @@ export interface SoundQueueItem {
   channel: BaseGuildVoiceChannel;
 }
 
-class SoundQueue extends Array<SoundQueueItem> {
-  private subscribers: (() => void)[] = [];
+type SoundQueueOnPushSubscriber = () => void;
 
-  push(...items: SoundQueueItem[]): number {
-    const result = super.push(...items);
+class SoundQueue {
+  private subscribers: SoundQueueOnPushSubscriber[] = [];
+  private items: SoundQueueItem[] = [];
+
+  add(...items: SoundQueueItem[]): number {
+    const result = this.items.push(...items);
     this.subscribers.forEach(x => x());
     return result;
   }
 
-  onPush(subscriber: () => void) {
+  onPush(subscriber: SoundQueueOnPushSubscriber) {
     this.subscribers.push(subscriber);
   }
 
   clear() {
-    this.length = 0;
+    this.items = [];
+  }
+
+  skip(count?: number) {
+    if (count) this.items.splice(0, count - 1);
+  }
+
+  removeByChannel(channelId: string | number) {
+    this.items = this.items.filter(x => x.channel.id !== channelId);
+  }
+
+  takeNext() {
+    return this.items.shift();
+  }
+
+  get length() {
+    return this.items.length;
   }
 }
 class BotAudioPlayer {
@@ -53,4 +72,5 @@ class BotAudioPlayer {
 export default class BotContext {
   soundQueue = new SoundQueue();
   botAudioPlayer = new BotAudioPlayer();
+  currentSound: SoundQueueItem;
 }

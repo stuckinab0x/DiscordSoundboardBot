@@ -60,9 +60,10 @@ export default class Bot {
   }
 
   private onVoiceStateUpdate(oldState: VoiceState) {
-    if (oldState.channel && oldState.channel.members.every(x => x.id === this.client.user.id)) {
-      this.context.soundQueue.clear();
-      oldState.guild.me.voice.disconnect();
+    if (oldState.channel?.members.every(x => x.id === this.client.user.id)) {
+      this.context.soundQueue.removeByChannel(oldState.channelId);
+      if (this.context.currentSound?.channel === oldState.channel) this.context.botAudioPlayer.stop();
+      if (!this.context.soundQueue.length) oldState.guild.me.voice.disconnect();
     }
   }
 
@@ -73,7 +74,8 @@ export default class Bot {
     this.soundPlaying = true;
 
     while (this.context.soundQueue.length) {
-      const current = this.context.soundQueue.shift();
+      const current = this.context.soundQueue.takeNext();
+      this.context.currentSound = current;
       const connection = joinVoiceChannel({
         channelId: current.channel.id,
         guildId: current.channel.guild.id,
@@ -87,6 +89,7 @@ export default class Bot {
       const soundFileName = constants.soundsDirectory + current.sound.fullName;
       // eslint-disable-next-line no-await-in-loop
       await this.context.botAudioPlayer.play(soundFileName);
+      this.context.currentSound = null;
     }
 
     this.soundPlaying = false;

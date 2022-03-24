@@ -20,7 +20,7 @@ export class SkipCommand extends Command {
       return interaction.reply({ content: 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? :ear_with_hearing_aid: :smile:', ephemeral: true });
     if (!skipOption) {
       context.botAudioPlayer.stop();
-      return interaction.reply({ content: 'Current sound skipped', ephemeral: false });
+      return interaction.reply({ content: 'Current sound skipped.', ephemeral: false });
     }
     if (skipOption === 'all') {
       context.botAudioPlayer.stop();
@@ -31,7 +31,7 @@ export class SkipCommand extends Command {
     if (Number.isInteger(count)) {
       const reply = (count > context.soundQueue.length) ? 'All sounds skipped (count option was >= number of current sounds.)' : `Skipped ${ skipOption } sound(s).`;
       context.botAudioPlayer.stop();
-      context.soundQueue.splice(0, count - 1);
+      context.soundQueue.skip(count);
       return interaction.reply({ content: reply, ephemeral: false });
     }
     return interaction.reply({ content: 'Invalid value for count entered. Try a whole number or "all" without quotes.', ephemeral: true });

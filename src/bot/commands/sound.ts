@@ -57,7 +57,7 @@ export class SoundCommand extends Command {
         ephemeral: true,
       });
 
-    context.soundQueue.push({ sound: soundFile, channel: voiceChannel });
+    context.soundQueue.add({ sound: soundFile, channel: voiceChannel });
     logger.info('%s: Sound "%s" added to queue, length: %s', interaction.id, soundName, context.soundQueue.length);
 
     return interaction.reply({

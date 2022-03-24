@@ -1,4 +1,4 @@
-import { ColorResolvable, CommandInteraction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import Command from './command';
 import { pickRandom } from '../utils';
 
@@ -30,22 +30,8 @@ export class CoinCommand extends Command {
   }
 
   execute(interaction: CommandInteraction): Promise<any> {
-    const flip = Math.random();
-    let textVar;
-    let titleVar;
-    let colorVar: ColorResolvable;
-    if (flip < 0.5) {
-      textVar = pickRandom(headMsg);
-      titleVar = 'Heads!';
-      colorVar = '#72ff6e';
-    } else {
-      textVar = pickRandom(tailMsg);
-      titleVar = 'Tails.';
-      colorVar = '#ff4242';
-    }
-
-    return interaction.reply({ embeds: [{ title: titleVar, ...textVar, color: colorVar }] });
+    if (Math.random() < 0.5) return interaction.reply({ embeds: [{ title: 'Heads!', ...pickRandom(headMsg), color: '#72ff6e' }] });
+    return interaction.reply({ embeds: [{ title: 'Tails', ...pickRandom(tailMsg), color: '#ff4242' }] });
   }
 }
-
 export default new CoinCommand();
