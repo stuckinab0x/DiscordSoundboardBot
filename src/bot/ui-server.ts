@@ -35,7 +35,7 @@ export default class SoundRequestServer {
     app.use(express.text());
     app.use(express.json());
 
-    app.get('/health', (req, res) => {
+    app.get('/', (req, res) => {
       res.writeHead(204);
       res.end();
     });
