@@ -1,9 +1,12 @@
 import { Client, Intents, Interaction, VoiceState } from 'discord.js';
 import { joinVoiceChannel } from '@discordjs/voice';
+import environment from '../environment';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
 import constants from './constants';
+import filesService from './files-service';
+import SoundRequestServer from './ui-server';
 
 export default class Bot {
   private client = new Client({
@@ -12,6 +15,8 @@ export default class Bot {
   });
 
   private context = new BotContext();
+
+  private soundRequestServer = new SoundRequestServer(80);
 
   private soundPlaying = false;
 
@@ -27,6 +32,8 @@ export default class Bot {
     this.client.on('voiceStateUpdate', oldState => this.onVoiceStateUpdate(oldState));
 
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
+    this.soundRequestServer.onSoundRequest((userID, soundRequest) => this.onServerSoundRequest(userID, soundRequest));
+    this.soundRequestServer.onSkipRequest((userID, skipAll) => this.onServerSkipRequest(userID, skipAll));
   }
 
   start(token: string): Promise<string> {
@@ -93,5 +100,27 @@ export default class Bot {
     }
 
     this.soundPlaying = false;
+  }
+
+  private async onServerSoundRequest(userID: string, soundRequest: string) {
+    const soundBoardUser = (await this.client.guilds.fetch(environment.homeGuildID)).voiceStates.cache.find(x => x.id === userID);
+    if (!soundBoardUser?.channel) {
+      logger.info('Sound request received but user is not connected');
+      return;
+    }
+    const availableFiles = await filesService.files;
+    const soundFile = availableFiles.find(x => x.name === soundRequest);
+    this.context.soundQueue.add({ sound: soundFile, channel: soundBoardUser.channel });
+    logger.info(`Server sound request. User: ${ userID }. Queue length: ${ this.context.soundQueue.length }.`);
+  }
+
+  private async onServerSkipRequest(userID: string, skipAll: boolean) {
+    const soundBoardUser = (await this.client.guilds.fetch(environment.homeGuildID)).voiceStates.cache.find(x => x.id === userID);
+    if (!soundBoardUser?.channel) {
+      logger.info('Skip request received but user is not connected');
+      return;
+    }
+    if (skipAll) this.context.soundQueue.clear();
+    this.context.botAudioPlayer.stop();
   }
 }
