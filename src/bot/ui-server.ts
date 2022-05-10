@@ -32,13 +32,14 @@ export default class SoundRequestServer {
 
   private async createServer() {
     const app = express();
-    app.use(express.text());
-    app.use(express.json());
 
-    app.get('/', (req, res) => {
+    app.all('/', (req, res) => {
       res.writeHead(204);
       res.end();
     });
+
+    app.use(express.text());
+    app.use(express.json());
 
     app.use((req, res, next) => {
       if (req.headers.authorization === environment.apiKey) return next();
