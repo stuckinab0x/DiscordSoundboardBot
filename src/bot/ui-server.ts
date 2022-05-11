@@ -67,7 +67,7 @@ export default class SoundRequestServer {
       res.end();
     });
 
-    app.listen(this.port, () => {
+    app.listen(this.port, '0.0.0.0', () => {
       logger.info(`sound request server listening on port ${ this.port }`);
     });
   }
