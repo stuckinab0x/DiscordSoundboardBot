@@ -1,6 +1,5 @@
 import express from 'express';
-import http from 'http';
-import logger from '../logger';
+import logger, { requestLogger } from '../logger';
 import filesService from './files-service';
 import environment from '../environment';
 
@@ -31,49 +30,38 @@ export default class SoundRequestServer {
 
   private async createServer(port: number) {
     const app = express();
+    app.use(requestLogger);
+
+    app.get('/', (req, res) => res.sendStatus(204));
+
     app.use(express.text());
     app.use(express.json());
 
     app.use((req, res, next) => {
       if (req.headers.authorization === environment.apiKey) return next();
-      return res.status(403);
+      return res.sendStatus(403);
     });
 
     app.get('/soundlist', async (req, res) => {
       await this.getSounds()
         .then(data => {
           res.send(JSON.stringify(data));
-          res.end();
         });
     });
 
     app.post('/soundrequest', (req, res) => {
       this.soundSubscribers.forEach(x => x(req.body.userID, req.body.soundRequest));
-      res.writeHead(204);
-      res.end();
+      res.sendStatus(204);
     });
 
     app.post('/skip', (req, res) => {
       logger.info(`Server request to skip. Skip all: ${ req.body.skipAll }`);
       this.skipSubscribers.forEach(x => x(req.body.userID, req.body.skipAll));
-      res.writeHead(204);
-      res.end();
+      res.sendStatus(204);
     });
 
-    http
-      .createServer((req, res) => {
-        logger.info('Request received at %s with method %s', req.url, req.method);
-
-        if (req.url === '/') {
-          res.writeHead(204);
-          res.end();
-          return;
-        }
-
-        app(req, res);
-      })
-      .listen(port, () => {
-        logger.info(`Sound request server listening on port ${ port }`);
-      });
+    app.listen(port, () => {
+      logger.info(`Sound request server listening on port ${ port }`);
+    });
   }
 }

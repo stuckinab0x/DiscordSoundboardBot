@@ -1,5 +1,6 @@
 import fs from 'fs';
 import winston from 'winston';
+import expressWinston from 'express-winston';
 import environment from './environment';
 
 const logsDirectory = `${ process.env.ROOT_PATH || '.' }/logs`;
@@ -7,7 +8,7 @@ const logsDirectory = `${ process.env.ROOT_PATH || '.' }/logs`;
 if (!fs.existsSync(logsDirectory))
   fs.mkdirSync(logsDirectory);
 
-export default winston.createLogger({
+const logger = winston.createLogger({
   level: environment.environment === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
@@ -20,3 +21,10 @@ export default winston.createLogger({
     new winston.transports.File({ filename: 'logs/bot.log', maxFiles: 10, maxsize: 5 * 1000 * 1000, tailable: true, handleExceptions: true }),
   ],
 });
+
+export const requestLogger = expressWinston.logger({
+  winstonInstance: logger,
+  expressFormat: true,
+});
+
+export default logger;
