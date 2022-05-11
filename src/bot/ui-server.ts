@@ -1,4 +1,5 @@
 import express from 'express';
+import http from 'http';
 import logger from '../logger';
 import filesService from './files-service';
 import environment from '../environment';
@@ -8,11 +9,9 @@ type SkipRequestSubscriber = (userID: string, skipAll: boolean) => void;
 
 export default class SoundRequestServer {
   constructor(port: number) {
-    this.port = port;
-    this.createServer();
+    this.createServer(port);
   }
 
-  private port: number;
   private soundSubscribers: SoundRequestSubscriber[] = [];
   private skipSubscribers: SkipRequestSubscriber[] = [];
 
@@ -30,14 +29,8 @@ export default class SoundRequestServer {
     return soundNames;
   }
 
-  private async createServer() {
+  private async createServer(port: number) {
     const app = express();
-
-    app.all('/', (req, res) => {
-      res.writeHead(204);
-      res.end();
-    });
-
     app.use(express.text());
     app.use(express.json());
 
@@ -67,8 +60,18 @@ export default class SoundRequestServer {
       res.end();
     });
 
-    // app.listen(this.port, () => {
-    //   logger.info(`sound request server listening on port ${ this.port }`);
-    // });
+    http
+      .createServer((req, res) => {
+        if (req.url === '/') {
+          res.writeHead(204);
+          res.end();
+          return;
+        }
+
+        app(req, res);
+      })
+      .listen(port, () => {
+        logger.info(`Sound request server listening on port ${ port }`);
+      });
   }
 }
