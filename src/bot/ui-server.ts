@@ -62,6 +62,8 @@ export default class SoundRequestServer {
 
     http
       .createServer((req, res) => {
+        logger.info('Request received at %s with method %s', req.url, req.method);
+
         if (req.url === '/') {
           res.writeHead(204);
           res.end();
