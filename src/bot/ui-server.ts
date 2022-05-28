@@ -39,7 +39,7 @@ export default class SoundRequestServer {
 
     app.use((req, res, next) => {
       if (req.headers.authorization === environment.apiKey) return next();
-      return res.sendStatus(403);
+      return res.sendStatus(401);
     });
 
     app.get('/soundlist', async (req, res) => {
