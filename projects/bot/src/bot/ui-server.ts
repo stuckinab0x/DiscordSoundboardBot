@@ -1,13 +1,13 @@
 import express from 'express';
 import logger, { requestLogger } from '../logger';
 import filesService from './files-service';
-import environment from '../environment';
+import Environment from '../environment';
 
 type SoundRequestSubscriber = (userID: string, soundRequest: string) => void;
 type SkipRequestSubscriber = (userID: string, skipAll: boolean) => void;
 
 export default class SoundRequestServer {
-  constructor(port: number) {
+  constructor(port: number, private readonly environment: Environment) {
     this.createServer(port);
   }
 
@@ -38,7 +38,7 @@ export default class SoundRequestServer {
     app.use(express.json());
 
     app.use((req, res, next) => {
-      if (req.headers.authorization === environment.apiKey) return next();
+      if (req.headers.authorization === this.environment.apiKey) return next();
       return res.sendStatus(401);
     });
 

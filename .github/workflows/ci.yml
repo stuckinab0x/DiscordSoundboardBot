@@ -18,8 +18,10 @@ jobs:
           node-version: 17
           cache: yarn
       - name: Install dependencies
+        working-directory: projects/bot
         run: yarn
       - name: Lint
+        working-directory: projects/bot
         run: yarn run lint
 
   deploy:
@@ -35,5 +37,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
+          context: projects/bot
           push: true
           tags: uncledave/botman:latest

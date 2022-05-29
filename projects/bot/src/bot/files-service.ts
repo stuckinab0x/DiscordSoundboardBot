@@ -6,7 +6,7 @@ import SoundFile from './sound-file';
 import { loadFiles, sortFiles, splitFileName } from './utils';
 
 class FilesService {
-  private _files: Promise<SoundFile[]>;
+  private _files?: Promise<SoundFile[]>;
 
   constructor(private directory: string) { }
 

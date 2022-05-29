@@ -1,12 +1,12 @@
 import { Client, Intents, Interaction, VoiceState } from 'discord.js';
-import { joinVoiceChannel } from '@discordjs/voice';
-import environment from '../environment';
+import { DiscordGatewayAdapterCreator, joinVoiceChannel } from '@discordjs/voice';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
 import constants from './constants';
 import filesService from './files-service';
 import SoundRequestServer from './ui-server';
+import Environment from '../environment';
 
 export default class Bot {
   private client = new Client({
@@ -16,11 +16,11 @@ export default class Bot {
 
   private context = new BotContext();
 
-  private soundRequestServer = new SoundRequestServer(80);
+  private soundRequestServer = new SoundRequestServer(80, this.environment);
 
   private soundPlaying = false;
 
-  constructor() {
+  constructor(private readonly environment: Environment) {
     this.client.on('ready', () => this.onReady());
     this.client.on('interactionCreate', interaction => this.onInteraction(interaction));
     this.client.on('warn', m => {
@@ -36,16 +36,16 @@ export default class Bot {
     this.soundRequestServer.onSkipRequest((userID, skipAll) => this.onServerSkipRequest(userID, skipAll));
   }
 
-  start(token: string): Promise<string> {
+  start(): Promise<string> {
     logger.info('Starting bot, attempting to log in to Discord');
-    return this.client.login(token);
+    return this.client.login(this.environment.botToken);
   }
 
   private onReady() {
-    logger.info('Logged in as %s', this.client.user.tag);
+    logger.info('Logged in as %s', this.client.user?.tag);
 
     commands.forEach(command => {
-      this.client.application.commands.create(command.commandData);
+      this.client.application!.commands.create(command.commandData);
     });
   }
 
@@ -67,10 +67,10 @@ export default class Bot {
   }
 
   private onVoiceStateUpdate(oldState: VoiceState) {
-    if (oldState.channel?.members.every(x => x.id === this.client.user.id)) {
-      this.context.soundQueue.removeByChannel(oldState.channelId);
+    if (oldState.channel?.members.every(x => x.id === this.client.user!.id)) {
+      this.context.soundQueue.removeByChannel(oldState.channelId!);
       if (this.context.currentSound?.channel === oldState.channel) this.context.botAudioPlayer.stop();
-      if (!this.context.soundQueue.length) oldState.guild.me.voice.disconnect();
+      if (!this.context.soundQueue.length) oldState.guild.me?.voice.disconnect();
     }
   }
 
@@ -81,12 +81,12 @@ export default class Bot {
     this.soundPlaying = true;
 
     while (this.context.soundQueue.length) {
-      const current = this.context.soundQueue.takeNext();
+      const current = this.context.soundQueue.takeNext()!;
       this.context.currentSound = current;
       const connection = joinVoiceChannel({
         channelId: current.channel.id,
         guildId: current.channel.guild.id,
-        adapterCreator: current.channel.guild.voiceAdapterCreator,
+        adapterCreator: current.channel.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
         selfDeaf: false,
       });
 
@@ -96,26 +96,32 @@ export default class Bot {
       const soundFileName = constants.soundsDirectory + current.sound.fullName;
       // eslint-disable-next-line no-await-in-loop
       await this.context.botAudioPlayer.play(soundFileName);
-      this.context.currentSound = null;
+      this.context.currentSound = undefined;
     }
 
     this.soundPlaying = false;
   }
 
   private async onServerSoundRequest(userID: string, soundRequest: string) {
-    const soundBoardUser = (await this.client.guilds.fetch(environment.homeGuildID)).voiceStates.cache.find(x => x.id === userID);
+    const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userID);
     if (!soundBoardUser?.channel) {
       logger.info('Sound request received but user is not connected');
       return;
     }
     const availableFiles = await filesService.files;
     const soundFile = availableFiles.find(x => x.name === soundRequest);
+
+    if (!soundFile) {
+      logger.error('Couldn\'t find sound "%s"', soundRequest);
+      return;
+    }
+
     this.context.soundQueue.add({ sound: soundFile, channel: soundBoardUser.channel });
     logger.info(`Server sound request. User: ${ userID }. Queue length: ${ this.context.soundQueue.length }.`);
   }
 
   private async onServerSkipRequest(userID: string, skipAll: boolean) {
-    const soundBoardUser = (await this.client.guilds.fetch(environment.homeGuildID)).voiceStates.cache.find(x => x.id === userID);
+    const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userID);
     if (!soundBoardUser?.channel) {
       logger.info('Skip request received but user is not connected');
       return;

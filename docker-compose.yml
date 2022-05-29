@@ -2,14 +2,14 @@
 services:
   bot:
     build:
-      context: .
+      context: projects/bot
       args:
         NODE_ENV: development
-    env_file: .env
+    env_file: projects/bot/.env
     volumes:
-      - ./src:/app/src
-      - ./sounds:/app/sounds
-      - ./logs:/app/logs
+      - ./projects/bot/src:/app/src
+      - ./projects/bot/sounds:/app/sounds
+      - ./projects/bot/logs:/app/logs
     entrypoint: ["yarn", "run", "start:dev"]
     ports:
       - "8000:80"

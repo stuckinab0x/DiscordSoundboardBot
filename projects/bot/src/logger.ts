@@ -1,7 +1,6 @@
 import fs from 'fs';
 import winston from 'winston';
 import expressWinston from 'express-winston';
-import environment from './environment';
 
 const logsDirectory = `${ process.env.ROOT_PATH || '.' }/logs`;
 
@@ -9,7 +8,7 @@ if (!fs.existsSync(logsDirectory))
   fs.mkdirSync(logsDirectory);
 
 const logger = winston.createLogger({
-  level: environment.environment === 'production' ? 'info' : 'debug',
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
     winston.format.padLevels(),

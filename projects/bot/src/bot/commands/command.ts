@@ -31,7 +31,7 @@ export default abstract class Command implements Executable {
       return false;
     }
 
-    if (this.options.requiredPermission && !interaction.memberPermissions.has(this.options.requiredPermission)) {
+    if (this.options.requiredPermission && !interaction.memberPermissions!.has(this.options.requiredPermission)) {
       logger.info('%s: Command "%s" requires permission "%s", but user "%s" did not have it', interaction.id, interaction.commandName, this.options.requiredPermission, interaction.user.username);
       await interaction.reply({
         content: 'You do not have permission to use this command.',

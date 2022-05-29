@@ -6,7 +6,7 @@ RUN apk add git yarn
 WORKDIR app/
 COPY package.json yarn.lock ./
 RUN yarn
-COPY LICENSE tsconfig.json ./
+COPY tsconfig.json ./
 COPY src/ src/
 # RUN apk add yarn make libtool autoconf automake python3 gcc musl-dev zlib-dev && yarn global add node-gyp && yarn
 ENTRYPOINT ["yarn", "run", "start"]

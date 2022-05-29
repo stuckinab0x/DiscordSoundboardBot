@@ -66,7 +66,7 @@ export class SoundCommand extends Command {
     });
   }
 
-  private async getSoundFile(soundName: string, interaction: CommandInteraction): Promise<SoundFile> {
+  private async getSoundFile(soundName: string, interaction: CommandInteraction): Promise<SoundFile | null> {
     const availableFiles = await filesService.files;
     const soundFile = availableFiles.find(x => x.name === soundName);
 
@@ -96,7 +96,7 @@ export class SoundCommand extends Command {
     });
 
     try {
-      const collectedMessages = await interaction.channel.awaitMessages({
+      const collectedMessages = await interaction.channel!.awaitMessages({
         filter: x => SoundCommand.userSoundChoiceIsValid(x, interaction.user.id, files.length),
         max: 1,
         time: 30000,
@@ -104,7 +104,7 @@ export class SoundCommand extends Command {
       });
 
       const choice = collectedMessages.first();
-      const chosenFileIndex = +choice.content - 1;
+      const chosenFileIndex = +choice!.content - 1;
 
       return files[chosenFileIndex];
     } catch (err) {

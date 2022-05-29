@@ -13,8 +13,8 @@ export class DisconnectCommand extends Command {
   async execute(interaction: CommandInteraction): Promise<any> {
     let reply: string;
 
-    if (interaction.guild.me.voice.channelId) {
-      await interaction.guild.me.voice.disconnect();
+    if (interaction.guild!.me!.voice.channelId) {
+      await interaction.guild!.me!.voice.disconnect();
       reply = pickRandom(byeMessages);
     } else {
       reply = pickRandom(notInAChannelMessages);
