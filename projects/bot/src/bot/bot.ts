@@ -9,14 +9,13 @@ import SoundRequestServer from './ui-server';
 import Environment from '../environment';
 
 export default class Bot {
-  private client = new Client({
+  private readonly client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES],
     presence: { activities: [{ name: 'you', type: 'WATCHING' }] },
   });
 
-  private context = new BotContext();
-
-  private soundRequestServer = new SoundRequestServer(80, this.environment);
+  private readonly context = new BotContext();
+  private readonly soundRequestServer: SoundRequestServer;
 
   private soundPlaying = false;
 
@@ -26,12 +25,17 @@ export default class Bot {
     this.client.on('warn', m => {
       logger.log('warn', m);
     });
+
     this.client.on('error', m => {
       logger.log('error', m);
     });
+
     this.client.on('voiceStateUpdate', oldState => this.onVoiceStateUpdate(oldState));
 
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
+
+    this.soundRequestServer = new SoundRequestServer(80, environment);
+
     this.soundRequestServer.onSoundRequest((userID, soundRequest) => this.onServerSoundRequest(userID, soundRequest));
     this.soundRequestServer.onSkipRequest((userID, skipAll) => this.onServerSkipRequest(userID, skipAll));
   }
