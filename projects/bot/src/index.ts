@@ -1,3 +1,4 @@
+import { setup as setupApplicationInsights } from 'applicationinsights';
 import Bot from './bot/bot';
 import logger from './logger';
 import Environment from './environment';
@@ -9,6 +10,11 @@ function isEnvironmentVariableValid<T>(value: T | undefined, name: string): valu
 
   return isValid;
 }
+
+process.env.TZ = 'Europe/Copenhagen';
+
+if (process.env.NODE_ENV === 'production')
+  setupApplicationInsights().start();
 
 if (
   isEnvironmentVariableValid(process.env.BOT_TOKEN, 'BOT_TOKEN')
