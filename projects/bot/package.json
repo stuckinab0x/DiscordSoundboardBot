@@ -1,7 +1,6 @@
 {
   "name": "botman",
   "version": "1.0.0",
-  "main": "src/index.js",
   "repository": "https://github.com/UncleDave/DiscordSoundboardBot.git",
   "author": "Dave Pringle <3244206+UncleDave@users.noreply.github.com>",
   "license": "MIT",
@@ -12,7 +11,8 @@
     "start:dev": "ts-node-dev --poll --respawn -s src/index.ts",
     "start:docker": "docker-compose up",
     "start:docker:build": "yarn run start:docker --build",
-    "lint": "eslint src/**"
+    "lint": "eslint src/**",
+    "build": "tsc"
   },
   "dependencies": {
     "@discordjs/voice": "^0.9.0",
@@ -26,7 +26,8 @@
     "ts-node": "^10.4.0",
     "tweetnacl": "^1.0.3",
     "typescript": "^4.5.5",
-    "winston": "^3.5.1"
+    "winston": "^3.5.1",
+    "botman-sounds": "^1.0.0"
   },
   "optionalDependencies": {
     "@discordjs/opus": "^0.7.0",
