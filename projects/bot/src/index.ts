@@ -1,4 +1,4 @@
-import applicationInsights from 'applicationinsights';
+import * as applicationInsights from 'applicationinsights';
 import Bot from './bot/bot';
 import logger from './logger';
 import Environment from './environment';
