@@ -1,4 +1,4 @@
-import { Collection, FindOptions, MongoClient } from 'mongodb';
+import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
 import { Sound, SoundFile } from './sound';
 import { SoundDocument } from './sound-document';
 
@@ -9,7 +9,10 @@ export class SoundsService {
   constructor(connectionUri: string) {
     if (!connectionUri) throw new Error('Couldn\'t instantiate SoundsService: connectionUri must be provided');
 
-    this.soundsCollection = new MongoClient(connectionUri).connect().then(x => x.db('botman').collection('sounds'));
+    this.soundsCollection = new MongoClient(connectionUri).connect().then(x => {
+      const collection = x.db('botman').collection<SoundDocument>('sounds');
+      return collection.createIndex({ name: 1 }, { unique: true }).then(() => collection);
+    });
   }
 
   async getSound(name: string): Promise<Sound | null> {
@@ -21,9 +24,17 @@ export class SoundsService {
     return SoundsService.mapSoundDocumentToSound(document);
   }
 
-  async getAllSounds(): Promise<Sound[]> {
+  getAllSounds(): Promise<Sound[]> {
+    return this.find();
+  }
+
+  searchSounds(searchTerm: string): Promise<Sound[]> {
+    return this.find({ name: new RegExp(`^${ searchTerm }`, 'i') });
+  }
+
+  private async find(filter: Filter<SoundDocument> = {}): Promise<Sound[]> {
     const collection = await this.soundsCollection;
-    return collection.find({}, SoundsService.soundFindOptions).map(SoundsService.mapSoundDocumentToSound).toArray();
+    return collection.find(filter, SoundsService.soundFindOptions).map(SoundsService.mapSoundDocumentToSound).toArray();
   }
 
   private static mapSoundDocumentToSound(document: SoundDocument): Sound {
