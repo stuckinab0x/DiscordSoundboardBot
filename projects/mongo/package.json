@@ -1,0 +1,13 @@
+{
+  "name": "botman-mongo",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "up": "migrate-mongo up",
+    "down": "migrate-mongo down"
+  },
+  "dependencies": {
+    "migrate-mongo": "^9.0.0"
+  }
+}

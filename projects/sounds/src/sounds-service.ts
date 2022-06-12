@@ -9,10 +9,7 @@ export class SoundsService {
   constructor(connectionUri: string) {
     if (!connectionUri) throw new Error('Couldn\'t instantiate SoundsService: connectionUri must be provided');
 
-    this.soundsCollection = new MongoClient(connectionUri).connect().then(x => {
-      const collection = x.db('botman').collection<SoundDocument>('sounds');
-      return collection.createIndex({ name: 1 }, { unique: true }).then(() => collection);
-    });
+    this.soundsCollection = new MongoClient(connectionUri).connect().then(x => x.db('botman').collection('sounds'));
   }
 
   async getSound(name: string): Promise<Sound | null> {

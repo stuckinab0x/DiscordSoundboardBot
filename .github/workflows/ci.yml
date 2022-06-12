@@ -42,6 +42,11 @@ jobs:
         with:
           username: uncledave
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      - name: Run migrations
+        working-directory: projects/mongo
+        run: yarn run up
+        env:
+          MIGRATIONS_CONNECTION_URI: ${{ secrets.MIGRATIONS_CONNECTION_URI }}
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
