@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, Message } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, GuildMember, Message, MessageActionRow, MessageButton } from 'discord.js';
 import logger from '../../logger';
 import BotContext from '../bot-context';
 import filesService from '../files-service';
@@ -60,10 +60,13 @@ export class SoundCommand extends Command {
     context.soundQueue.add({ sound: soundFile, channel: voiceChannel });
     logger.info('%s: Sound "%s" added to queue, length: %s', interaction.id, soundName, context.soundQueue.length);
 
-    return interaction.reply({
+    const successMessage = {
       content: `Your sound has been added to the queue at position #${ context.soundQueue.length }.`,
       ephemeral: true,
-    });
+    };
+
+    if (interaction.replied) return interaction.followUp(successMessage);
+    return interaction.reply(successMessage);
   }
 
   private async getSoundFile(soundName: string, interaction: CommandInteraction): Promise<SoundFile | null> {
@@ -88,40 +91,58 @@ export class SoundCommand extends Command {
   }
 
   private async getUserSoundChoice(searchTerm: string, interaction: CommandInteraction, files: SoundFile[]): Promise<SoundFile> {
-    const fileChoices = files.reduce((choices, file, i) => `${ choices }\n${ i + 1 }: ${ file.name }`, '');
-
-    await interaction.reply({
-      content: `Found multiple sounds that start with "${ searchTerm }", please choose one:${ fileChoices }`,
+    const message = await interaction.reply({
+      content: `Found multiple sounds that start with "${ searchTerm }", please choose one:`,
       ephemeral: true,
+      components: this.createInteractionButtons(files.map(x => x.name)),
+      fetchReply: true,
     });
 
-    try {
-      const collectedMessages = await interaction.channel!.awaitMessages({
-        filter: x => SoundCommand.userSoundChoiceIsValid(x, interaction.user.id, files.length),
-        max: 1,
-        time: 30000,
-        errors: ['time'],
+    if (!(message instanceof Message)) {
+      await interaction.editReply({
+        content: 'Something went wrong, my bad, please try again.',
+        components: [],
       });
 
-      const choice = collectedMessages.first();
-      const chosenFileIndex = +choice!.content - 1;
+      return Promise.reject(new Error('Interaction reply was not of expected type "Message"'));
+    }
 
-      return files[chosenFileIndex];
+    let collectedButton: ButtonInteraction;
+    try {
+      collectedButton = await message.awaitMessageComponent({ componentType: 'BUTTON', time: 30000 });
     } catch (err) {
       logger.info('%s: User failed to make a selection within the time limit', interaction.id);
-      await interaction.reply({
+
+      await interaction.editReply({
         content: `No selection was made in time, try again ${ pickRandom(insults) }.`,
-        ephemeral: true,
+        components: [],
       });
 
       return Promise.reject(new Error('Timed out waiting for sound choice'));
     }
+
+    const chosenFileIndex = Number(collectedButton.customId);
+    const chosenFile = files[chosenFileIndex];
+    interaction.editReply({ content: `You picked: ${ chosenFile.name }.`, components: [] });
+
+    return chosenFile;
   }
 
-  private static userSoundChoiceIsValid(message: Message, userId: string, choiceCount: number): boolean {
-    const choice = +message.content;
+  private createInteractionButtons(buttonLabels: string[]) {
+    const buttons: MessageButton[] = buttonLabels.map((x, index) =>
+      new MessageButton()
+        .setCustomId(String(index))
+        .setLabel(x)
+        .setStyle(1));
 
-    return message.author.id === userId && Number.isInteger(choice) && choice > 0 && choice <= choiceCount;
+    const components: MessageActionRow[] = [];
+
+    while (buttons.length > 0) {
+      const row = new MessageActionRow().addComponents(buttons.splice(0, 5));
+      components.push(row);
+    }
+
+    return components;
   }
 }
 
