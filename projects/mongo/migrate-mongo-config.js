@@ -6,7 +6,7 @@ const config = {
     databaseName: 'botman',
     options: {
       useNewUrlParser: true,
-      useUnifiedTopology: false,
+      useUnifiedTopology: true,
     },
   },
   migrationsDir: 'migrations',
