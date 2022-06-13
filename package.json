@@ -1,5 +1,9 @@
 {
   "private": true,
+  "scripts": {
+    "start:docker": "docker-compose up",
+    "start:docker:build": "yarn run start:docker --build"
+  },
   "workspaces": [
     "projects/*"
   ]

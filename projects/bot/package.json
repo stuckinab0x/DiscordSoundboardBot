@@ -9,8 +9,6 @@
   "scripts": {
     "start": "ts-node -s -T src/index.ts",
     "start:dev": "ts-node-dev --poll --respawn -s src/index.ts",
-    "start:docker": "docker-compose up",
-    "start:docker:build": "yarn run start:docker --build",
     "lint": "eslint src/**",
     "build": "tsc"
   },

@@ -8,9 +8,22 @@ services:
     env_file: projects/bot/.env
     volumes:
       - ./projects:/app/projects
-    entrypoint: ["yarn", "run", "start:dev"]
+    entrypoint: [ "yarn", "run", "start:dev" ]
     ports:
       - "8000:80"
+
+  ui:
+    build:
+      dockerfile: projects/ui-server/Dockerfile
+      context: .
+      args:
+        NODE_ENV: development
+    env_file: projects/ui-server/.env
+    volumes:
+      - ./projects:/app/projects
+    entrypoint: [ "yarn", "run", "start:dev" ]
+    ports:
+      - "8080:80"
 
   db:
     image: mongo

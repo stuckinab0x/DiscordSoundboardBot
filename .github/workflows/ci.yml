@@ -75,16 +75,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup NodeJS
-        uses: actions/setup-node@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
-          node-version: 17
-          cache: yarn
-      - name: Install dependencies
-        run: yarn
+          username: uncledave
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: uncledave/botman-ui:latest
+          file: projects/ui-server/Dockerfile
       - name: Deploy
         uses: azure/webapps-deploy@v2
         with:
           app-name: botman-web-p
           publish-profile: ${{ secrets.UI_PUBLISH_PROFILE }}
-          package: projects/ui-server
+          images: uncledave/botman-ui:latest
