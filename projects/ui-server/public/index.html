@@ -20,6 +20,10 @@
           crossOrigin: 'anonymous',
           cfg: {
             connectionString: 'InstrumentationKey=8665d8dc-8288-4a87-8244-e90b8941ac5d;IngestionEndpoint=https://uksouth-1.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/',
+            enableCorsCorrelation: true,
+            enableRequestHeaderTracking: true,
+            enableResponseHeaderTracking: true,
+            correlationHeaderExcludedDomains: ['*.queue.core.windows.net'],
           }
         });
       }
