@@ -34,11 +34,18 @@ const hasAuth: RequestHandler = async (req, res, next) => {
       res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
       res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
     }
-    req.client = client;
-    client.userData.name ? next() : res.redirect(authURL);
-    return;
+    if (client.userData.name) {
+      req.client = client;
+      next();
+      return;
+    }
   }
 
+  if (req.url !== '/') {
+    res.writeHead(401);
+    res.end();
+    return;
+  }
   res.redirect(authURL);
 }
 

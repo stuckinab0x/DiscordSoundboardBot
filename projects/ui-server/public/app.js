@@ -79,6 +79,7 @@ const postSound = debounce(soundButton => {
     },
     body: soundButton.innerHTML,
   })
+  .then(res =>  { if (res.status === 401) location.reload() })
   .catch(error => console.log(error));
   soundButton.classList.remove('btn-red')
   soundButton.classList.add('btn-green')
@@ -91,6 +92,7 @@ const skipRequest = debounce(async (all = false) => {
       'Content-Type': 'text/plain'
     },
   })
+  .then(res =>  { if (res.status === 401) location.reload() })
   .catch(error => console.log(error))
 }, 500, true)
 
