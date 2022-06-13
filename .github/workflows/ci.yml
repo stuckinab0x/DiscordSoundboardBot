@@ -86,5 +86,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: botman-web-p
-          publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+          publish-profile: ${{ secrets.UI_PUBLISH_PROFILE }}
           package: projects/ui-server
