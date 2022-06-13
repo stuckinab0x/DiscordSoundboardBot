@@ -86,9 +86,3 @@ jobs:
           push: true
           tags: uncledave/botman-ui:latest
           file: projects/ui-server/Dockerfile
-      - name: Deploy
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: botman-web-p
-          publish-profile: ${{ secrets.UI_PUBLISH_PROFILE }}
-          images: uncledave/botman-ui:latest
