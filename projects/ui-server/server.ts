@@ -12,8 +12,7 @@ if (process.env.NODE_ENV === 'production') {
   applicationInsights.start();
 }
 
-const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI
-(environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
+const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
 
 const hasAuth: RequestHandler = async (req, res, next) => {
   if (req.query.code) {
@@ -47,7 +46,7 @@ const hasAuth: RequestHandler = async (req, res, next) => {
     return;
   }
   res.redirect(authURL);
-}
+};
 
 const app = express();
 const serveStatic = express.static('public', { extensions: ['html'] });
@@ -60,30 +59,30 @@ app.get('/logout', (req, res, next) => {
   res.clearCookie('accesstoken');
   res.clearCookie('refreshtoken');
   next();
-}, serveStatic)
+}, serveStatic);
 
 app.use(hasAuth);
 
 app.get('/user', async (req, res) => {
   await req.client.getBotSounds();
   res.send(req.client.userData);
-})
+});
 
 app.post('/soundrequest', async (req, res) => {
-  console.log('Sound request.')
+  console.log('Sound request.');
   await req.client.soundRequest(req.body);
   res.end();
-})
+});
 
 app.get('/skip', async (req, res) => {
-  console.log(`Skip request. All: ${ req.query.skipAll }`)
+  console.log(`Skip request. All: ${ req.query.skipAll }`);
   if (req.query.skipAll === 'true') await req.client.skipRequest(true, req.client.userData.userID);
   else await req.client.skipRequest(false, req.client.userData.userID);
   res.end();
-})
+});
 
 app.use(serveStatic);
 
 app.listen(environment.port, () => {
-  console.log('listening...')
-})
+  console.log('listening...');
+});

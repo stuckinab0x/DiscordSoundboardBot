@@ -1,0 +1,7 @@
+﻿{
+  "extends": "@tsconfig/node17/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "noImplicitAny": true
+  }
+}

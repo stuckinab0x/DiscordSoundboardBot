@@ -22,14 +22,10 @@ jobs:
       - name: Build sounds
         working-directory: projects/sounds
         run: yarn run build
-      - name: Lint sounds
-        working-directory: projects/sounds
-        run: yarn run lint
       - name: Build bot
         working-directory: projects/bot
         run: yarn run build
-      - name: Lint bot
-        working-directory: projects/bot
+      - name: Lint
         run: yarn run lint
 
   migrate-database:

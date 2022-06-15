@@ -1,9 +1,5 @@
 {
-  "extends": "@tsconfig/node17/tsconfig.json",
-  "compilerOptions": {
-    "noEmit": true,
-    "noImplicitAny": true
-  },
+  "extends": "../../tsconfig.json",
   "files": [
     "src/index.ts"
   ]
