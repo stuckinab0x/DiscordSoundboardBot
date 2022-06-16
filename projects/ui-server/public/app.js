@@ -14,6 +14,19 @@ const favorites = {
   remove(soundName) {
     this.list = this.list.filter(i => i !== soundName);
   },
+  toggleBtnAsFav(favStar) {
+    const star = favStar;
+    if (star.classList.contains('fav-set')) {
+      star.innerHTML = 'star_outline';
+      this.remove(star.parentElement.dataset.soundName);
+    } else {
+      star.innerHTML = 'star';
+      this.list.push(star.parentElement.dataset.soundName);
+    }
+    star.classList.toggle('fav-set');
+    star.parentElement.classList.toggle('fav');
+    this.save();
+  },
 };
 
 function makeButtons(data) {
@@ -32,7 +45,7 @@ function makeButtons(data) {
     }
     btn.innerHTML = i;
     btn.classList.add('btn', 'sound-btn');
-    div.id = i;
+    div.dataset.soundName = i;
     div.classList.add('sound-tile');
     div.appendChild(btn);
     div.appendChild(fav);
@@ -90,7 +103,7 @@ function searchFilter(cancelButton = false) {
   const buttons = Array.from(buttonContainer.children);
   buttons.forEach(i => i.classList.add('btn-hide'));
   buttons.forEach(i => {
-    const btnName = i.id.toUpperCase();
+    const btnName = i.dataset.soundName.toUpperCase();
     if (btnName.includes(search.value.toUpperCase())) i.classList.remove('btn-hide');
   });
   if (buttons.every(i => i.classList.contains('btn-hide'))) searchMessage.classList.add('message-container-show');
@@ -100,7 +113,7 @@ const postSound = debounce(soundButton => {
   fetch('/soundrequest', {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: soundButton.innerHTML,
+    body: soundButton.parentElement.dataset.soundName,
   })
     .then(res => {
       if (res.status === 401) window.location.reload();
@@ -124,41 +137,30 @@ document.addEventListener('DOMContentLoaded', () => fetchUser());
 document.addEventListener('click', e => {
   const logOutMenu = document.getElementById('log-out-menu');
   const avatar = document.getElementById('avatar');
-  const favsBtn = document.getElementById('favorites-btn');
   if (e.target === document.getElementById('skip-one')) skipRequest();
   if (e.target === document.getElementById('skip-all')) skipRequest(true);
   if (e.target === avatar) logOutMenu.classList.toggle('log-out-menu-hide');
   if (e.target !== avatar) logOutMenu.classList.add('log-out-menu-hide');
   if (e.target === searchCancel) searchFilter(true);
-  if (e.target === favsBtn && e.target.classList.contains('filter-btn-on')) {
-    e.target.classList.remove('filter-btn-on');
-    const buttons = Array.from(buttonContainer.children);
-    buttons.forEach(i => i.classList.remove('btn-filter-fav'));
-  } else if (e.target === favsBtn) {
-    e.target.classList.add('filter-btn-on');
-    const buttons = Array.from(buttonContainer.children);
-    buttons.forEach(i => {
-      if (!i.classList.contains('fav')) i.classList.add('btn-filter-fav');
-    });
-  }
+});
+
+buttonContainer.addEventListener('click', e => {
   if (e.target.classList.contains('sound-btn')) {
     e.target.classList.add('btn-red');
     postSound(e.target);
     setTimeout(() => e.target.classList.remove('btn-red'), 1);
   }
-  if (e.target.classList.contains('favStar') && e.target.classList.contains('fav-set')) {
-    const favStar = e.target;
-    favStar.innerHTML = 'star_outline';
-    favStar.classList.remove('fav-set');
-    favStar.parentElement.classList.remove('fav');
-    favorites.remove(e.target.parentElement.id);
-    favorites.save();
-  } else if (e.target.classList.contains('favStar')) {
-    const favStar = e.target;
-    favStar.parentElement.classList.add('fav');
-    favStar.innerHTML = 'star';
-    favStar.classList.add('fav-set');
-    favorites.list.push(e.target.parentElement.id);
-    favorites.save();
-  }
+  if (e.target.classList.contains('favStar')) favorites.toggleBtnAsFav(e.target);
 });
+
+document.getElementById('favorites-btn')
+  .addEventListener('click', e => {
+    const buttons = Array.from(buttonContainer.children);
+    if (e.target.classList.contains('filter-btn-on'))
+      buttons.forEach(i => i.classList.remove('btn-filter-fav'));
+    else
+      buttons.forEach(i => {
+        if (!i.classList.contains('fav')) i.classList.add('btn-filter-fav');
+      });
+    e.target.classList.toggle('filter-btn-on');
+  });
