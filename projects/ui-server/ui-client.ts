@@ -1,95 +1,113 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { RequestHandler } from 'express';
 import environment from './environment';
 
 declare global {
   namespace Express {
     interface Request {
-      client: UIClient;
+      client: UserData;
     }
   }
 }
 
-interface UserData {
-  name: string;
+class UserData {
+  private name: string;
+  private avatar: string;
   userID: string;
-  avatar: string;
   soundList: string[];
+
+  constructor(userRes: AxiosResponse) {
+    this.name = userRes.data.username;
+    this.userID = userRes.data.id;
+    this.avatar = userRes.data.avatar;
+  }
 }
 
-export default class UIClient {
-  public accessToken: string;
-  public refreshToken: string;
-  public userData: UserData;
-  private botConfig: AxiosRequestConfig;
+const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
 
-  constructor(cookies?: any) {
-    this.accessToken = cookies?.accesstoken ?? '';
-    this.refreshToken = cookies?.refreshtoken ?? '';
-    this.userData = {
-      name: '',
-      userID: '',
-      avatar: '',
-      soundList: [],
-    };
-    this.botConfig = { headers: { Authorization: environment.botApiKey } };
-  }
+function getTokensFromCode(authCode: string) {
+  const params = new URLSearchParams({
+    client_id: environment.clientID,
+    client_secret: environment.clientSecret,
+    grant_type: 'authorization_code',
+    code: authCode,
+    redirect_uri: environment.UIServerURL,
+  });
+  return axios.post('https://discord.com/api/oauth2/token', params);
+}
 
-  async authenticate(authCode?: string) {
-    const params = new URLSearchParams({
-      client_id: environment.clientID,
-      client_secret: environment.clientSecret,
-    });
-    if (authCode) {
-      params.append('grant_type', 'authorization_code');
-      params.append('code', authCode);
-      params.append('redirect_uri', environment.UIServerURL);
-    } else {
-      params.append('grant_type', 'refresh_token');
-      params.append('refresh_token', this.refreshToken);
-    }
+function getTokensFromRefresh(refreshToken: string) {
+  const params = new URLSearchParams({
+    client_id: environment.clientID,
+    client_secret: environment.clientSecret,
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+  });
+  return axios.post('https://discord.com/api/oauth2/token', params);
+}
+
+export const discordAuth: RequestHandler = async (req, res, next) => {
+  if (req.query.code) {
     try {
-      const res = await axios.post('https://discord.com/api/oauth2/token', params);
-      this.accessToken = res.data.access_token;
-      this.refreshToken = res.data.refresh_token;
+      const tokenRes = await getTokensFromCode(String(req.query.code));
+      res.cookie('accesstoken', tokenRes.data.access_token, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+      res.cookie('refreshtoken', tokenRes.data.refresh_token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
       console.log('token response from discord');
     } catch (error) {
       console.log(error);
     }
+    res.redirect('/');
+    return;
   }
 
-  async getUser(retry?: boolean) {
+  let userReqToken: string;
+  if (req.cookies.accesstoken) userReqToken = req.cookies.accesstoken;
+
+  if (!req.cookies.accesstoken && req.cookies.refreshtoken)
     try {
-      const res = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ this.accessToken }` } });
-      this.userData.name = res.data.username;
-      this.userData.userID = res.data.id;
-      this.userData.avatar = res.data.avatar;
+      const tokenRes = await getTokensFromRefresh(req.cookies.refreshtoken);
+      res.cookie('accesstoken', tokenRes.data.access_token, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+      res.cookie('refreshtoken', tokenRes.data.refresh_token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
+      userReqToken = tokenRes.data.access_token;
+      console.log('token response from discord');
     } catch (error) {
-      console.log(`getUser failed. refresh token tried yet: ${ retry ? 'yes' : 'no' }. ${ error }`);
+      console.log(error);
     }
-    if (retry) return;
-    if (!this.userData.name) {
-      await this.authenticate();
-      await this.getUser(true);
+
+  if (userReqToken)
+    try {
+      const userRes = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ userReqToken }` } });
+      req.client = new UserData(userRes);
+      next();
+      return;
+    } catch (error) {
+      console.log(error);
     }
-  }
 
-  getBotSounds() {
-    return axios.get(`${ environment.botURL }/soundlist`, this.botConfig)
-      .then(res => { this.userData.soundList = res.data; })
-      .catch(error => console.log(error));
+  if (req.url !== '/') {
+    res.writeHead(401);
+    res.end();
+    return;
   }
+  res.redirect(authURL);
+};
 
-  soundRequest(soundRequest: string) {
-    const body = {
-      userID: this.userData.userID,
-      soundRequest,
-    };
-    return axios.post(`${ environment.botURL }/soundrequest`, body, this.botConfig)
-      .catch(error => console.log(error));
-  }
+const botConfig: AxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
 
-  skipRequest(all: boolean, userID: string) {
-    return axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID }, this.botConfig)
-      .catch(error => console.log(error));
-  }
+export function getBotSounds() {
+  return axios.get(`${ environment.botURL }/soundlist`, botConfig);
+}
+
+export function soundRequest(userID: string, sound: string) {
+  const body = {
+    userID,
+    sound,
+  };
+  return axios.post(`${ environment.botURL }/soundrequest`, body, botConfig)
+    .catch(error => console.log(error));
+}
+
+export function skipRequest(all: boolean, userID: string) {
+  return axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID }, botConfig)
+    .catch(error => console.log(error));
 }
