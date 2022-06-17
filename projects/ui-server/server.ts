@@ -53,5 +53,5 @@ app.get('/skip', async (req, res) => {
 app.use(serveStatic);
 
 app.listen(environment.port, () => {
-  console.log('listening...');
+  console.log(`ui-server listening on port ${ environment.port }`);
 });

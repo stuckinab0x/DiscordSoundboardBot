@@ -99,10 +99,7 @@ export function getBotSounds() {
 }
 
 export function soundRequest(userID: string, sound: string) {
-  const body = {
-    userID,
-    sound,
-  };
+  const body = { userID, sound };
   return axios.post(`${ environment.botURL }/soundrequest`, body, botConfig)
     .catch(error => console.log(error));
 }
