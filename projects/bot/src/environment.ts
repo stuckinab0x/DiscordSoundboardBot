@@ -3,4 +3,5 @@ export default interface Environment {
   botToken: string;
   homeGuildId: string;
   apiKey: string;
+  soundsConnectionString: string;
 }

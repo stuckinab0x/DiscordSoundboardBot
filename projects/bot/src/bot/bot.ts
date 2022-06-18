@@ -1,10 +1,10 @@
 import { Client, Intents, Interaction, VoiceState } from 'discord.js';
 import { DiscordGatewayAdapterCreator, joinVoiceChannel } from '@discordjs/voice';
+import { SoundsService } from 'botman-sounds';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
 import constants from './constants';
-import filesService from './files-service';
 import SoundRequestServer from './ui-server';
 import Environment from '../environment';
 
@@ -14,7 +14,7 @@ export default class Bot {
     presence: { activities: [{ name: 'you', type: 'WATCHING' }] },
   });
 
-  private readonly context = new BotContext();
+  private readonly context: BotContext;
   private readonly soundRequestServer: SoundRequestServer;
 
   private soundPlaying = false;
@@ -32,9 +32,11 @@ export default class Bot {
 
     this.client.on('voiceStateUpdate', oldState => this.onVoiceStateUpdate(oldState));
 
+    const soundsService = new SoundsService(environment.soundsConnectionString);
+    this.context = new BotContext(soundsService);
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
 
-    this.soundRequestServer = new SoundRequestServer(80, environment);
+    this.soundRequestServer = new SoundRequestServer(80, environment, soundsService);
 
     this.soundRequestServer.onSoundRequest((userID, soundRequest) => this.onServerSoundRequest(userID, soundRequest));
     this.soundRequestServer.onSkipRequest((userID, skipAll) => this.onServerSkipRequest(userID, skipAll));
@@ -97,7 +99,7 @@ export default class Bot {
       this.context.botAudioPlayer.subscribe(connection);
       logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, this.context.soundQueue.length);
 
-      const soundFileName = constants.soundsDirectory + current.sound.fullName;
+      const soundFileName = constants.soundsDirectory + current.sound.file.fullName;
       // eslint-disable-next-line no-await-in-loop
       await this.context.botAudioPlayer.play(soundFileName);
       this.context.currentSound = undefined;
@@ -108,19 +110,20 @@ export default class Bot {
 
   private async onServerSoundRequest(userID: string, soundRequest: string) {
     const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userID);
+
     if (!soundBoardUser?.channel) {
       logger.info('Sound request received but user is not connected');
       return;
     }
-    const availableFiles = await filesService.files;
-    const soundFile = availableFiles.find(x => x.name === soundRequest);
 
-    if (!soundFile) {
+    const sound = await this.context.soundsService.getSound(soundRequest);
+
+    if (!sound) {
       logger.error('Couldn\'t find sound "%s"', soundRequest);
       return;
     }
 
-    this.context.soundQueue.add({ sound: soundFile, channel: soundBoardUser.channel });
+    this.context.soundQueue.add({ sound, channel: soundBoardUser.channel });
     logger.info(`Server sound request. User: ${ userID }. Queue length: ${ this.context.soundQueue.length }.`);
   }
 

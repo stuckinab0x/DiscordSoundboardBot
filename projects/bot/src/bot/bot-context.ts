@@ -1,10 +1,10 @@
 import { BaseGuildVoiceChannel } from 'discord.js';
 import { createAudioPlayer, createAudioResource, AudioPlayerStatus, VoiceConnection } from '@discordjs/voice';
-import SoundFile from './sound-file';
+import { Sound, SoundsService } from 'botman-sounds';
 import logger from '../logger';
 
 export interface SoundQueueItem {
-  sound: SoundFile;
+  sound: Sound;
   channel: BaseGuildVoiceChannel;
 }
 
@@ -44,6 +44,7 @@ class SoundQueue {
     return this.items.length;
   }
 }
+
 class BotAudioPlayer {
   private player = createAudioPlayer();
 
@@ -70,7 +71,9 @@ class BotAudioPlayer {
 }
 
 export default class BotContext {
-  soundQueue = new SoundQueue();
-  botAudioPlayer = new BotAudioPlayer();
+  readonly soundQueue = new SoundQueue();
+  readonly botAudioPlayer = new BotAudioPlayer();
   currentSound?: SoundQueueItem;
+
+  constructor(public readonly soundsService: SoundsService) {}
 }

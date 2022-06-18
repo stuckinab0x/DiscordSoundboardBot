@@ -1,8 +1,7 @@
 import { ButtonInteraction, CommandInteraction, GuildMember, Message, MessageActionRow, MessageButton } from 'discord.js';
+import { Sound } from 'botman-sounds';
 import logger from '../../logger';
 import BotContext from '../bot-context';
-import filesService from '../files-service';
-import SoundFile from '../sound-file';
 import { pickRandom } from '../utils';
 import Command from './command';
 
@@ -49,15 +48,15 @@ export class SoundCommand extends Command {
       });
     }
 
-    const soundFile = await this.getSoundFile(soundName, interaction);
+    const sound = await this.getSoundFile(soundName, interaction, context);
 
-    if (!soundFile)
+    if (!sound)
       return interaction.reply({
         content: `Couldn't find sound "${ soundName }".`,
         ephemeral: true,
       });
 
-    context.soundQueue.add({ sound: soundFile, channel: voiceChannel });
+    context.soundQueue.add({ sound, channel: voiceChannel });
     logger.info('%s: Sound "%s" added to queue, length: %s', interaction.id, soundName, context.soundQueue.length);
 
     const successMessage = {
@@ -69,16 +68,15 @@ export class SoundCommand extends Command {
     return interaction.reply(successMessage);
   }
 
-  private async getSoundFile(soundName: string, interaction: CommandInteraction): Promise<SoundFile | null> {
-    const availableFiles = await filesService.files;
-    const soundFile = availableFiles.find(x => x.name === soundName);
+  private async getSoundFile(soundName: string, interaction: CommandInteraction, context: BotContext): Promise<Sound | null> {
+    const sound = await context.soundsService.getSound(soundName);
 
-    if (soundFile)
-      return soundFile;
+    if (sound)
+      return sound;
 
     logger.info('%s: No "%s" sound was found', interaction.id, soundName);
 
-    const partialMatches = availableFiles.filter(x => x.name.startsWith(soundName));
+    const partialMatches = await context.soundsService.searchSounds(soundName);
 
     if (!partialMatches.length)
       return null;
@@ -90,7 +88,7 @@ export class SoundCommand extends Command {
     return this.getUserSoundChoice(soundName, interaction, partialMatches);
   }
 
-  private async getUserSoundChoice(searchTerm: string, interaction: CommandInteraction, files: SoundFile[]): Promise<SoundFile> {
+  private async getUserSoundChoice(searchTerm: string, interaction: CommandInteraction, files: Sound[]): Promise<Sound> {
     const message = await interaction.reply({
       content: `Found multiple sounds that start with "${ searchTerm }", please choose one:`,
       ephemeral: true,

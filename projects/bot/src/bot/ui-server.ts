@@ -1,13 +1,13 @@
 import express from 'express';
+import { SoundsService } from 'botman-sounds';
 import logger, { requestLogger } from '../logger';
-import filesService from './files-service';
 import Environment from '../environment';
 
 type SoundRequestSubscriber = (userID: string, soundRequest: string) => void;
 type SkipRequestSubscriber = (userID: string, skipAll: boolean) => void;
 
 export default class SoundRequestServer {
-  constructor(port: number, private readonly environment: Environment) {
+  constructor(port: number, private readonly environment: Environment, private readonly soundsService: SoundsService) {
     this.createServer(port);
   }
 
@@ -22,10 +22,9 @@ export default class SoundRequestServer {
     this.skipSubscribers.push(subscriber);
   }
 
-  private async getSounds() {
-    const files = await filesService.files;
-    const soundNames = files.map(x => x.name);
-    return soundNames;
+  private async getSounds(): Promise<string[]> {
+    const sounds = await this.soundsService.getAllSounds();
+    return sounds.map(x => x.name);
   }
 
   private async createServer(port: number) {

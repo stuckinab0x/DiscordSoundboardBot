@@ -1,16 +1,16 @@
 import { CommandInteraction, MessageEmbed } from 'discord.js';
-import filesService from '../files-service';
 import Command from './command';
 import constants from '../constants';
+import BotContext from '../bot-context';
 
 function createField(array: any[], start: number, end: number) {
   const subArray = array.slice(start, end);
-  const field = {
+
+  return {
     name: `${ subArray[0].name.substring(0, 2) } - ${ subArray[subArray.length - 1].name.substring(0, 2) }`,
     value: subArray.reduce((prev, curr) => `${ prev }\n${ curr.name }`, ''),
     inline: true,
   };
-  return field;
 }
 
 export class SoundsCommand extends Command {
@@ -18,8 +18,8 @@ export class SoundsCommand extends Command {
     super('sounds', 'Display the list of available sounds.');
   }
 
-  async execute(interaction: CommandInteraction): Promise<any> {
-    const files = await filesService.files;
+  async execute(interaction: CommandInteraction, context: BotContext): Promise<any> {
+    const files = await context.soundsService.getAllSounds();
     const messageEmbed = new MessageEmbed({ title: 'Available sounds' });
 
     if (files.length === 0) {
@@ -31,4 +31,5 @@ export class SoundsCommand extends Command {
     return interaction.reply({ embeds: [messageEmbed], ephemeral: true });
   }
 }
+
 export default new SoundsCommand();
