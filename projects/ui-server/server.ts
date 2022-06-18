@@ -30,8 +30,8 @@ app.use(discordAuth);
 app.get('/user', async (req, res) => {
   try {
     const soundRes = await getBotSounds();
-    req.client.soundList = soundRes.data;
-    res.send(req.client);
+    req.userData.soundList = soundRes.data;
+    res.send(req.userData);
   } catch (error) {
     console.log(error);
   }
@@ -39,14 +39,14 @@ app.get('/user', async (req, res) => {
 
 app.post('/soundrequest', async (req, res) => {
   console.log('Sound request.');
-  await soundRequest(req.client.userID, req.body);
+  await soundRequest(req.userData.userID, req.body);
   res.end();
 });
 
 app.get('/skip', async (req, res) => {
   console.log(`Skip request. All: ${ req.query.skipAll }`);
-  if (req.query.skipAll === 'true') await skipRequest(true, req.client.userID);
-  else await skipRequest(false, req.client.userID);
+  if (req.query.skipAll === 'true') await skipRequest(true, req.userData.userID);
+  else await skipRequest(false, req.userData.userID);
   res.end();
 });
 

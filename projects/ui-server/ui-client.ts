@@ -5,7 +5,7 @@ import environment from './environment';
 declare global {
   namespace Express {
     interface Request {
-      client: UserData;
+      userData: UserData;
     }
   }
 }
@@ -76,7 +76,7 @@ export const discordAuth: RequestHandler = async (req, res, next) => {
   if (userReqToken)
     try {
       const userRes = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ userReqToken }` } });
-      req.client = new UserData(userRes);
+      req.userData = new UserData(userRes);
       next();
       return;
     } catch (error) {
