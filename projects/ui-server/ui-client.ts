@@ -60,8 +60,7 @@ export const discordAuth: RequestHandler = async (req, res, next) => {
     return;
   }
 
-  let userReqToken: string;
-  if (req.cookies.accesstoken) userReqToken = req.cookies.accesstoken;
+  let userReqToken = req.cookies.accesstoken;
 
   if (!req.cookies.accesstoken && req.cookies.refreshtoken)
     try {
