@@ -1,5 +1,4 @@
 import express from 'express';
-import { SoundsService } from 'botman-sounds';
 import logger, { requestLogger } from '../logger';
 import Environment from '../environment';
 
@@ -7,7 +6,7 @@ type SoundRequestSubscriber = (userID: string, soundRequest: string) => void;
 type SkipRequestSubscriber = (userID: string, skipAll: boolean) => void;
 
 export default class SoundRequestServer {
-  constructor(port: number, private readonly environment: Environment, private readonly soundsService: SoundsService) {
+  constructor(port: number, private readonly environment: Environment) {
     this.createServer(port);
   }
 
@@ -22,12 +21,7 @@ export default class SoundRequestServer {
     this.skipSubscribers.push(subscriber);
   }
 
-  private async getSounds(): Promise<string[]> {
-    const sounds = await this.soundsService.getAllSounds();
-    return sounds.map(x => x.name);
-  }
-
-  private async createServer(port: number) {
+  private createServer(port: number) {
     const app = express();
     app.use(requestLogger);
 
@@ -39,13 +33,6 @@ export default class SoundRequestServer {
     app.use((req, res, next) => {
       if (req.headers.authorization === this.environment.apiKey) return next();
       return res.sendStatus(401);
-    });
-
-    app.get('/soundlist', async (req, res) => {
-      await this.getSounds()
-        .then(data => {
-          res.send(JSON.stringify(data));
-        });
     });
 
     app.post('/soundrequest', (req, res) => {

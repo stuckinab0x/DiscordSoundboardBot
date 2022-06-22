@@ -36,7 +36,7 @@ export default class Bot {
     this.context = new BotContext(soundsService);
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
 
-    this.soundRequestServer = new SoundRequestServer(80, environment, soundsService);
+    this.soundRequestServer = new SoundRequestServer(80, environment);
 
     this.soundRequestServer.onSoundRequest((userID, soundRequest) => this.onServerSoundRequest(userID, soundRequest));
     this.soundRequestServer.onSkipRequest((userID, skipAll) => this.onServerSkipRequest(userID, skipAll));

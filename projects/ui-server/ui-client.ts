@@ -93,10 +93,6 @@ export const discordAuth: RequestHandler = async (req, res, next) => {
 
 const botConfig: AxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
 
-export function getBotSounds() {
-  return axios.get(`${ environment.botURL }/soundlist`, botConfig);
-}
-
 export function soundRequest(userID: string, sound: string) {
   const body = { userID, sound };
   return axios.post(`${ environment.botURL }/soundrequest`, body, botConfig)
