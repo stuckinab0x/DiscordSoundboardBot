@@ -36,7 +36,7 @@ export default class SoundRequestServer {
     });
 
     app.post('/soundrequest', (req, res) => {
-      this.soundSubscribers.forEach(x => x(req.body.userID, req.body.soundRequest));
+      this.soundSubscribers.forEach(x => x(req.body.userID, req.body.sound));
       res.sendStatus(204);
     });
 
