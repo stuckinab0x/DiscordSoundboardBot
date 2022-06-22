@@ -11,6 +11,6 @@ COPY projects/ui-server/public/ public/
 WORKDIR ../sounds
 COPY projects/sounds/package.json projects/sounds/tsconfig.json ./
 COPY projects/sounds/src/ src/
-RUN yarn
 WORKDIR ../ui-server
+RUN yarn --pure-lockfile
 ENTRYPOINT ["yarn", "run", "start"]
