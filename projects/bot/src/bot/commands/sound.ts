@@ -38,6 +38,14 @@ export class SoundCommand extends Command {
       });
     }
 
+    if (!voiceChannel.joinable) {
+      logger.info('%s: User is in a private voice channel', interaction.id);
+      return interaction.reply({
+        content: `I'm not allowed in that channel, ${ pickRandom(insults) }.`,
+        ephemeral: true,
+      });
+    }
+
     const soundName = interaction.options.getString(soundOptionName, true);
 
     if (!soundName) {
