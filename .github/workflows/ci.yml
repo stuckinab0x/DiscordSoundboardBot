@@ -18,7 +18,7 @@ jobs:
           node-version: 17
           cache: yarn
       - name: Install dependencies
-        run: yarn
+        run: yarn --frozen-lockfile
       - name: Build sounds
         working-directory: projects/sounds
         run: yarn run build
@@ -41,7 +41,7 @@ jobs:
           node-version: 17
           cache: yarn
       - name: Install dependencies
-        run: yarn
+        run: yarn --pure-lockfile
       - name: Run migrations
         working-directory: projects/mongo
         run: yarn run up
