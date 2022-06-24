@@ -8,6 +8,8 @@
     "down": "migrate-mongo down"
   },
   "dependencies": {
-    "migrate-mongo": "^9.0.0"
+    "migrate-mongo": "^9.0.0",
+    "mongodb": "^4.7.0",
+    "botman-sounds": "^1.0.0"
   }
 }
