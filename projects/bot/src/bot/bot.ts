@@ -1,6 +1,6 @@
 import { Client, Intents, Interaction, VoiceState } from 'discord.js';
 import { DiscordGatewayAdapterCreator, joinVoiceChannel } from '@discordjs/voice';
-import { SoundsService } from 'botman-sounds';
+import { ReadOnlySoundsService } from 'botman-sounds';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
@@ -32,7 +32,7 @@ export default class Bot {
 
     this.client.on('voiceStateUpdate', oldState => this.onVoiceStateUpdate(oldState));
 
-    const soundsService = new SoundsService(environment.soundsConnectionString);
+    const soundsService = new ReadOnlySoundsService(environment.soundsConnectionString);
     this.context = new BotContext(soundsService);
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
 

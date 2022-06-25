@@ -3,7 +3,7 @@ import express from 'express';
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { SoundsService } from 'botman-sounds';
+import { ReadOnlySoundsService } from 'botman-sounds';
 import environment from './environment';
 import { discordAuth, soundRequest, skipRequest } from './ui-client';
 
@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'production') {
   applicationInsights.start();
 }
 
-const soundsService = new SoundsService(environment.soundsConnectionString);
+const soundsService = new ReadOnlySoundsService(environment.soundsConnectionString);
 
 const app = express();
 const serveStatic = express.static('public', { extensions: ['html'] });

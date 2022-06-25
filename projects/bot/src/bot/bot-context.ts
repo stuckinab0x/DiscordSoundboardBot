@@ -1,6 +1,6 @@
 import { BaseGuildVoiceChannel } from 'discord.js';
 import { createAudioPlayer, createAudioResource, AudioPlayerStatus, VoiceConnection } from '@discordjs/voice';
-import { Sound, SoundsService } from 'botman-sounds';
+import { Sound, ReadOnlySoundsService } from 'botman-sounds';
 import logger from '../logger';
 
 export interface SoundQueueItem {
@@ -75,5 +75,5 @@ export default class BotContext {
   readonly botAudioPlayer = new BotAudioPlayer();
   currentSound?: SoundQueueItem;
 
-  constructor(public readonly soundsService: SoundsService) {}
+  constructor(public readonly soundsService: ReadOnlySoundsService) {}
 }
