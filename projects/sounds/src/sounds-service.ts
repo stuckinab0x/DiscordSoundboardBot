@@ -40,7 +40,7 @@ export class ReadOnlySoundsService {
 
   private async find(filter: Filter<SoundDocument> = {}): Promise<Sound[]> {
     const collection = await this.soundsCollection;
-    return collection.find(filter, ReadOnlySoundsService.soundFindOptions).map(ReadOnlySoundsService.mapSoundDocumentToSound).toArray();
+    return collection.find(filter, ReadOnlySoundsService.soundFindOptions).sort({ name: 1 }).map(ReadOnlySoundsService.mapSoundDocumentToSound).toArray();
   }
 
   private static mapSoundDocumentToSound(document: SoundDocument): Sound {

@@ -83,7 +83,7 @@ export const discordAuth: RequestHandler = async (req, res, next) => {
       console.log(error);
     }
 
-  if (req.url !== '/') {
+  if (req.url.includes('/api')) {
     res.writeHead(401);
     res.end();
     return;

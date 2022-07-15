@@ -6,4 +6,5 @@ export default {
   UIServerURL: process.env.UI_SERVER_URL,
   port: process.env.PORT ?? 80,
   soundsConnectionString: process.env.SOUNDS_CONNECTION_STRING,
+  soundsDirectory: process.env.SOUNDS_DIRECTORY,
 };

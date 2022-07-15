@@ -2,7 +2,6 @@ import * as applicationInsights from 'applicationinsights';
 import Bot from './bot/bot';
 import logger from './logger';
 import Environment from './environment';
-import 'dotenv/config';
 
 function isEnvironmentVariableValid<T>(value: T | undefined, name: string): value is T {
   const isValid = !!value;

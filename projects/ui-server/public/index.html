@@ -49,7 +49,7 @@
 </nav>
 <main>
     <div class="main-container">
-        <div id="error-container" class="message-container">
+        <div id="error-container" class="message-container error-container">
             <h1>Server error.</h1><h4>*/sound horrible mistake*</h4>
         </div>
         <div class="features-container">
@@ -59,11 +59,19 @@
             </div>
             <div class="filters-container">
                 <div id="search-container" class="search-container">
-                    <input type="text" placeholder=" search for a sound..." id="search" class="search" onkeyup="searchFilter()">
+                    <input type="text" placeholder=" search for a sound..." id="search" class="text-input" onkeyup="searchFilter()">
                     <span id="search-cancel" class="material-icons search-cancel icon-btn">cancel</span>
                 </div>
                 <div class="filter-btns-container">
                     <button id="favorites-btn" class="filter-btn btn">Favorites</button>
+                    <button id="add-sound-button" class="add-sound-button filter-btn btn">Add Sound</button>
+                </div>
+                <div id="add-sound-dialog" class="add-sound-dialog btn-hide">
+                    <h4 id="add-sound-text">Upload a new sound file</h4>
+                    <input id="file-upload" type="file" accept=".wav, .mp3, .webm, .ogg" class="file-upload text-input add-sound-input">
+                    <input id="sound-name-input" type="text" name="" placeholder="Enter a name for the sound" enterkeyhint="done" class="add-sound-input text-input">
+                    <button id="addsound-confirm-btn" class="btn filter-btn btn-hide add-sound-button">Go!</button>
+                    </div>
                 </div>
             </div>
         </div>
