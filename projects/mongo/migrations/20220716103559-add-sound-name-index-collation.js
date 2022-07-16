@@ -7,5 +7,5 @@ module.exports = {
   async down(db) {
     await db.collection('sounds').dropIndex('name_1');
     await db.collection('sounds').createIndex({ name: 1 }, { unique: true });
-  }
+  },
 };
