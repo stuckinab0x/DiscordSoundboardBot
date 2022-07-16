@@ -5,7 +5,8 @@
   "main": "server.ts",
   "scripts": {
     "start": "ts-node server",
-    "start:dev": "ts-node-dev --poll --respawn server"
+    "start:dev": "ts-node-dev --poll --respawn server",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
