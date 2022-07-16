@@ -40,7 +40,12 @@ export class ReadOnlySoundsService {
 
   private async find(filter: Filter<SoundDocument> = {}): Promise<Sound[]> {
     const collection = await this.soundsCollection;
-    return collection.find(filter, ReadOnlySoundsService.soundFindOptions).sort({ name: 1 }).map(ReadOnlySoundsService.mapSoundDocumentToSound).toArray();
+
+    return collection
+      .find(filter, { ...ReadOnlySoundsService.soundFindOptions, collation: { locale: 'en', strength: 2 } })
+      .sort({ name: 1 })
+      .map(ReadOnlySoundsService.mapSoundDocumentToSound)
+      .toArray();
   }
 
   private static mapSoundDocumentToSound(document: SoundDocument): Sound {
@@ -85,8 +90,12 @@ export class SoundsService extends ReadOnlySoundsService {
     try {
       const collection = await this.soundsCollection;
       await collection.insertOne({ name, fileName });
-    } catch (error) {
+    } catch (error: any) {
       await this.filesService.deleteFile(fileName);
+
+      if (error.code === 11000)
+        throw new Error(errors.soundAlreadyExists);
+
       throw error;
     }
   }
