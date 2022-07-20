@@ -1,4 +1,5 @@
 export default {
+  environment: process.env.NODE_ENV,
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   botURL: process.env.BOT_URL,

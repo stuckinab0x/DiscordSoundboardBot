@@ -4,6 +4,6 @@
     "strict": false
   },
   "files": [
-    "server.ts"
+    "src/server.ts"
   ]
 }

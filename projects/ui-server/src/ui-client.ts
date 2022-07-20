@@ -25,53 +25,33 @@ class UserData {
 
 const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
 
-function getTokensFromCode(authCode: string) {
-  const params = new URLSearchParams({
-    client_id: environment.clientID,
-    client_secret: environment.clientSecret,
-    grant_type: 'authorization_code',
-    code: authCode,
-    redirect_uri: environment.UIServerURL,
-  });
-  return axios.post('https://discord.com/api/oauth2/token', params);
-}
-
-function getTokensFromRefresh(refreshToken: string) {
-  const params = new URLSearchParams({
-    client_id: environment.clientID,
-    client_secret: environment.clientSecret,
-    grant_type: 'refresh_token',
-    refresh_token: refreshToken,
-  });
-  return axios.post('https://discord.com/api/oauth2/token', params);
-}
-
 export const discordAuth: RequestHandler = async (req, res, next) => {
-  if (req.query.code) {
+  let userReqToken = req.cookies.accesstoken ?? null;
+
+  if (req.query.code || (!req.cookies.accesstoken && req.cookies.refreshtoken)) {
+    const params = new URLSearchParams({
+      client_id: environment.clientID,
+      client_secret: environment.clientSecret,
+      grant_type: req.query.code ? 'authorization_code' : 'refresh_token',
+    });
+    if (req.query.code) {
+      params.append('code', String(req.query.code));
+      params.append('redirect_uri', environment.UIServerURL);
+    } else { params.append('refresh_token', req.cookies.refreshtoken); }
     try {
-      const tokenRes = await getTokensFromCode(String(req.query.code));
+      const tokenRes = await axios.post('https://discord.com/api/oauth2/token', params);
       res.cookie('accesstoken', tokenRes.data.access_token, { httpOnly: true, maxAge: 1000 * 60 * 30 });
       res.cookie('refreshtoken', tokenRes.data.refresh_token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
-      console.log('token response from discord');
-    } catch (error) {
-      console.log(error);
-    }
-    res.redirect('/');
-    return;
-  }
-
-  let userReqToken = req.cookies.accesstoken;
-
-  if (!req.cookies.accesstoken && req.cookies.refreshtoken)
-    try {
-      const tokenRes = await getTokensFromRefresh(req.cookies.refreshtoken);
-      res.cookie('accesstoken', tokenRes.data.access_token, { httpOnly: true, maxAge: 1000 * 60 * 30 });
-      res.cookie('refreshtoken', tokenRes.data.refresh_token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
+      if (req.query.code) {
+        res.redirect('/');
+        return;
+      }
       userReqToken = tokenRes.data.access_token;
       console.log('token response from discord');
     } catch (error) {
       console.log(error);
     }
+  }
 
   if (userReqToken)
     try {
