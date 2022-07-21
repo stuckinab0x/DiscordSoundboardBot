@@ -12,8 +12,7 @@ COPY projects/sounds/package.json projects/sounds/tsconfig.json ./
 COPY projects/sounds/src/ src/
 WORKDIR ../ui-server
 RUN yarn --pure-lockfile
-RUN yarn run build
-RUN rm -rf webpack.config.ts src/scripts/
+RUN if [ "$NODE_ENV" = "production" ] ; then yarn run build ; rm -rf webpack.config.ts src/scripts/ ; fi
 
 FROM alpine:3.15
 ARG NODE_ENV=production
