@@ -2,12 +2,14 @@ import * as applicationInsights from 'applicationinsights';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import axios, { AxiosRequestConfig } from 'axios';
 import multer from 'multer';
 import streamifier from 'streamifier';
 import sanitize from 'sanitize-filename';
 import { SoundsService, AddSoundOptions, errors as soundErrors } from 'botman-sounds';
+import fs from 'node:fs';
+import DiscordAuth from './discord-auth';
 import environment from './environment';
-import { discordAuth, soundRequest, skipRequest } from './ui-client';
 
 if (environment.environment === 'production') {
   applicationInsights.setup();
@@ -31,28 +33,32 @@ app.get('/logout', (req, res, next) => {
   next();
 }, serveStatic);
 
-app.use(discordAuth);
+app.use(DiscordAuth);
 
-app.get('/api/user', async (req, res) => {
+app.get('/api/soundlist', async (req, res) => {
   try {
     const soundRes = await soundsService.getAllSounds();
-    req.userData.soundList = soundRes.map(x => x.name);
-    res.send(req.userData);
+    res.send(soundRes.map(x => x.name));
   } catch (error) {
     console.log(error);
   }
 });
 
-app.post('/api/sound', async (req, res) => {
+const botConfig: AxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
+
+app.post('/api/sound', (req, res) => {
   console.log('Sound request.');
-  await soundRequest(req.userData.userID, req.body);
+  const body = { userID: req.cookies.userid, sound: req.body };
+  axios.post(`${ environment.botURL }/soundrequest`, body, botConfig)
+    .catch(error => console.log(error));
   res.end();
 });
 
-app.get('/api/skip', async (req, res) => {
+app.get('/api/skip', (req, res) => {
   console.log(`Skip request. All: ${ req.query.skipAll }`);
-  if (req.query.skipAll === 'true') await skipRequest(true, req.userData.userID);
-  else await skipRequest(false, req.userData.userID);
+  const skipAll = !!req.query?.skipAll;
+  axios.post(`${ environment.botURL }/skip`, { skipAll, userID: req.cookies.userid }, botConfig)
+    .catch(error => console.log(error));
   res.end();
 });
 
@@ -83,6 +89,13 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
   }
   res.sendStatus(204);
   res.end();
+});
+
+app.get('/api/preview', async (req, res) => {
+  const sound = await soundsService.getSound(String(req.query.soundName));
+  const readStream = fs.createReadStream(`../bot/sounds/${ sound.file.fullName }`);
+  readStream.on('open', () => readStream.pipe(res));
+  readStream.on('close', () => res.end());
 });
 
 app.use(serveStatic);

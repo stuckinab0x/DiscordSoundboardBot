@@ -71,7 +71,7 @@ addSoundButton.addEventListener('click', () => {
 fileInput.addEventListener('change', () => {
   const supportedFileTypes = ['wav', 'mp3', 'webm', 'ogg'];
   const path = fileInput.value.split('.');
-  const extension = path[path.length - 1];
+  const extension = path[path.length - 1].toLowerCase();
 
   if (!supportedFileTypes.includes(extension) && fileInput.value) {
     fileInput.value = null;

@@ -1,31 +1,10 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from 'axios';
 import { RequestHandler } from 'express';
 import environment from './environment';
 
-declare global {
-  namespace Express {
-    interface Request {
-      userData: UserData;
-    }
-  }
-}
-
-class UserData {
-  private name: string;
-  private avatar: string;
-  userID: string;
-  soundList: string[];
-
-  constructor(userRes: AxiosResponse) {
-    this.name = userRes.data.username;
-    this.userID = userRes.data.id;
-    this.avatar = userRes.data.avatar;
-  }
-}
-
 const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
 
-export const discordAuth: RequestHandler = async (req, res, next) => {
+const discordAuth: RequestHandler = async (req, res, next) => {
   let userReqToken = req.cookies.accesstoken ?? null;
 
   if (req.query.code || (!req.cookies.accesstoken && req.cookies.refreshtoken)) {
@@ -56,7 +35,9 @@ export const discordAuth: RequestHandler = async (req, res, next) => {
   if (userReqToken)
     try {
       const userRes = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ userReqToken }` } });
-      req.userData = new UserData(userRes);
+      res.cookie('username', userRes.data.username);
+      res.cookie('userid', userRes.data.id);
+      res.cookie('avatar', userRes.data.avatar);
       next();
       return;
     } catch (error) {
@@ -71,15 +52,4 @@ export const discordAuth: RequestHandler = async (req, res, next) => {
   res.redirect(authURL);
 };
 
-const botConfig: AxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
-
-export function soundRequest(userID: string, sound: string) {
-  const body = { userID, sound };
-  return axios.post(`${ environment.botURL }/soundrequest`, body, botConfig)
-    .catch(error => console.log(error));
-}
-
-export function skipRequest(all: boolean, userID: string) {
-  return axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID }, botConfig)
-    .catch(error => console.log(error));
-}
+export default discordAuth;

@@ -235,6 +235,8 @@ p {
 }
 
 .filters-container {
+    display: flex;
+    flex-direction: column;
     position: relative;
     margin: 10px 3.2vw;
     padding: 6px 6px;
@@ -304,9 +306,17 @@ p {
     }
 }
 
-.filter-btns-container {
+.option-btns-container {
     display: flex;
     justify-content: space-between;
+}
+
+.filter-btns-container {
+    display: flex;
+}
+
+.right-toolbar-container {
+    display: flex;
 }
 
 .filter-btn {
@@ -316,6 +326,7 @@ p {
     border: 5px solid #c1b8fd;
     border-radius: 6px;
     background-color: #2b2c2e;
+    margin-right: 5px;
 }
 
 @media only screen and (max-width: 780px) {
@@ -368,10 +379,31 @@ p {
     width: auto;
 }
 
+.button-instructions {
+    color: rgb(152, 152, 152);
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.preview-instructions {
+    color: #c1b8fd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.button-instructions-hide {
+    display: none;
+}
+
 .btn-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    margin: 0px 20px;
     padding: 20px 15px 0px;
 }
 
@@ -398,6 +430,10 @@ p {
     margin: 6px 6px;
     background-color:#50555f;
     word-wrap: break-word;
+}
+
+.preview-btn {
+    border-style: dashed;
 }
 
 .favStar {
@@ -464,3 +500,41 @@ p {
     80% { transform: translate(4px); }
     100% { transform: translate(0px); }
 }
+
+input[type="range"] {
+    -webkit-appearance: none;
+    margin-left: 15px;
+    height: 7px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+    background-image: linear-gradient(#816eff, #816eff);
+    background-size: 25%;
+    background-repeat: no-repeat;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #6b54fc;
+    cursor: ew-resize;
+    box-shadow: 0 0 2px 0 #555;
+  }
+  
+  input[type=range]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #6b54fc;
+    cursor: ew-resize;
+    box-shadow: 0 0 2px 0 #555;
+  }
