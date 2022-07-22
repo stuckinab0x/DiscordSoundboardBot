@@ -93,7 +93,7 @@ app.post('/api/addsound', upload.single('sound-file'), async (req, res) => {
 
 app.get('/api/preview', async (req, res) => {
   const sound = await soundsService.getSound(String(req.query.soundName));
-  const readStream = fs.createReadStream(`../bot/sounds/${ sound.file.fullName }`);
+  const readStream = fs.createReadStream(`${ environment.soundsDirectory }/${ sound.file.fullName }`);
   readStream.on('open', () => readStream.pipe(res));
   readStream.on('close', () => res.end());
 });
