@@ -7,7 +7,7 @@
   "private": true,
   "homepage": "https://github.com/UncleDave/DiscordSoundboardBot",
   "scripts": {
-    "start": "ts-node -s -T src/index.ts",
+    "start": "ts-node -T src/index.ts",
     "start:dev": "ts-node-dev --poll --respawn -s src/index.ts",
     "build": "tsc"
   },
