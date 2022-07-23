@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node -T src/server.ts",
     "start:dev": "ts-node-dev --poll --respawn src/server & webpack",
-    "build": "tsc && webpack"
+    "build": "tsc && webpack",
+    "build:web": "webpack"
   },
   "keywords": [],
   "author": "",
