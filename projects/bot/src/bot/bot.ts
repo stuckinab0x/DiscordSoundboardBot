@@ -101,7 +101,7 @@ export default class Bot {
       logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, this.context.soundQueue.length);
 
       const soundFileUrl = `${ this.environment.soundsBaseUrl }/${ current.sound.file.fullName }`;
-      logger.debug('Attempting to play file "%s"', soundFileUrl);
+      logger.info('Attempting to play file "%s"', soundFileUrl);
 
       let soundStream: Readable;
 
