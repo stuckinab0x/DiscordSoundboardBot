@@ -10,13 +10,15 @@ export class FilesService {
     this.soundsContainerClient = blobServiceClient.getContainerClient('sounds');
   }
 
-  async saveFile(name: string, file: SaveableSoundFile): Promise<void> {
+  async saveFile(name: string, file: SaveableSoundFile, mimeType: string): Promise<void> {
     const blockBlobClient = await this.getBlockBlobClient(name);
 
     if (file instanceof Readable)
       await blockBlobClient.uploadStream(file);
     else
       await blockBlobClient.uploadData(file);
+
+    await blockBlobClient.setHTTPHeaders({ blobContentType: mimeType });
   }
 
   async deleteFile(name: string): Promise<void> {

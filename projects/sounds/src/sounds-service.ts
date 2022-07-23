@@ -1,7 +1,7 @@
 import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import sanitize from 'sanitize-filename';
-import fileType from 'file-type';
+import fileType, { FileTypeResult } from 'file-type';
 import { Readable } from 'node:stream';
 import { Sound, SoundFile } from './sound';
 import { SoundDocument } from './sound-document';
@@ -76,6 +76,11 @@ export class ReadOnlySoundsService {
   }
 }
 
+interface FileTypeResultWrapper<T extends Readable | Buffer> {
+  fileTypeResult?: FileTypeResult;
+  file: T;
+}
+
 export class SoundsService extends ReadOnlySoundsService {
   private static readonly validFileExtensions = ['wav', 'mp3', 'webm', 'ogg'];
 
@@ -90,14 +95,14 @@ export class SoundsService extends ReadOnlySoundsService {
   }
 
   async addSound({ name, file }: AddSoundOptions): Promise<void> {
-    const fileTypeResult = file instanceof Readable ? await fileType.fromStream(file) : await fileType.fromBuffer(file);
+    const { fileTypeResult, file: cleanFile } = file instanceof Readable ? await SoundsService.determineStreamFileType(file) : await SoundsService.determineBufferFileType(file);
 
     if (!fileTypeResult || SoundsService.validFileExtensions.indexOf(fileTypeResult.ext) === -1)
       throw new Error(errors.unsupportedFileExtension);
 
     const uniqueFileName = `${ sanitize(name) }.${ uuidv4() }.${ fileTypeResult.ext }`;
 
-    await this.filesService.saveFile(uniqueFileName, file);
+    await this.filesService.saveFile(uniqueFileName, cleanFile, fileTypeResult.mime);
 
     try {
       const collection = await this.soundsCollection;
@@ -110,5 +115,24 @@ export class SoundsService extends ReadOnlySoundsService {
 
       throw error;
     }
+  }
+
+  private static async determineStreamFileType(stream: Readable): Promise<FileTypeResultWrapper<Readable>> {
+    const streamWithFileType = await fileType.stream(stream);
+    const fileTypeResult = streamWithFileType.fileType;
+
+    return {
+      file: streamWithFileType,
+      fileTypeResult,
+    };
+  }
+
+  private static async determineBufferFileType(buffer: Buffer): Promise<FileTypeResultWrapper<Buffer>> {
+    const fileTypeResult = await fileType.fromBuffer(buffer);
+
+    return {
+      file: buffer,
+      fileTypeResult,
+    };
   }
 }
