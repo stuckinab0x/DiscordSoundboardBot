@@ -29,6 +29,20 @@ services:
   db:
     image: mongo
     volumes:
-      - ./data:/data/db
+      - db:/data/db
+      - db:/data/configdb
     ports:
       - "27017:27017"
+
+  blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: azurite --blobHost 0.0.0.0 -l /workspace
+    volumes:
+      - azurite:/workspace
+      - azurite:/data
+    ports:
+      - "10000:10000"
+
+volumes:
+  db:
+  azurite:

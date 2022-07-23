@@ -12,6 +12,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.9.0",
     "applicationinsights": "^2.3.3",
     "axios": "^0.27.2",
@@ -27,7 +28,6 @@
     "winston": "^3.8.1"
   },
   "optionalDependencies": {
-    "@discordjs/opus": "^0.8.0",
     "bufferutil": "^4.0.6",
     "erlpack": "git+https://github.com/discord/erlpack.git",
     "utf-8-validate": "^5.0.9",

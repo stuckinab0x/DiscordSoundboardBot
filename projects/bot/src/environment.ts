@@ -4,4 +4,5 @@ export default interface Environment {
   homeGuildId: string;
   apiKey: string;
   soundsConnectionString: string;
+  soundsBaseUrl: string;
 }

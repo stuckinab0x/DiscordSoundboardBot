@@ -27,7 +27,8 @@ const volume = document.getElementById('preview-volume');
 
 async function previewSound(soundButton) {
   try {
-    const audioRes = await fetch(`/api/preview?soundName=${ soundButton.parentElement.dataset.soundName }`, { headers: { 'Content-Type': 'text/plain' } });
+    const soundUrl = await fetch(`/api/preview?soundName=${ soundButton.parentElement.dataset.soundName }`, { headers: { 'Content-Type': 'text/plain' } });
+    const audioRes = await fetch(await soundUrl.text());
     const resBuffer = await audioRes.arrayBuffer();
     const context = new AudioContext();
     const gain = context.createGain();

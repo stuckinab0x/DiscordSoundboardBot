@@ -1,10 +1,11 @@
 import { Client, Intents, Interaction, VoiceState } from 'discord.js';
 import { DiscordGatewayAdapterCreator, joinVoiceChannel } from '@discordjs/voice';
 import { ReadOnlySoundsService } from 'botman-sounds';
+import axios from 'axios';
+import { Readable } from 'node:stream';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
-import constants from './constants';
 import SoundRequestServer from './ui-server';
 import Environment from '../environment';
 
@@ -99,9 +100,25 @@ export default class Bot {
       this.context.botAudioPlayer.subscribe(connection);
       logger.info('Playing sound "%s", %s sounds in the queue.', current.sound.name, this.context.soundQueue.length);
 
-      const soundFileName = constants.soundsDirectory + current.sound.file.fullName;
+      const soundFileUrl = `${ this.environment.soundsBaseUrl }/${ current.sound.file.fullName }`;
+      logger.debug('Attempting to play file "%s"', soundFileUrl);
+
+      let soundStream: Readable;
+
+      try {
+        // This probably isn't a Readable, but it seems to work as one and Axios is providing no help.
+        // eslint-disable-next-line no-await-in-loop
+        const soundStreamResponse = await axios.get<Readable>(soundFileUrl, { responseType: 'stream' });
+        soundStream = soundStreamResponse.data;
+      } catch (e) {
+        logger.error('Failed to get sound "%s"', soundFileUrl);
+        logger.error(e);
+        this.context.currentSound = undefined;
+        continue;
+      }
+
       // eslint-disable-next-line no-await-in-loop
-      await this.context.botAudioPlayer.play(soundFileName);
+      await this.context.botAudioPlayer.play(soundStream);
       this.context.currentSound = undefined;
     }
 

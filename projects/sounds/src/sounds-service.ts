@@ -1,24 +1,30 @@
 import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
+import { v4 as uuidv4 } from 'uuid';
+import sanitize from 'sanitize-filename';
+import fileType from 'file-type';
+import { Readable } from 'node:stream';
 import { Sound, SoundFile } from './sound';
 import { SoundDocument } from './sound-document';
 import { FilesService } from './files-service';
 import { errors } from './errors';
+import { SaveableSoundFile } from './saveable-sound-file';
 
 export interface AddSoundOptions {
   name: string;
-  fileName: string;
-  fileStream: NodeJS.ReadableStream;
+  file: SaveableSoundFile;
 }
 
 export class ReadOnlySoundsService {
   private static readonly soundFindOptions: FindOptions<SoundDocument> = { projection: { _id: 0 } };
 
   protected readonly soundsCollection: Promise<Collection<SoundDocument>>;
+  private readonly mongoClient: MongoClient;
 
   constructor(connectionUri: string) {
     if (!connectionUri) throw new Error('Couldn\'t instantiate SoundsService: connectionUri must be provided');
 
-    this.soundsCollection = new MongoClient(connectionUri).connect().then(x => x.db('botman').collection('sounds'));
+    this.mongoClient = new MongoClient(connectionUri);
+    this.soundsCollection = this.mongoClient.connect().then(x => x.db('botman').collection('sounds'));
   }
 
   async getSound(name: string): Promise<Sound | null> {
@@ -36,6 +42,10 @@ export class ReadOnlySoundsService {
 
   searchSounds(searchTerm: string): Promise<Sound[]> {
     return this.find({ name: new RegExp(`^${ searchTerm }`, 'i') });
+  }
+
+  close(): Promise<void> {
+    return this.mongoClient.close();
   }
 
   private async find(filter: Filter<SoundDocument> = {}): Promise<Sound[]> {
@@ -67,31 +77,33 @@ export class ReadOnlySoundsService {
 }
 
 export class SoundsService extends ReadOnlySoundsService {
+  private static readonly validFileExtensions = ['wav', 'mp3', 'webm', 'ogg'];
+
   private readonly filesService: FilesService;
 
-  constructor(connectionUri: string, filesPath: string) {
+  constructor(connectionUri: string, blobStorageConnectionString: string) {
     super(connectionUri);
 
-    if (!filesPath) throw new Error('Couldn\'t instantiate SoundsService: filesPath must be provided');
+    if (!blobStorageConnectionString) throw new Error('Couldn\'t instantiate SoundsService: blobStorageConnectionString must be provided');
 
-    this.filesService = new FilesService(filesPath);
+    this.filesService = new FilesService(blobStorageConnectionString);
   }
 
-  async addSound({ name, fileName, fileStream }: AddSoundOptions): Promise<void> {
-    try {
-      await this.filesService.saveFile(fileName, fileStream);
-    } catch (error: any) {
-      if (error.code === 'EEXIST')
-        throw new Error(errors.soundAlreadyExists);
+  async addSound({ name, file }: AddSoundOptions): Promise<void> {
+    const fileTypeResult = file instanceof Readable ? await fileType.fromStream(file) : await fileType.fromBuffer(file);
 
-      throw error;
-    }
+    if (!fileTypeResult || SoundsService.validFileExtensions.indexOf(fileTypeResult.ext) === -1)
+      throw new Error(errors.unsupportedFileExtension);
+
+    const uniqueFileName = `${ sanitize(name) }.${ uuidv4() }.${ fileTypeResult.ext }`;
+
+    await this.filesService.saveFile(uniqueFileName, file);
 
     try {
       const collection = await this.soundsCollection;
-      await collection.insertOne({ name, fileName });
+      await collection.insertOne({ name, fileName: uniqueFileName });
     } catch (error: any) {
-      await this.filesService.deleteFile(fileName);
+      await this.filesService.deleteFile(uniqueFileName);
 
       if (error.code === 11000)
         throw new Error(errors.soundAlreadyExists);

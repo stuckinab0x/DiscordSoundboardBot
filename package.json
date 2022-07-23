@@ -6,7 +6,8 @@
     "lint": "eslint \"**/*{js,ts}\""
   },
   "workspaces": [
-    "projects/*"
+    "projects/*",
+    "scripts"
   ],
   "dependencies": {
     "@tsconfig/node17": "^1.0.0"

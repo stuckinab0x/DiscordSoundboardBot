@@ -1,7 +1,7 @@
 import { BaseGuildVoiceChannel } from 'discord.js';
 import { createAudioPlayer, createAudioResource, AudioPlayerStatus, VoiceConnection } from '@discordjs/voice';
 import { Sound, ReadOnlySoundsService } from 'botman-sounds';
-import logger from '../logger';
+import { Readable } from 'node:stream';
 
 export interface SoundQueueItem {
   sound: Sound;
@@ -52,9 +52,8 @@ class BotAudioPlayer {
     connection.subscribe(this.player);
   }
 
-  play(fileName: string): Promise<any> {
-    logger.debug('Attempting to play file %s', fileName);
-    const resource = createAudioResource(fileName);
+  play(stream: Readable): Promise<any> {
+    const resource = createAudioResource(stream);
     this.player.play(resource);
     return new Promise(resolve => {
       this.player.on(AudioPlayerStatus.Idle, resolve);

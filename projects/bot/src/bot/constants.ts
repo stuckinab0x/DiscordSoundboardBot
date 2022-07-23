@@ -1,4 +1,1 @@
-export default {
-  soundsDirectory: './sounds/',
-  soundFileExtensions: ['.mp3', '.wav', '.ogg', '.webm'],
-};
+export default { soundFileExtensions: ['.mp3', '.wav', '.ogg', '.webm'] };

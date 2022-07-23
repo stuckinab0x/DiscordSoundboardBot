@@ -1,27 +1,31 @@
-import fs, { promises as fsPromises } from 'node:fs';
-import { join } from 'node:path';
+import { BlobServiceClient, BlockBlobClient, ContainerClient } from '@azure/storage-blob';
+import { Readable } from 'node:stream';
+import { SaveableSoundFile } from './saveable-sound-file';
 
 export class FilesService {
-  constructor(private readonly directory: string) {}
+  private readonly soundsContainerClient: ContainerClient;
 
-  saveFile(name: string, fileStream: NodeJS.ReadableStream): Promise<void> {
-    return new Promise((resolve, reject) => {
-      fileStream.pipe(
-        fs.createWriteStream(join(this.directory, name), { flags: 'wx' })
-          .on('error', (error: NodeJS.ErrnoException) => {
-            if (error.code === 'ENOENT')
-              fs.mkdir(this.directory, () => this.saveFile(name, fileStream).then(() => resolve()));
-            else
-              reject(error);
-          })
-          .on('finish', () => {
-            resolve();
-          }),
-      );
-    });
+  constructor(blobStorageConnectionString: string) {
+    const blobServiceClient = BlobServiceClient.fromConnectionString(blobStorageConnectionString);
+    this.soundsContainerClient = blobServiceClient.getContainerClient('sounds');
   }
 
-  deleteFile(name: string): Promise<void> {
-    return fsPromises.rm(join(this.directory, name), { force: true });
+  async saveFile(name: string, file: SaveableSoundFile): Promise<void> {
+    const blockBlobClient = await this.getBlockBlobClient(name);
+
+    if (file instanceof Readable)
+      await blockBlobClient.uploadStream(file);
+    else
+      await blockBlobClient.uploadData(file);
+  }
+
+  async deleteFile(name: string): Promise<void> {
+    const blockBlobClient = await this.getBlockBlobClient(name);
+    await blockBlobClient.delete();
+  }
+
+  private async getBlockBlobClient(name: string): Promise<BlockBlobClient> {
+    await this.soundsContainerClient.createIfNotExists({ access: 'blob' });
+    return this.soundsContainerClient.getBlockBlobClient(name);
   }
 }

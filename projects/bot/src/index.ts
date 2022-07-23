@@ -24,6 +24,7 @@ if (
   && isEnvironmentVariableValid(process.env.HOME_GUILD_ID, 'HOME_GUILD_ID')
   && isEnvironmentVariableValid(process.env.API_KEY, 'API_KEY')
   && isEnvironmentVariableValid(process.env.SOUNDS_CONNECTION_STRING, 'SOUNDS_CONNECTION_STRING')
+  && isEnvironmentVariableValid(process.env.SOUNDS_BASE_URL, 'SOUNDS_BASE_URL')
 ) {
   const environment: Environment = {
     environment: process.env.NODE_ENV || 'development',
@@ -31,6 +32,7 @@ if (
     homeGuildId: process.env.HOME_GUILD_ID,
     apiKey: process.env.API_KEY,
     soundsConnectionString: process.env.SOUNDS_CONNECTION_STRING,
+    soundsBaseUrl: process.env.SOUNDS_BASE_URL,
   };
 
   logger.info('Starting in %s environment', environment.environment);
