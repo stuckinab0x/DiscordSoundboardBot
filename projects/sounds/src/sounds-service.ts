@@ -41,7 +41,7 @@ export class ReadOnlySoundsService {
   }
 
   searchSounds(searchTerm: string): Promise<Sound[]> {
-    return this.find({ name: new RegExp(`^${ searchTerm }`, 'i') });
+    return this.find({ name: new RegExp(searchTerm, 'i') });
   }
 
   close(): Promise<void> {
