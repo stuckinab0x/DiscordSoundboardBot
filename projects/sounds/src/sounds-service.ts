@@ -56,6 +56,7 @@ export class ReadOnlySoundsService extends MongoService {
       id: document._id.toString(),
       name: document.name,
       file: ReadOnlySoundsService.mapFileNameToSoundFile(document.fileName),
+      createdAt: document.createdAt,
     };
   }
 
@@ -100,7 +101,7 @@ export class SoundsService extends ReadOnlySoundsService {
 
     try {
       const collection = await this.soundsCollection;
-      await collection.insertOne({ _id: new ObjectId(), name, fileName: uniqueFileName });
+      await collection.insertOne({ _id: new ObjectId(), name, fileName: uniqueFileName, createdAt: new Date() });
     } catch (error: any) {
       await this.filesService.deleteFile(uniqueFileName);
 
