@@ -18,5 +18,7 @@ const soundsService = new SoundsService(
     return soundsService.addSound({ name, file: createReadStream(path.join(soundsDirectory, fileName)) });
   }));
 
-  await soundsService.close();
+  // Script won't end due to mongo connections still being open.
+  // ¯\_(ツ)_/¯
+  process.exit();
 }());

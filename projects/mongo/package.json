@@ -1,6 +1,7 @@
 {
   "name": "botman-mongo",
   "version": "1.0.0",
+  "main": "src/index.ts",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -8,6 +9,7 @@
     "down": "migrate-mongo down"
   },
   "dependencies": {
-    "migrate-mongo": "^9.0.0"
+    "migrate-mongo": "^9.0.0",
+    "mongodb": "^4.8.0"
   }
 }

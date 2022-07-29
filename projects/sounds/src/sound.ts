@@ -5,6 +5,7 @@ export interface SoundFile {
 }
 
 export interface Sound {
+  id: string;
   name: string;
   file: SoundFile;
 }

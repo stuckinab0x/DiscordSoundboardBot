@@ -1,33 +1,25 @@
-export async function loadSounds(userFavorites) {
-  try {
-    const soundsResponse = await fetch('/api/soundlist');
-    const soundList = await soundsResponse.json();
-    soundList.forEach(i => {
-      const div = document.createElement('div');
-      const btn = document.createElement('button');
-      const fav = document.createElement('span');
-      fav.classList.add('material-icons', 'favStar', 'icon-btn');
-      if (userFavorites.list.find(x => x === i)) {
-        div.classList.add('fav');
-        fav.innerHTML = 'star';
-        fav.classList.add('fav-set');
-      } else {
-        fav.innerHTML = 'star_outline';
-      }
-      btn.innerHTML = i;
-      btn.classList.add('btn', 'sound-btn');
-      div.dataset.soundName = i;
-      div.classList.add('sound-tile');
-      div.appendChild(btn);
-      div.appendChild(fav);
-      document.getElementById('btn-container').appendChild(div);
-    });
-  } catch (error) {
-    console.error(error);
-    document.getElementById('body').classList.add('body-error');
-    document.getElementById('error-container').classList.add('message-container-show');
-    document.getElementById('search-container').classList.add('search-hide');
-  }
+export async function loadSoundData(data) {
+  data.soundList.forEach(i => {
+    const div = document.createElement('div');
+    const btn = document.createElement('button');
+    const fav = document.createElement('span');
+    fav.classList.add('material-icons', 'favStar', 'icon-btn');
+    if (data.favorites.find(x => x === i.id)) {
+      div.classList.add('fav');
+      fav.innerHTML = 'star';
+      fav.classList.add('fav-set');
+    } else {
+      fav.innerHTML = 'star_outline';
+    }
+    btn.innerHTML = i.name;
+    btn.classList.add('btn', 'sound-btn');
+    div.dataset.id = i.id;
+    div.dataset.soundName = i.name;
+    div.classList.add('sound-tile');
+    div.appendChild(btn);
+    div.appendChild(fav);
+    document.getElementById('btn-container').appendChild(div);
+  });
 }
 
 export function searchFilter(cancelButton = false) {

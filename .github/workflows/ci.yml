@@ -22,6 +22,9 @@ jobs:
       - name: Build sounds
         working-directory: projects/sounds
         run: yarn run build
+      - name: Build users
+        working-directory: projects/users
+        run: yarn run build
       - name: Build bot
         working-directory: projects/bot
         run: yarn run build

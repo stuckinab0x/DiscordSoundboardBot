@@ -1,5 +1,5 @@
 {
-  "name": "botman-sounds",
+  "name": "botman-users",
   "version": "1.0.0",
   "main": "src/index.ts",
   "license": "MIT",
@@ -8,16 +8,11 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@azure/storage-blob": "^12.11.0",
     "botman-mongo": "^1.0.0",
-    "file-type": "^16.5.4",
-    "mongodb": "^4.8.0",
-    "uuid": "^8.3.2",
-    "sanitize-filename": "^1.6.3"
+    "mongodb": "^4.8.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.44",
-    "@types/uuid": "^8.3.4",
     "typescript": "^4.7.4"
   }
 }

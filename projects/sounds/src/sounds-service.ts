@@ -1,8 +1,9 @@
-import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
+import { Collection, Filter, ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import sanitize from 'sanitize-filename';
 import fileType, { FileTypeResult } from 'file-type';
 import { Readable } from 'node:stream';
+import { MongoService } from 'botman-mongo';
 import { Sound, SoundFile } from './sound';
 import { SoundDocument } from './sound-document';
 import { FilesService } from './files-service';
@@ -14,22 +15,18 @@ export interface AddSoundOptions {
   file: SaveableSoundFile;
 }
 
-export class ReadOnlySoundsService {
-  private static readonly soundFindOptions: FindOptions<SoundDocument> = { projection: { _id: 0 } };
-
+export class ReadOnlySoundsService extends MongoService {
   protected readonly soundsCollection: Promise<Collection<SoundDocument>>;
-  private readonly mongoClient: MongoClient;
 
   constructor(connectionUri: string) {
-    if (!connectionUri) throw new Error('Couldn\'t instantiate SoundsService: connectionUri must be provided');
+    super(connectionUri);
 
-    this.mongoClient = new MongoClient(connectionUri);
-    this.soundsCollection = this.mongoClient.connect().then(x => x.db('botman').collection('sounds'));
+    this.soundsCollection = this.db.then(db => db.collection('sounds'));
   }
 
   async getSound(name: string): Promise<Sound | null> {
     const collection = await this.soundsCollection;
-    const document = await collection.findOne({ name }, ReadOnlySoundsService.soundFindOptions);
+    const document = await collection.findOne({ name });
 
     if (!document) return null;
 
@@ -44,15 +41,11 @@ export class ReadOnlySoundsService {
     return this.find({ name: new RegExp(searchTerm, 'i') });
   }
 
-  close(): Promise<void> {
-    return this.mongoClient.close();
-  }
-
   private async find(filter: Filter<SoundDocument> = {}): Promise<Sound[]> {
     const collection = await this.soundsCollection;
 
     return collection
-      .find(filter, { ...ReadOnlySoundsService.soundFindOptions, collation: { locale: 'en', strength: 2 } })
+      .find(filter, { collation: { locale: 'en', strength: 2 } })
       .sort({ name: 1 })
       .map(ReadOnlySoundsService.mapSoundDocumentToSound)
       .toArray();
@@ -60,6 +53,7 @@ export class ReadOnlySoundsService {
 
   private static mapSoundDocumentToSound(document: SoundDocument): Sound {
     return {
+      id: document._id.toString(),
       name: document.name,
       file: ReadOnlySoundsService.mapFileNameToSoundFile(document.fileName),
     };
@@ -106,7 +100,7 @@ export class SoundsService extends ReadOnlySoundsService {
 
     try {
       const collection = await this.soundsCollection;
-      await collection.insertOne({ name, fileName: uniqueFileName });
+      await collection.insertOne({ _id: new ObjectId(), name, fileName: uniqueFileName });
     } catch (error: any) {
       await this.filesService.deleteFile(uniqueFileName);
 

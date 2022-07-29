@@ -385,7 +385,7 @@ p {
     font-weight: bold;
     display: flex;
     justify-content: center;
-    margin-top: 30px;
+    margin: 30px 4vw 0px;
 }
 
 .preview-instructions {
@@ -410,6 +410,7 @@ p {
 @media only screen and (max-width: 780px) {
     .btn-container {
         padding: 8px 0px;
+        margin: 0px 8px;
     }
 }
 

@@ -1,15 +1,22 @@
 import Cookies from 'js-cookies';
-import { loadSounds, searchFilter } from './utils';
-import Favorites from './favorites';
+import { loadSoundData, searchFilter } from './utils';
+import './favorites';
 import './sound-playback';
 import './addsound';
-
-const favorites = new Favorites();
 
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('username').innerHTML = Cookies.getItem('username');
   document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${ Cookies.getItem('userid') }/${ Cookies.getItem('avatar') }.png`;
-  loadSounds(favorites);
+  try {
+    const soundsRes = await fetch('/api/soundlist');
+    const data = await soundsRes.json();
+    loadSoundData(data);
+  } catch (error) {
+    console.error(error);
+    document.body.classList.add('body-error');
+    document.getElementById('error-container').classList.add('message-container-show');
+    document.getElementById('search-container').classList.add('search-hide');
+  }
 });
 
 document.addEventListener('click', e => {
