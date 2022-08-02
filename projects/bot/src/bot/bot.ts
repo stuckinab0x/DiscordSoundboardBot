@@ -6,7 +6,7 @@ import { Readable } from 'node:stream';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
-import SoundRequestServer from './ui-server';
+import SoundRequestServer from './sound-request-server';
 import Environment from '../environment';
 
 export default class Bot {

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { RequestHandler } from 'express';
 import environment from './environment';
 
-const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
+const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.webServerURL) }&response_type=code&scope=identify&prompt=none`;
 
 const discordAuth: RequestHandler = async (req, res, next) => {
   let userReqToken = req.cookies.accesstoken ?? null;
@@ -15,7 +15,7 @@ const discordAuth: RequestHandler = async (req, res, next) => {
     });
     if (req.query.code) {
       params.append('code', String(req.query.code));
-      params.append('redirect_uri', environment.UIServerURL);
+      params.append('redirect_uri', environment.webServerURL);
     } else { params.append('refresh_token', req.cookies.refreshtoken); }
     try {
       const tokenRes = await axios.post('https://discord.com/api/oauth2/token', params);

@@ -13,13 +13,13 @@ services:
     ports:
       - "8000:80"
 
-  ui:
+  web:
     build:
-      dockerfile: projects/ui-server/Dockerfile
+      dockerfile: projects/web/Dockerfile
       context: .
       args:
         NODE_ENV: development
-    env_file: projects/ui-server/.env
+    env_file: projects/web/.env
     volumes:
       - ./projects:/app/projects
     entrypoint: [ "yarn", "run", "start:dev" ]

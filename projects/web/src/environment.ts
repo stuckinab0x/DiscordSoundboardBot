@@ -4,7 +4,7 @@ export default {
   clientSecret: process.env.CLIENT_SECRET,
   botURL: process.env.BOT_URL,
   botApiKey: process.env.BOT_API_KEY,
-  UIServerURL: process.env.UI_SERVER_URL,
+  webServerURL: process.env.WEB_SERVER_URL,
   port: process.env.PORT ?? 80,
   dbConnectionString: process.env.DB_CONNECTION_STRING,
   blobStorageConnectionString: process.env.BLOB_STORAGE_CONNECTION_STRING,

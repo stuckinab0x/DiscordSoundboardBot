@@ -22,7 +22,7 @@ const app = express();
 const serveStatic = express.static('src/public', { extensions: ['html'] });
 
 app.use(cookieParser());
-app.use(cors({ origin: environment.UIServerURL }));
+app.use(cors({ origin: environment.webServerURL }));
 app.use(express.text());
 const upload = multer();
 
@@ -131,5 +131,5 @@ app.get('/api/preview', async (req, res) => {
 app.use(serveStatic);
 
 app.listen(environment.port, () => {
-  console.log(`ui-server listening on port ${ environment.port }`);
+  console.log(`web server listening on port ${ environment.port }`);
 });

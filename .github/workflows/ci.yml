@@ -28,8 +28,8 @@ jobs:
       - name: Build bot
         working-directory: projects/bot
         run: yarn run build
-      - name: Build ui
-        working-directory: projects/ui-server
+      - name: Build web
+        working-directory: projects/web
         run: yarn run build
       - name: Lint
         run: yarn run lint
@@ -73,7 +73,7 @@ jobs:
           tags: uncledave/botman:latest
           file: projects/bot/Dockerfile
 
-  deploy-ui:
+  deploy-web:
     if: github.ref_name == 'master'
     needs: migrate-database
     runs-on: ubuntu-latest
@@ -89,5 +89,5 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: uncledave/botman-ui:latest
-          file: projects/ui-server/Dockerfile
+          tags: uncledave/botman-web:latest
+          file: projects/web/Dockerfile
