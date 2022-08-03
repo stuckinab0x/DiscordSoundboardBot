@@ -1,3 +1,5 @@
+import { loadSoundData } from './utils';
+
 const addSoundButton = document.getElementById('add-sound-button');
 const addSoundDialog = document.getElementById('add-sound-dialog');
 const fileInput = document.getElementById('file-upload');
@@ -32,7 +34,11 @@ async function addSound() {
     addSoundDialog.classList.add('add-sound-displace', 'btn-green');
     fileInput.disabled = true;
     nameInput.disabled = true;
-    setTimeout(() => {
+    setTimeout(async () => {
+      Array.from(document.getElementById('btn-container').children).forEach(i => i.remove());
+      const soundsRes = await fetch('/api/soundlist');
+      const data = await soundsRes.json();
+      loadSoundData(data);
       addSoundButton.classList.remove('btn-green');
       addSoundButton.classList.add('btn');
       fileInput.value = null;
