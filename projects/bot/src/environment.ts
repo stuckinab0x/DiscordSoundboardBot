@@ -5,4 +5,5 @@ export default interface Environment {
   apiKey: string;
   soundsConnectionString: string;
   soundsBaseUrl: string;
+  blobStorageConnectionString: string;
 }

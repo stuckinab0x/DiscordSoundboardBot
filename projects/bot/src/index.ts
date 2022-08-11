@@ -25,6 +25,7 @@ if (
   && isEnvironmentVariableValid(process.env.API_KEY, 'API_KEY')
   && isEnvironmentVariableValid(process.env.SOUNDS_CONNECTION_STRING, 'SOUNDS_CONNECTION_STRING')
   && isEnvironmentVariableValid(process.env.SOUNDS_BASE_URL, 'SOUNDS_BASE_URL')
+  && isEnvironmentVariableValid(process.env.BLOB_STORAGE_CONNECTION_STRING, 'BLOB_STORAGE_CONNECTION_STRING')
 ) {
   const environment: Environment = {
     environment: process.env.NODE_ENV || 'development',
@@ -33,6 +34,7 @@ if (
     apiKey: process.env.API_KEY,
     soundsConnectionString: process.env.SOUNDS_CONNECTION_STRING,
     soundsBaseUrl: process.env.SOUNDS_BASE_URL,
+    blobStorageConnectionString: process.env.BLOB_STORAGE_CONNECTION_STRING,
   };
 
   logger.info('Starting in %s environment', environment.environment);
