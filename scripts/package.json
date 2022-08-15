@@ -1,7 +1,6 @@
 {
   "name": "botman-scripts",
   "version": "1.0.0",
-  "license": "MIT",
   "private": true,
   "dependencies": {
     "@azure/storage-blob": "^12.11.0",

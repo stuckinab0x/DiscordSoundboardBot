@@ -1,11 +1,7 @@
 {
   "name": "botman",
   "version": "1.0.0",
-  "repository": "https://github.com/UncleDave/DiscordSoundboardBot.git",
-  "author": "Dave Pringle <3244206+UncleDave@users.noreply.github.com>",
-  "license": "MIT",
   "private": true,
-  "homepage": "https://github.com/UncleDave/DiscordSoundboardBot",
   "scripts": {
     "start": "ts-node -T src/index.ts",
     "start:dev": "ts-node-dev --poll --respawn -s src/index.ts",

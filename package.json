@@ -1,4 +1,7 @@
 {
+  "repository": "https://github.com/UncleDave/DiscordSoundboardBot.git",
+  "homepage": "https://github.com/UncleDave/DiscordSoundboardBot",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start:docker": "docker-compose up",

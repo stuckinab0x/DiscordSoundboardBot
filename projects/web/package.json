@@ -1,17 +1,14 @@
 {
   "name": "botman-web",
   "version": "1.0.0",
-  "description": "",
   "main": "src/server.ts",
+  "private": true,
   "scripts": {
     "start": "ts-node -T src/server.ts",
     "start:dev": "ts-node-dev --poll --respawn src/server & webpack",
     "build": "tsc && webpack",
     "build:web": "webpack"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "applicationinsights": "^2.3.3",
     "axios": "^0.27.2",
