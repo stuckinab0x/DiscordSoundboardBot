@@ -1,6 +1,6 @@
 import { CommandInteraction } from 'discord.js';
+import { pickRandom } from 'botman-utils';
 import Command from './command';
-import { pickRandom } from '../utils';
 
 const headMsg = [
   { description: 'You\'re in WINNERS QUEUE BABYYYYYYY' },
@@ -34,4 +34,5 @@ export class CoinCommand extends Command {
     return interaction.reply({ embeds: [{ title: 'Tails', ...pickRandom(tailMsg), color: '#ff4242' }] });
   }
 }
+
 export default new CoinCommand();

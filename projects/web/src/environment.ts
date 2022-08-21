@@ -9,4 +9,9 @@ export default {
   dbConnectionString: process.env.DB_CONNECTION_STRING,
   blobStorageConnectionString: process.env.BLOB_STORAGE_CONNECTION_STRING,
   soundsBaseUrl: process.env.SOUNDS_BASE_URL,
+  pubnub: {
+    publishKey: process.env.PUBNUB_PUBLISH_KEY,
+    subscribeKey: process.env.PUBNUB_SUBSCRIBE_KEY,
+    secretKey: process.env.PUBNUB_SECRET_KEY,
+  },
 };

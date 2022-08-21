@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@azure/storage-blob": "^12.11.0",
-    "botman-sounds": "^1.0.0",
+    "botman-sounds": "1.0.0",
     "ts-node": "^10.9.1"
   }
 }

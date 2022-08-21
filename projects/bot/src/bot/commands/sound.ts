@@ -1,8 +1,8 @@
 import { ButtonInteraction, CommandInteraction, GuildMember, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { Sound } from 'botman-sounds';
+import { pickRandom } from 'botman-utils';
 import logger from '../../logger';
 import BotContext from '../bot-context';
-import { pickRandom } from '../utils';
 import Command from './command';
 
 const insults = ['dingus', 'doofus', 'dumb dumb'];
