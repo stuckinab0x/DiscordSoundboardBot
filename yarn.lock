@@ -354,10 +354,10 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@tsconfig/node17@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@tsconfig/node17/-/node17-1.0.1.tgz#4ae6a47e6bfd0bd611c3c45abf3e00cbed495200"
-  integrity sha512-7ljt18E5Bq/LmNI30xwGVUkSH3jbmLqYfju6MaI/X35rm3ia4g22zOzvMryGDDdZ9CmDQ+jgdPuH7fwj1XNgEQ==
+"@tsconfig/node17@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@tsconfig/node17/-/node17-1.0.2.tgz#72000fdf16ace97da2085cb698d54abda0c77854"
+  integrity sha512-L0dB4gaL8jtM7+J321MlPOTxJGhN4O3BSpd8nPTPzFHQa5BAIpm/FwIw05UyMXvUCrEDU11HNLDPawvUl6sV/Q==
 
 "@types/body-parser@*":
   version "1.19.2"
