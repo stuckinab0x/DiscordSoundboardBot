@@ -6,7 +6,7 @@
   "scripts": {
     "start:docker": "docker-compose up",
     "start:docker:build": "yarn run start:docker --build",
-    "lint": "eslint \"**/*{js,ts}\""
+    "lint": "eslint \"**/*{js,ts,tsx}\""
   },
   "workspaces": [
     "projects/*",

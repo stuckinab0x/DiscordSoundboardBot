@@ -4,6 +4,7 @@
     "airbnb-typescript",
     "../../.eslintrc.json"
   ],
+  "ignorePatterns": ["/build/"],
   "rules": {
     "no-param-reassign": ["error", { "props": false }],
     "react/function-component-definition": "off",
