@@ -9,6 +9,6 @@
   },
   "dependencies": {
     "migrate-mongo": "^9.0.0",
-    "mongodb": "^4.11.0"
+    "mongodb": "^4.12.0"
   }
 }
