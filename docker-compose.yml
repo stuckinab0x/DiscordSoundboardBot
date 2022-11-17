@@ -26,6 +26,17 @@ services:
     ports:
       - "8080:80"
 
+  frontend:
+    build:
+      dockerfile: projects/frontend/Dockerfile
+      context: .
+    environment:
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./projects:/app/projects
+    ports:
+      - "3000:3000"
+
   db:
     image: mongo
     volumes:
