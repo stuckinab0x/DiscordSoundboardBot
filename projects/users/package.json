@@ -7,7 +7,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "botman-mongo": "^1.0.0",
+    "botman-mongo": "*",
     "mongodb": "^4.12.0"
   },
   "devDependencies": {

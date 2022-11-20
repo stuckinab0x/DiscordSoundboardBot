@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Lint
+        run: yarn run lint
+
+  mongo:
+    name: Build mongo
+    uses: ./.github/workflows/build-project.yml
+    with:
+      directory: projects/mongo
+
+  sounds:
+    name: Build sounds
+    uses: ./.github/workflows/build-project.yml
+    with:
+      directory: projects/sounds
+
+  users:
+    name: Build users
+    uses: ./.github/workflows/build-project.yml
+    with:
+      directory: projects/users
+
+  bot:
+    name: Build bot
+    uses: ./.github/workflows/build-project.yml
+    with:
+      directory: projects/bot
+
+  web:
+    name: Build web
+    uses: ./.github/workflows/build-project.yml
+    with:
+      directory: projects/web
+
+  frontend:
+    name: Build frontend
+    uses: ./.github/workflows/build-project.yml
+    with:
+      directory: projects/frontend
