@@ -1,26 +1,30 @@
 import React, { FC, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import theme from '../styles/theme';
 
 const sliderThumb = css`
   -webkit-appearance: none;
   height: 20px;
   width: 20px;
   border-radius: 50%;
-  background: #6b54fc;
+  background: ${ props => props.theme.colors.volumeSliderThumb };
   cursor: ew-resize;
   box-shadow: 0 0 2px 0 #555;
 `;
 
 const PreviewInstructionsMain = styled.div`
-  color: ${ theme.colors.borderDefault };
+  color: ${ props => props.theme.colors.borderDefault };
   display: flex;
   align-items: center;
   justify-content: left;
   flex-grow: 2;
 
   > p {
+    ${ props => props.theme.name === 'america' && `color: ${ props.theme.colors.buttonHover };` }
     margin: 0;
+    font-weight: bold;
+    text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
+
+    ${ props => props.theme.name === 'christmas' && 'filter: brightness(1.4) saturate(1.4);' }
   }
 
   > input[type="range"] {
@@ -29,7 +33,7 @@ const PreviewInstructionsMain = styled.div`
     height: 7px;
     background: rgba(255, 255, 255, 0.6);
     border-radius: 5px;
-    background-image: linear-gradient(#816eff, #816eff);
+    background-image: linear-gradient( ${ props => props.theme.colors.volumeSliderFill }, ${ props => props.theme.colors.volumeSliderFill } );
     background-size: 25%;
     background-repeat: no-repeat;
   }

@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import styled from 'styled-components';
-import theme from '../../styles/theme';
 import useUser from '../../hooks/use-user';
 import LogoutMenu from './LogoutMenu';
 
@@ -10,6 +9,7 @@ const AvatarContainerMain = styled.div`
   align-items: center;
   padding: 0px 20px 0px 7px;
   position: relative;
+  z-index: 50;
 
   @media only screen and (max-width: 780px) {
     margin: 0px 10px;
@@ -18,15 +18,15 @@ const AvatarContainerMain = styled.div`
   
   > img {
     border-radius: 50%;
-    border: 2px solid ${ theme.colors.borderDefault };
+    border: 2px solid ${ props => props.theme.colors.borderDefault };
     border-width: 2px;
     overflow: hidden;
-    box-shadow: 3px 3px 5px ${ theme.colors.shadowDefault };
+    box-shadow: 3px 3px 5px ${ props => props.theme.colors.shadowDefault };
     cursor: pointer;
   }
 
   > img:hover {
-    box-shadow: 0px 0px 3px 2.5px ${ theme.colors.borderDefault };
+    box-shadow: 0px 0px 3px 2.5px ${ props => props.theme.colors.borderDefault };
   }
 `;
 

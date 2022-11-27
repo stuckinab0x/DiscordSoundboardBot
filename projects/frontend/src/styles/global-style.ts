@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import theme from './theme';
+import { xmasPlaidBG, flagStripesBg } from './mixins';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -13,17 +13,21 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     color: white;
-    background-color: ${ theme.colors.bg };
+    background-color: ${ props => props.theme.colors.bg };
     display: flex;
     width: 100%;
     margin: 0;
+    overflow-x: hidden;
+
+    ${ props => props.theme.name === 'christmas' && xmasPlaidBG }
+    ${ props => props.theme.name === 'america' && flagStripesBg }
 
     #root {
       width: 100%;
     }
 
     h1 {
-      color: ${ theme.colors.borderDefault }
+      color: ${ props => props.theme.colors.borderDefault }
     }
   } 
 

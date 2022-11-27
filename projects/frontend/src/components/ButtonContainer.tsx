@@ -1,15 +1,18 @@
 import React, { FC, useCallback } from 'react';
 import useSWR from 'swr';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import SoundTile from './SoundTile';
 import Sound from '../models/sound';
+import FullMoon from './decorative/FullMoon';
 
 const ButtonContainerMain = styled.div`
   display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 0px 20px;
-    padding: 10px 15px 0px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0px 20px;
+  padding: 10px 15px 0px;
+  position: relative;
+  z-index: 0;
 
   @media only screen and (max-width: 780px) {
     padding: 8px 0px;
@@ -30,6 +33,7 @@ interface ButtonContainerProps {
 
 const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, previewRequest, sortRules: { favorites, small, searchTerm } }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
+  const theme = useTheme();
 
   const updateFavoritesRequest = useCallback(async (soundName: string) => {
     if (sounds) {
@@ -50,10 +54,21 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ preview, soundRequest, prev
   if (sounds)
     return (
       <ButtonContainerMain>
+        { theme.name === 'halloween' && <FullMoon /> }
         { sounds.map(x => {
           if (favorites && !x.isFavorite) return null;
           if (searchTerm && !x.name.toUpperCase().includes(searchTerm)) return null;
-          return <SoundTile key={ x.id } preview={ preview } small={ small } sound={ x } soundRequest={ soundRequest } previewRequest={ previewRequest } updateFavRequest={ updateFavoritesRequest } />;
+          return (
+            <SoundTile
+              key={ x.id }
+              preview={ preview }
+              small={ small }
+              sound={ x }
+              soundRequest={ soundRequest }
+              previewRequest={ previewRequest }
+              updateFavRequest={ updateFavoritesRequest }
+            />
+          );
         })}
       </ButtonContainerMain>
     );

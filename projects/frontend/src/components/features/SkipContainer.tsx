@@ -1,6 +1,5 @@
 import React, { FC, useCallback } from 'react';
 import styled from 'styled-components';
-import theme from '../../styles/theme';
 import { button } from '../../styles/mixins';
 import debounce from '../../utils';
 
@@ -9,14 +8,17 @@ const SkipContainerMain = styled.div`
   justify-content: space-evenly;
   margin-top: 15px;
   width: 100%;
+  position: relative;
+  z-index: 10;
 
   > button {
     ${ button }
     
     font-size: 1.8rem;
     color: white;
-    background-color: ${ theme.colors.innerA };
-    border: 5px solid ${ theme.colors.borderDefault };
+    background-color: ${ props => props.theme.colors.innerA };
+    border: 5px solid ${ props => props.theme.colors.borderDefault };
+    box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
     border-width: 5px;
     border-radius: 3px;
     min-height: 70px;

@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import LogoutPointer from './LogoutPointer';
-import theme from '../../styles/theme';
 import { button } from '../../styles/mixins';
 
 const LogOutMenuMain = styled.div`
@@ -19,11 +18,11 @@ const LogOutMenuMain = styled.div`
     ${ button }
 
     color: white;
-    background-color: ${ theme.colors.innerB };
-    border: 2px solid ${ theme.colors.borderDefault };
+    background-color: ${ props => props.theme.colors.innerB };
+    border: 2px solid ${ props => props.theme.colors.borderDefault };
     border-width: 2px;
     border-radius: 3px;
-    box-shadow: 1.5px 1.5px 6px 0.8px ${ theme.colors.shadowDefault };
+    box-shadow: 1.5px 1.5px 6px 0.8px ${ props => props.theme.colors.shadowDefault };
     min-height: 32px;
   }
 `;

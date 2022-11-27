@@ -2,6 +2,7 @@ import 'styled-components';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
+    name: string;
     colors: {
       bg: string;
       nav: string;
@@ -11,9 +12,12 @@ declare module 'styled-components' {
       borderGold: string;
       borderRed: string;
       borderGreen: string;
+      buttonHover: string;
       buttonHighlighted: string;
       favStarSet: string;
       shadowDefault: string;
+      volumeSliderFill: string;
+      volumeSliderThumb: string;
     },
   }
 }

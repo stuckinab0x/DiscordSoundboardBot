@@ -1,7 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 import { useSWRConfig } from 'swr';
 import styled, { css } from 'styled-components';
-import theme from '../../styles/theme';
 import * as mixins from '../../styles/mixins';
 
 function randomSuccessMessage() {
@@ -36,15 +35,14 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  background-color: ${ theme.colors.innerA };
+  background-color: ${ props => props.theme.colors.innerA };
   position: absolute;
-  border: solid 5px ${ theme.colors.borderDefault };
+  border: solid 5px ${ props => props.theme.colors.borderDefault };
   border-radius: 5px;
   right: 5px;
   top: 100px;
   padding: 10px;
-  box-shadow: 0px 5px 10px 3px ${ theme.colors.innerB };
-  z-index: 10;
+  box-shadow: 0px 5px 10px 3px ${ props => props.theme.colors.innerB };
 
   ${ props => {
     if (props.statusStyle === 'success') return AddSoundSuccess;
