@@ -18,7 +18,7 @@ const discordAuth: RequestHandler = async (req, res, next) => {
       params.append('redirect_uri', environment.webServerURL);
     } else { params.append('refresh_token', req.cookies.refreshtoken); }
     try {
-      const tokenRes = await axios.post('https://discord.com/api/oauth2/token', params);
+      const tokenRes = await axios.post('https://discord.com/api/oauth2/token', params, { headers: { 'Accept-encoding': 'application/json' } });
       res.cookie('accesstoken', tokenRes.data.access_token, { httpOnly: true, maxAge: 1000 * 60 * 30 });
       res.cookie('refreshtoken', tokenRes.data.refresh_token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
       if (req.query.code) {
@@ -34,7 +34,7 @@ const discordAuth: RequestHandler = async (req, res, next) => {
 
   if (userReqToken)
     try {
-      const userRes = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ userReqToken }` } });
+      const userRes = await axios.get('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${ userReqToken }`, 'Accept-encoding': 'application/json' } });
       res.cookie('username', userRes.data.username);
       res.cookie('userid', userRes.data.id);
       res.cookie('avatar', userRes.data.avatar);
