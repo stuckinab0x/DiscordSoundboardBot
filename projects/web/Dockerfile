@@ -21,7 +21,7 @@ COPY projects/frontend/package.json projects/frontend/tsconfig.json ./
 COPY projects/frontend/src/ src/
 COPY projects/frontend/public/ public/
 RUN yarn --pure-lockfile
-RUN if [ "$NODE_ENV" = "production" ] ; then yarn run build ; mv build ../web/src/public ; rm -rf ../frontend ; fi
+RUN if [ "$NODE_ENV" = "production" ] ; then set -e; yarn run build ; mv build ../web/src/public ; rm -rf ../frontend ; fi
 
 FROM alpine:3.15
 ARG NODE_ENV=production
