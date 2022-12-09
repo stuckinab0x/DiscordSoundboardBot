@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "applicationinsights": "^2.3.6",
-    "axios": "^1.2.0",
+    "axios": "^1.2.1",
     "botman-sounds": "*",
     "botman-users": "*",
     "cookie-parser": "^1.4.6",
