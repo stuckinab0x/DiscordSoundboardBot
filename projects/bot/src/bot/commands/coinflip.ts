@@ -30,8 +30,8 @@ export class CoinCommand extends Command {
   }
 
   execute(interaction: CommandInteraction): Promise<any> {
-    if (Math.random() < 0.5) return interaction.reply({ embeds: [{ title: 'Heads!', ...pickRandom(headMsg), color: '#72ff6e' }] });
-    return interaction.reply({ embeds: [{ title: 'Tails', ...pickRandom(tailMsg), color: '#ff4242' }] });
+    if (Math.random() < 0.5) return interaction.reply({ embeds: [{ title: 'Heads!', ...pickRandom(headMsg), color: 0x72ff6e }] });
+    return interaction.reply({ embeds: [{ title: 'Tails', ...pickRandom(tailMsg), color: 0xff4242 }] });
   }
 }
 export default new CoinCommand();

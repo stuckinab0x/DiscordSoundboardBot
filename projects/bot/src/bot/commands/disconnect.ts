@@ -1,4 +1,5 @@
 import { CommandInteraction } from 'discord.js';
+import { getVoiceConnection } from '@discordjs/voice';
 import Command from './command';
 import { pickRandom } from '../utils';
 
@@ -13,8 +14,9 @@ export class DisconnectCommand extends Command {
   async execute(interaction: CommandInteraction): Promise<any> {
     let reply: string;
 
-    if (interaction.guild!.me!.voice.channelId) {
-      await interaction.guild!.me!.voice.disconnect();
+    const connection = getVoiceConnection(interaction.guild!.id);
+    if (connection) {
+      connection.disconnect();
       reply = pickRandom(byeMessages);
     } else {
       reply = pickRandom(notInAChannelMessages);

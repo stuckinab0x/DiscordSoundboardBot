@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import Command from './command';
 import constants from '../constants';
 import BotContext from '../bot-context';
@@ -20,13 +20,13 @@ export class SoundsCommand extends Command {
 
   async execute(interaction: CommandInteraction, context: BotContext): Promise<any> {
     const files = await context.soundsService.getAllSounds();
-    const messageEmbed = new MessageEmbed({ title: 'Available sounds' });
+    const messageEmbed = new EmbedBuilder({ title: 'Available sounds' });
 
     if (files.length === 0) {
-      messageEmbed.description = `No sounds available yet! Add one by attaching a sound file (${ constants.soundFileExtensions }) to a message with the /addsound command!`;
+      messageEmbed.setDescription(`No sounds available yet! Add one by attaching a sound file (${ constants.soundFileExtensions }) to a message with the /addsound command!`);
     } else {
       const col = Math.floor(files.length / 3);
-      messageEmbed.fields = [createField(files, 0, col), createField(files, col, col * 2), createField(files, col * 2, files.length)];
+      messageEmbed.setFields([createField(files, 0, col), createField(files, col, col * 2), createField(files, col * 2, files.length)]);
     }
     return interaction.reply({ embeds: [messageEmbed], ephemeral: true });
   }

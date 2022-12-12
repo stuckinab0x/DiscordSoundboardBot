@@ -1,5 +1,5 @@
-import { Client, Intents, Interaction, VoiceState } from 'discord.js';
-import { DiscordGatewayAdapterCreator, joinVoiceChannel } from '@discordjs/voice';
+import { Client, GatewayIntentBits, ActivityType, Interaction, VoiceState } from 'discord.js';
+import { DiscordGatewayAdapterCreator, joinVoiceChannel, getVoiceConnection } from '@discordjs/voice';
 import { SoundsService } from 'botman-sounds';
 import axios from 'axios';
 import { Readable } from 'node:stream';
@@ -11,8 +11,8 @@ import Environment from '../environment';
 
 export default class Bot {
   private readonly client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES],
-    presence: { activities: [{ name: 'you', type: 'WATCHING' }] },
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages],
+    presence: { activities: [{ name: 'you', type: ActivityType.Watching }] },
   });
 
   private readonly context: BotContext;
@@ -77,7 +77,7 @@ export default class Bot {
     if (oldState.channel?.members.every(x => x.id === this.client.user!.id)) {
       this.context.soundQueue.removeByChannel(oldState.channelId!);
       if (this.context.currentSound?.channel === oldState.channel) this.context.botAudioPlayer.stop();
-      if (!this.context.soundQueue.length) oldState.guild.me?.voice.disconnect();
+      if (!this.context.soundQueue.length) getVoiceConnection(this.environment.homeGuildId)?.disconnect();
     }
   }
 

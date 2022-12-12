@@ -1,4 +1,4 @@
-import { ButtonInteraction, CommandInteraction, GuildMember, Message, MessageActionRow, MessageButton } from 'discord.js';
+import { ButtonInteraction, GuildMember, Message, ActionRowBuilder, ButtonBuilder, ComponentType, ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
 import { Sound } from 'botman-sounds';
 import logger from '../../logger';
 import BotContext from '../bot-context';
@@ -13,13 +13,13 @@ export class SoundCommand extends Command {
     super('sound', 'Play a sound in your current voice channel.', { serverOnly: true });
     this.commandData.options = [{
       name: soundOptionName,
-      type: 'STRING',
+      type: ApplicationCommandOptionType.String,
       required: true,
       description: 'The sound to play',
     }];
   }
 
-  async execute(interaction: CommandInteraction, context: BotContext): Promise<any> {
+  async execute(interaction: ChatInputCommandInteraction, context: BotContext): Promise<any> {
     if (!(interaction.member instanceof GuildMember)) {
       logger.error('%s: Member wasn\'t real :(', interaction.id);
       return interaction.reply({
@@ -76,7 +76,7 @@ export class SoundCommand extends Command {
     return interaction.reply(successMessage);
   }
 
-  private async getSoundFile(soundName: string, interaction: CommandInteraction, context: BotContext): Promise<Sound | null> {
+  private async getSoundFile(soundName: string, interaction: ChatInputCommandInteraction, context: BotContext): Promise<Sound | null> {
     const sound = await context.soundsService.getSound(soundName);
 
     if (sound)
@@ -96,7 +96,7 @@ export class SoundCommand extends Command {
     return this.getUserSoundChoice(soundName, interaction, partialMatches);
   }
 
-  private async getUserSoundChoice(searchTerm: string, interaction: CommandInteraction, files: Sound[]): Promise<Sound> {
+  private async getUserSoundChoice(searchTerm: string, interaction: ChatInputCommandInteraction, files: Sound[]): Promise<Sound> {
     const message = await interaction.reply({
       content: `Found multiple sounds that start with "${ searchTerm }", please choose one:`,
       ephemeral: true,
@@ -115,7 +115,7 @@ export class SoundCommand extends Command {
 
     let collectedButton: ButtonInteraction;
     try {
-      collectedButton = await message.awaitMessageComponent({ componentType: 'BUTTON', time: 30000 });
+      collectedButton = await message.awaitMessageComponent({ componentType: ComponentType.Button, time: 30000 });
     } catch (err) {
       logger.info('%s: User failed to make a selection within the time limit', interaction.id);
 
@@ -135,16 +135,16 @@ export class SoundCommand extends Command {
   }
 
   private createInteractionButtons(buttonLabels: string[]) {
-    const buttons: MessageButton[] = buttonLabels.map((x, index) =>
-      new MessageButton()
+    const buttons: ButtonBuilder[] = buttonLabels.map((x, index) =>
+      new ButtonBuilder()
         .setCustomId(String(index))
         .setLabel(x)
         .setStyle(1));
 
-    const components: MessageActionRow[] = [];
+    const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
     while (buttons.length > 0) {
-      const row = new MessageActionRow().addComponents(buttons.splice(0, 5));
+      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(buttons.splice(0, 5));
       components.push(row);
     }
 

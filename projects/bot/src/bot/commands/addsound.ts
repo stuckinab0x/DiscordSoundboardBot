@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
 import axios from 'axios';
 import { errors } from 'botman-sounds';
 import Command from './command';
@@ -10,19 +10,19 @@ export class AddSoundCommand extends Command {
     super('addsound', 'Upload a new sound.');
     this.commandData.options = [{
       name: 'soundfile',
-      type: 'ATTACHMENT',
+      type: ApplicationCommandOptionType.Attachment,
       required: true,
       description: `The file to upload (${ constants.soundFileExtensions })`,
     },
     {
       name: 'soundname',
-      type: 'STRING',
+      type: ApplicationCommandOptionType.String,
       required: true,
       description: 'A name for the sound',
     }];
   }
 
-  async execute(interaction: CommandInteraction, context: BotContext): Promise<any> {
+  async execute(interaction: ChatInputCommandInteraction, context: BotContext): Promise<any> {
     try {
       const soundUrl = interaction.options.getAttachment('soundfile', true).url;
       const soundName = interaction.options.getString('soundname', true);
