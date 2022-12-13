@@ -8,6 +8,7 @@ const GlobalStyle = createGlobalStyle`
    
   html, body {
     height: 100%;
+    overflow-x: hidden;
   }
 
   body {
@@ -33,7 +34,7 @@ const GlobalStyle = createGlobalStyle`
 
   @media only screen and (max-width: 780px) {
     html {
-        font-size: 8pt;
+      font-size: 8pt;
     }
   }
 
