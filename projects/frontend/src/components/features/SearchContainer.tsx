@@ -8,6 +8,7 @@ const SearchContainerMain = styled.div`
 
   > input {
     ${ mixins.textInput }
+    ${ mixins.textInputMobile }
   
     &::placeholder {
       color: rgb(199, 199, 199);
@@ -30,7 +31,11 @@ const SearchContainerMain = styled.div`
       top: 4px;
       font-size: 1.8rem;
     }
-}
+  }
+
+  @media only screen and (max-width: 780px) {
+    width: 100%;
+  }
 `;
 
 interface SearchContainerProps {

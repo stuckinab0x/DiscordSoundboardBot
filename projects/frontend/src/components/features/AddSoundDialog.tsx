@@ -40,7 +40,7 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   border: solid 5px ${ props => props.theme.colors.borderDefault };
   border-radius: 5px;
   right: 5px;
-  top: 100px;
+  top: 56px;
   padding: 10px;
   box-shadow: 0px 5px 10px 3px ${ props => props.theme.colors.innerB };
 

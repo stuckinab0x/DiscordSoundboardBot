@@ -8,6 +8,7 @@ interface SoundTileMainProps {
   statusBorder: string;
   small: boolean;
   isFavorite: boolean;
+  tagColor: string | null;
 }
 
 const soundTileSmall = css`
@@ -18,6 +19,16 @@ const soundTileSmall = css`
   min-height: 75px;
   max-width: 75px;
   margin: 4px 4px;
+`;
+
+const soundTileSmallMobile = css`
+    font-size: 0.8rem;
+    border: 3px solid ${ props => props.theme.colors.borderDefault };
+    border-width: 3px;
+    border-radius: 2px;
+    min-width: 15vw;
+    min-height: 15vw;
+    max-width: 15vw;
 `;
 
 const selectSoundTileMainBorder = (props: any) => {
@@ -45,8 +56,9 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     min-height: 150px;
     max-width: 150px;
     margin: 6px 6px;
-    background-color: ${ props => props.theme.colors.innerA };
+    background-color: ${ props => props.tagColor ? props.tagColor : props.theme.colors.innerA };
     word-wrap: break-word;
+    ${ mixins.textShadowVisibility }
   
     ${ props => props.small && soundTileSmall }
 
@@ -60,27 +72,30 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       min-width: 20vw;
       min-height: 20vw;
       max-width: 20vw;
+
+      ${ props => props.small && soundTileSmallMobile }
     }
   }
 
   > span {
     ${ mixins.iconButton }
+    ${ mixins.textShadowVisibility }
     
     position: absolute;
     right: 12px;
     top: 12px;
     opacity: ${ props => props.theme.name === 'halloween' ? '20%' : '50%' };
     
-    ${ props => props.small ? css`
-    font-size: 12px;
-    right: 8px;
-    top: 8px;
-    ` : '' }
+    ${ props => props.small && css`
+      font-size: 12px;
+      right: 8px;
+      top: 8px;
+    ` }
 
-    ${ props => props.isFavorite ? css`
+    ${ props => props.isFavorite && css`
       color:#fcc82a;
       opacity: ${ props.theme.name === 'halloween' ? '85%' : '75%' };
-    ` : '' }
+    ` }
 
     &:hover {
       opacity: 100%;
@@ -91,30 +106,60 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       font-size: 1.4rem;
       right: 11px;
       top: 11px; 
+    
+      ${ props => props.small && css`
+        font-size: 12px;
+        right: 7px;
+        top: 7px;
+    ` }
     }
   }
 `;
 
 interface SoundTileProps {
+  id: string;
   preview: boolean;
   small: boolean;
   sound: Sound;
+  tagColor: string | undefined;
   soundRequest: (soundName: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   updateFavRequest: (soundId: string) => void;
+  currentlyTagging: boolean;
+  unsavedTagged: string[];
+  toggleSoundOnTag: (soundId: string) => void;
 }
 
-const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavorite }, soundRequest, previewRequest, updateFavRequest }) => {
+const SoundTile: FC<SoundTileProps> = ({
+  id,
+  preview,
+  small,
+  sound: { name, isFavorite },
+  tagColor,
+  soundRequest,
+  previewRequest,
+  updateFavRequest,
+  currentlyTagging,
+  unsavedTagged,
+  toggleSoundOnTag,
+}) => {
   const [statusBorder, setStatusBorder] = useState('');
   const theme = useTheme();
 
   const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
 
-  const handleSoundClick = useCallback(() => {
+  const handleSoundPlayClick = useCallback(() => {
     setStatusBorder('error');
     soundRequest(name, raiseStatusSet);
     setTimeout(() => setStatusBorder(''), 1);
   }, []);
+
+  const handleButtonClick = useCallback(() => {
+    if (currentlyTagging && preview) previewRequest(name);
+    else if (currentlyTagging) toggleSoundOnTag(id);
+    else if (preview) previewRequest(name);
+    else handleSoundPlayClick();
+  }, [currentlyTagging, unsavedTagged, preview]);
 
   const isFavIcon = theme.name === 'halloween' ? '💀' : 'star';
   const isNotFavIcon = theme.name === 'halloween' ? '💀' : 'star_outline';
@@ -125,10 +170,11 @@ const SoundTile: FC<SoundTileProps> = ({ preview, small, sound: { name, isFavori
       statusBorder={ statusBorder }
       small={ small }
       isFavorite={ isFavorite }
+      tagColor={ tagColor ?? null }
     >
       <button
         type="button"
-        onClick={ preview ? () => previewRequest(name) : handleSoundClick }
+        onClick={ handleButtonClick }
       >
         { name }
       </button>

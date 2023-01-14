@@ -9,7 +9,6 @@ const AvatarContainerMain = styled.div`
   align-items: center;
   padding: 0px 20px 0px 7px;
   position: relative;
-  z-index: 50;
 
   @media only screen and (max-width: 780px) {
     margin: 0px 10px;
@@ -50,7 +49,7 @@ const AvatarContainer: FC<AvatarContainerProps> = ({ showLogoutMenu, setShowLogo
         role="presentation"
         onClick={ () => setShowLogoutMenu(!showLogoutMenu) }
       />
-      { showLogoutMenu ? <LogoutMenu /> : null }
+      { showLogoutMenu && <LogoutMenu /> }
     </AvatarContainerMain>
   );
 };

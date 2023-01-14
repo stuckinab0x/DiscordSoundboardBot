@@ -2,20 +2,57 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { iconButton } from '../styles/mixins';
 import PreviewInstructions from './PreviewInstructions';
+import TagProps from '../models/tag-props';
+import TaggingInstructions from './TaggingInstructions';
 
 const SortToolbar = styled.div`
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: right;
   margin: 20px 4vw 0px;
 
-  div {
+  > div {
     display: flex;
+
+    @media only screen and (max-width: 780px) {
+      width: 100%;
+      margin-top: 6px;
+      justify-content: center;
+    }
+  }
+
+  @media only screen and (max-width: 780px) {
+    flex-direction: column;
+    justify-content: right;
+    margin: 5px;
+  }
+`;
+
+interface TagModeColorBarProps {
+  tagColor: string;
+}
+
+const TagModeColorBar = styled.span<TagModeColorBarProps>`
+  height: 60px;
+  flex-grow: 2;
+  border-radius: 3px;
+  margin: 0px 20px;
+  background-color: ${ props => props.tagColor };
+
+  @media only screen and (max-width: 780px) {
+    display: none;
   }
 `;
 
 const ResizeIcon = styled.div`
   ${ iconButton }
+
+  @media only screen and (max-width: 780px) {
+    width: 100%;
+    display: flex;
+    margin-right: 10px;
+    justify-content: right;
+  }
 `;
 
 const ResizeSpan = styled.span`
@@ -41,11 +78,24 @@ interface SortContainerProps {
   showPreview: boolean;
   toggleSmallButtons: () => void;
   setPreviewVolume: (volume: string) => void;
+  currentlyTagging: TagProps | null;
+  saveTagged: () => void;
+  discardTagged: () => void;
 }
 
-const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume }) => (
+const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume, currentlyTagging, saveTagged, discardTagged }) => (
   <SortToolbar>
-    { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } /> }
+    { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
+    { currentlyTagging && (
+      <TaggingInstructions
+        tagName={ currentlyTagging.name }
+        tagColor={ currentlyTagging.color }
+        saveTagged={ saveTagged }
+        discardTagged={ discardTagged }
+      />
+    ) }
+    { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } taggingModeOn={ !!currentlyTagging } /> }
+    { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
     <div>
       <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
         { [0, 1].map(x => <ResizeSpan key={ x } className='material-icons'>crop_square</ResizeSpan>) }

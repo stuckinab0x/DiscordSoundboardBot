@@ -10,7 +10,7 @@ export const button = css`
 
   @media only screen and (min-width: 780px) {
     &:hover:not(:active) {
-      background-color: ${ props => props.theme.colors.buttonHover }
+      filter: brightness(1.1);
     }
 }
 `;
@@ -24,6 +24,12 @@ export const filterButton = css`
   background-color: ${ props => props.theme.colors.innerB };
   margin-right: 5px;
 
+  &:last-child {
+    margin-right: 0px;
+  }
+`;
+
+export const filterButtonMobile = css`
   @media only screen and (max-width: 780px) {
     min-height: 30px;
     font-size: 1.2rem;
@@ -47,16 +53,17 @@ export const textInput = css`
   margin: 0px 0px 7px;
   width: 100%;
 
+  &::placeholder {
+    color: rgb(199, 199, 199);
+  }
+`;
 
+export const textInputMobile = css`
   @media only screen and (max-width: 780px) {
     font-size: 1.6rem;
     border: 3px solid ${ props => props.theme.colors.borderDefault };
     border-radius: 2px;
     margin: 0;
-  }
-
-  &::placeholder {
-    color: rgb(199, 199, 199);
   }
 `;
 
@@ -95,4 +102,8 @@ export const xmasPlaidBG = css`
 export const flagStripesBg = css`
   background-color: #e5e5f7;
   background: repeating-linear-gradient(#f74444, #f74444 30px, #e5e5f7 30px, #e5e5f7 60px );
+`;
+
+export const textShadowVisibility = css`
+  text-shadow: 1px 1px 4px ${ props => props.theme.colors.shadowDefault };
 `;
