@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { RawAxiosRequestConfig } from 'axios';
 import { SoundsService, errors, AddSoundOptions } from 'botman-sounds';
 import { FavoritesService } from 'botman-users';
 import multer from 'multer';
 import environment from '../environment';
 
 function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService) {
-  const botConfig: AxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
+  const botConfig: RawAxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
   const router = Router();
   const upload = multer();
 
