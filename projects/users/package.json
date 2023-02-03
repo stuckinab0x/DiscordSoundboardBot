@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "botman-mongo": "*",
-    "mongodb": "^4.13.0",
+    "mongodb": "^5.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
