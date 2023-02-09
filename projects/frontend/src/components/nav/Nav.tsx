@@ -4,6 +4,7 @@ import useUser from '../../hooks/use-user';
 import AvatarContainer from './AvatarContainer';
 import ChristmasLights from '../decorative/ChristmasLights';
 import ChristmasLeaves from '../decorative/ChristmasLeaves';
+import { button, filterButton } from '../../styles/mixins';
 
 const NavMain = styled.div`
   background-color: ${ props => props.theme.colors.nav };
@@ -31,11 +32,12 @@ const UsaNavImg = styled.img`
   width: auto;
 `;
 
-const NavLeft = styled.div`
+const TitleAndUsername = styled.div`
   display: flex;
   justify-content: space-between;
   flex-grow: 1;
   margin-left: 20px;
+  z-index: 50;
 
   @media only screen and (max-width: 780px) {
     flex-direction: column;
@@ -48,8 +50,7 @@ const Title = styled.div`
     font-size: 2rem;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
     position: relative;
-    z-index: 50;
-  
+
     ${ props => props.theme.name === 'christmas' && 'filter: brightness(1.7) saturate(1.3);' }
   }
   
@@ -73,7 +74,27 @@ const Username = styled.div`
     color: white;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
     position: relative;
-    z-index: 50;
+  }
+`;
+
+interface AdminButtonStyleProps {
+  toggled: boolean;
+}
+
+const AdminButton = styled.button<AdminButtonStyleProps>`
+  ${ button }
+  ${ filterButton }
+
+  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+  border-width: 2px;
+  margin: 5px 20px 0px 0px;
+  font-size: 0.7rem;
+
+  @media only screen and (max-width: 780px) {
+    min-height: 20px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+    order: 1;
   }
 `;
 
@@ -84,7 +105,12 @@ function getTitleFromTheme(themeName: string) {
   return 'DiscordSoundboardBot';
 }
 
-const Nav: FC = () => {
+interface NavProps {
+  showAdminPanel: boolean;
+  setShowAdminPanel: (show: boolean) => void;
+}
+
+const Nav: FC<NavProps> = ({ showAdminPanel, setShowAdminPanel }) => {
   const user = useUser();
   const [showLogoutMenu, setShowLogoutMenu] = useState(false);
   const theme = useTheme();
@@ -98,16 +124,17 @@ const Nav: FC = () => {
         </LeavesContainer>
       ) : null }
       { theme.name === 'christmas' && <ChristmasLights /> }
-      <NavLeft>
+      <TitleAndUsername>
         <Title>
           <h1>{ getTitleFromTheme(theme.name) }</h1>
         </Title>
         <Username>
+          { user.role === 'admin' && <AdminButton toggled={ showAdminPanel } onClick={ () => setShowAdminPanel(!showAdminPanel) }>Admin Panel</AdminButton> }
           <h2>
             { user.name }
           </h2>
         </Username>
-      </NavLeft>
+      </TitleAndUsername>
       <AvatarContainer showLogoutMenu={ showLogoutMenu } setShowLogoutMenu={ setShowLogoutMenu } />
     </NavMain>
   );

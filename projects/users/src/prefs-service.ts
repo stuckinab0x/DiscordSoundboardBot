@@ -22,4 +22,10 @@ export class PrefsService extends UsersService {
     const collection = await this.usersCollection;
     await collection.updateOne({ userId }, { $set: { 'sortPrefs.tagGroups': groups } }, { upsert: true });
   }
+
+  async getUserRole(userId: string): Promise<string | undefined> {
+    const collection = await this.usersCollection;
+    const user = await collection.findOne({ userId }, { projection: { role: 1 } });
+    return user?.role;
+  }
 }

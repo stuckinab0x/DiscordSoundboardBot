@@ -2,7 +2,7 @@ import express from 'express';
 import logger, { requestLogger } from '../logger';
 import Environment from '../environment';
 
-type SoundRequestSubscriber = (userID: string, soundRequest: string) => void;
+type SoundRequestSubscriber = (userID: string, soundId: string) => void;
 type SkipRequestSubscriber = (userID: string, skipAll: boolean) => void;
 
 export default class SoundRequestServer {
@@ -13,11 +13,11 @@ export default class SoundRequestServer {
   private soundSubscribers: SoundRequestSubscriber[] = [];
   private skipSubscribers: SkipRequestSubscriber[] = [];
 
-  onSoundRequest(subscriber: SoundRequestSubscriber) {
+  subscribeToSoundRequests(subscriber: SoundRequestSubscriber) {
     this.soundSubscribers.push(subscriber);
   }
 
-  onSkipRequest(subscriber: SkipRequestSubscriber) {
+  subscribeToSkipRequests(subscriber: SkipRequestSubscriber) {
     this.skipSubscribers.push(subscriber);
   }
 
@@ -27,22 +27,19 @@ export default class SoundRequestServer {
 
     app.get('/', (req, res) => res.sendStatus(204));
 
-    app.use(express.text());
-    app.use(express.json());
-
     app.use((req, res, next) => {
       if (req.headers.authorization === this.environment.apiKey) return next();
       return res.sendStatus(401);
     });
 
-    app.post('/soundrequest', (req, res) => {
-      this.soundSubscribers.forEach(x => x(req.body.userID, req.body.sound));
+    app.post('/soundrequest/:userid/:soundid', (req, res) => {
+      this.soundSubscribers.forEach(x => x(req.params.userid, req.params.soundid));
       res.sendStatus(204);
     });
 
-    app.post('/skip', (req, res) => {
-      logger.info(`Server request to skip. Skip all: ${ req.body.skipAll }`);
-      this.skipSubscribers.forEach(x => x(req.body.userID, req.body.skipAll));
+    app.post('/skip/:all/:userid', (req, res) => {
+      logger.info(`Server request to skip. Skip all: ${ req.params.all }`);
+      this.skipSubscribers.forEach(x => x(req.params.userid, Boolean(req.params.all)));
       res.sendStatus(204);
     });
 

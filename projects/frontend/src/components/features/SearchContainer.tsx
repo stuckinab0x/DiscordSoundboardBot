@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useRef } from 'react';
+import React, { FC, useCallback, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import * as mixins from '../../styles/mixins';
 
@@ -40,9 +40,10 @@ const SearchContainerMain = styled.div`
 
 interface SearchContainerProps {
   setSearchTerm: (search: string) => void;
+  focusOnEnter: boolean;
 }
 
-const SearchContainer: FC<SearchContainerProps> = ({ setSearchTerm }) => {
+const SearchContainer: FC<SearchContainerProps> = ({ setSearchTerm, focusOnEnter }) => {
   const [showCancel, setShowCancel] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
@@ -60,6 +61,11 @@ const SearchContainer: FC<SearchContainerProps> = ({ setSearchTerm }) => {
     setShowCancel(false);
     setInputValue('');
     textInput.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (focusOnEnter)
+      textInput.current?.focus();
   }, []);
 
   return (

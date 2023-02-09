@@ -1,27 +1,27 @@
-import express from 'express';
+import { Router } from 'express';
 import { TagsService } from 'botman-users';
 
 function customTagsRouter(tagsService: TagsService) {
-  const router = express.Router();
+  const router = Router();
 
   router.get('/', async (req, res) => {
     const tags = await tagsService.getCustomTags(String(req.cookies.userid));
     res.send(tags);
   });
 
-  router.post('/create/:name/:color', async (req, res) => {
+  router.post('/:name/:color', async (req, res) => {
     await tagsService.addNewTag({ userId: String(req.cookies.userid), tagName: req.params.name, tagColor: req.params.color });
     res.sendStatus(204);
     res.end();
   });
 
-  router.post('/edit/:id/:name/:color', async (req, res) => {
+  router.put('/:id/:name/:color', async (req, res) => {
     await tagsService.editTagProps({ tagId: req.params.id, userId: String(req.cookies.userid), tagName: req.params.name, tagColor: req.params.color });
     res.sendStatus(204);
     res.end();
   });
 
-  router.delete('/delete/:id', async (req, res) => {
+  router.delete('/:id', async (req, res) => {
     await tagsService.deleteTag({ tagId: req.params.id, userId: String(req.cookies.userid) });
     res.sendStatus(204);
     res.end();

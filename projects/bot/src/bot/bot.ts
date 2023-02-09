@@ -39,8 +39,8 @@ export default class Bot {
 
     this.soundRequestServer = new SoundRequestServer(80, environment);
 
-    this.soundRequestServer.onSoundRequest((userID, soundRequest) => this.onServerSoundRequest(userID, soundRequest));
-    this.soundRequestServer.onSkipRequest((userID, skipAll) => this.onServerSkipRequest(userID, skipAll));
+    this.soundRequestServer.subscribeToSoundRequests((userID, soundId) => this.onServerSoundRequest(userID, soundId));
+    this.soundRequestServer.subscribeToSkipRequests((userID, skipAll) => this.onServerSkipRequest(userID, skipAll));
   }
 
   start(): Promise<string> {
@@ -125,23 +125,23 @@ export default class Bot {
     this.soundPlaying = false;
   }
 
-  private async onServerSoundRequest(userID: string, soundRequest: string) {
-    const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userID);
+  private async onServerSoundRequest(userId: string, soundId: string) {
+    const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userId);
 
     if (!soundBoardUser?.channel) {
       logger.info('Sound request received but user is not connected');
       return;
     }
 
-    const sound = await this.context.soundsService.getSound(soundRequest);
+    const sound = await this.context.soundsService.getSound(soundId);
 
     if (!sound) {
-      logger.error('Couldn\'t find sound "%s"', soundRequest);
+      logger.error('Couldn\'t find sound "%s"', soundId);
       return;
     }
 
     this.context.soundQueue.add({ sound, channel: soundBoardUser.channel });
-    logger.info(`Server sound request. User: ${ userID }. Queue length: ${ this.context.soundQueue.length }.`);
+    logger.info(`Server sound request. User: ${ userId }. Queue length: ${ this.context.soundQueue.length }.`);
   }
 
   private async onServerSkipRequest(userID: string, skipAll: boolean) {

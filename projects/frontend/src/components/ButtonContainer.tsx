@@ -13,7 +13,7 @@ const ButtonContainerMain = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 0px 20px;
+  margin: 0;
   padding: 10px 15px 0px;
   position: relative;
   z-index: 0;
@@ -82,17 +82,11 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
   const theme = useTheme();
 
-  const soundRequest = useCallback(debounce((soundName: string, borderCallback: () => void) => {
+  const soundRequest = useCallback(debounce(async (soundId: string, borderCallback: () => void) => {
     borderCallback();
-    fetch('/api/sound', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: soundName,
-    })
-      .then(res => {
-        if (res.status === 401) window.location.reload();
-      })
-      .catch();
+    const res = await fetch(`/api/sounds/${ soundId }`);
+    if (res.status === 401)
+      window.location.reload();
   }, 2000, true), []);
 
   const updateFavoritesRequest = useCallback((soundName: string) => {
@@ -129,7 +123,6 @@ const ButtonContainer: FC<ButtonContainerProps> = ({
           return (
             <SoundTile
               key={ x.id }
-              id={ x.id }
               preview={ preview }
               small={ small }
               sound={ x }

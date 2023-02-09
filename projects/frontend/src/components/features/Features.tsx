@@ -94,7 +94,7 @@ const Features: FC<FeaturesProps> = ({
       />
     </div>
     <FiltersContainer>
-      <SearchContainer setSearchTerm={ setSearchTerm } />
+      <SearchContainer setSearchTerm={ setSearchTerm } focusOnEnter={ false } />
       <FiltersBar
         favoritesToggled={ favoritesToggled }
         toggleFavs={ toggleFavs }

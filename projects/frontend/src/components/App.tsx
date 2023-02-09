@@ -1,6 +1,8 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
+import { CSSTransition, TransitionStatus } from 'react-transition-group';
 import Nav from './nav/Nav';
+import AdminPanel from './admin-panel/AdminPanel';
 import Features from './features/Features';
 import ButtonContainer from './ButtonContainer';
 import SortContainer from './SortContainer';
@@ -17,6 +19,32 @@ const AppMain = styled.div`
   flex-direction: column;
   position: relative;
   width: 100%;
+  overflow-y: hidden;
+`;
+
+interface SoundboardStyleProps {
+  state: TransitionStatus;
+}
+
+const Soundboard = styled.div<SoundboardStyleProps>`
+  overflow-y: scroll;
+  flex: 1;
+
+  transition: opacity 0.4s ease-out;
+  opacity: ${ props => props.state === 'entered' || props.state === 'entering' ? '1' : '0' };
+
+  &::-webkit-scrollbar {
+    width: 15px;
+    height: 100%;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${ props => props.theme.colors.innerB }
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${ props => props.theme.colors.innerA };
+  }
 `;
 
 function getThemeFromDate(date: string) {
@@ -54,6 +82,8 @@ const App: FC = () => {
     discardTagged,
   } = useCustomTags();
 
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+
   const [showPreview, setShowPreview] = useState(false);
   const toggleShowPreview = useCallback(() => {
     setShowPreview(!showPreview);
@@ -66,8 +96,12 @@ const App: FC = () => {
       previewGain.gain.value = Number(previewVolume);
   }, [previewVolume, previewGain]);
 
-  const previewRequest = useCallback(async (soundName: string) => {
-    const soundUrl = await fetch(`/api/preview?soundName=${ soundName }`, { headers: { 'Content-Type': 'text/plain' } });
+  const previewRequest = useCallback(async (soundId: string) => {
+    const soundUrl = await fetch(`/api/preview/${ soundId }`, { headers: { 'Content-Type': 'text/plain' } });
+    if (soundUrl.status === 401) {
+      window.location.reload();
+      return;
+    }
     const audioRes = await fetch(await soundUrl.text());
     const resBuffer = await audioRes.arrayBuffer();
     const context = new AudioContext();
@@ -89,47 +123,55 @@ const App: FC = () => {
         <GlobalStyle />
         { theme.name === 'america' && <Fireworks /> }
         { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
-        <Nav />
-        <Features
-          favoritesToggled={ sortRules.favorites }
-          toggleFavs={ toggleFavs }
-          previewToggled={ showPreview }
-          toggleShowPreview={ toggleShowPreview }
-          showCustomTagPicker={ showCustomTagPicker }
-          toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
-          customTagProps={ customTags?.map(x => ({ id: x.id, name: x.name, color: x.color })) }
-          toggleSoundGrouping={ toggleSoundGrouping }
-          toggleTagFilter={ toggleTagFilter }
-          disableEditTagsButton={ disableEditTagsButton }
-          setSearchTerm={ setSearchTerm }
-          soundSortOrder={ sortRules.sortOrder }
-          toggleSoundSortOrder={ toggleSoundSortOrder }
-        />
-        <SortContainer
-          showPreview={ showPreview }
-          toggleSmallButtons={ toggleSmallButtons }
-          setPreviewVolume={ setPreviewVolume }
-          currentlyTagging={ currentlyTagging }
-          saveTagged={ saveTagged }
-          discardTagged={ discardTagged }
-        />
-        { showCustomTagPicker && (
-          <TagPicker
-            customTags={ customTags ?? [] }
-            mutateTags={ mutateTags }
-            setDisableEditTagsButton={ setDisableEditTagsButton }
-            beginTagging={ beginTagging }
-          />
-        ) }
-        <ButtonContainer
-          preview={ showPreview }
-          previewRequest={ previewRequest }
-          sortRules={ sortRules }
-          customTags={ customTags ?? [] }
-          currentlyTagging={ currentlyTagging }
-          unsavedTagged={ unsavedTagged }
-          toggleSoundOnTag={ toggleSoundOnTag }
-        />
+        <Nav showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } />
+        <AdminPanel show={ showAdminPanel } adminPanelClosed={ () => setShowAdminPanel(false) } previewRequest={ previewRequest } />
+        <CSSTransition in={ !showAdminPanel } timeout={ 410 }>
+          { state => (
+            <Soundboard state={ state }>
+              <Features
+                favoritesToggled={ sortRules.favorites }
+                toggleFavs={ toggleFavs }
+                previewToggled={ showPreview }
+                toggleShowPreview={ toggleShowPreview }
+                showCustomTagPicker={ showCustomTagPicker }
+                toggleShowCustomTagPicker={ toggleShowCustomTagPicker }
+                customTagProps={ customTags?.map(x => ({ id: x.id, name: x.name, color: x.color })) }
+                toggleSoundGrouping={ toggleSoundGrouping }
+                toggleTagFilter={ toggleTagFilter }
+                disableEditTagsButton={ disableEditTagsButton }
+                setSearchTerm={ setSearchTerm }
+                soundSortOrder={ sortRules.sortOrder }
+                toggleSoundSortOrder={ toggleSoundSortOrder }
+              />
+              <SortContainer
+                showPreview={ showPreview }
+                toggleSmallButtons={ toggleSmallButtons }
+                setPreviewVolume={ setPreviewVolume }
+                currentlyTagging={ currentlyTagging }
+                saveTagged={ saveTagged }
+                discardTagged={ discardTagged }
+              />
+              { showCustomTagPicker && (
+              <TagPicker
+                customTags={ customTags ?? [] }
+                mutateTags={ mutateTags }
+                setDisableEditTagsButton={ setDisableEditTagsButton }
+                beginTagging={ beginTagging }
+              />
+              ) }
+              <ButtonContainer
+                preview={ showPreview }
+                previewRequest={ previewRequest }
+                sortRules={ sortRules }
+                customTags={ customTags ?? [] }
+                currentlyTagging={ currentlyTagging }
+                unsavedTagged={ unsavedTagged }
+                toggleSoundOnTag={ toggleSoundOnTag }
+              />
+            </Soundboard>
+          ) }
+
+        </CSSTransition>
       </ThemeProvider>
     </AppMain>
   );

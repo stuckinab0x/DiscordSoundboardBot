@@ -107,3 +107,16 @@ export const flagStripesBg = css`
 export const textShadowVisibility = css`
   text-shadow: 1px 1px 4px ${ props => props.theme.colors.shadowDefault };
 `;
+
+export const adminPanelDivider = css`
+  background: ${ props => props.theme.colors.borderDefault };
+  border: none;
+  border-radius: 3px;
+  height: 10px;
+  width: 470px;
+  margin: 2px 0px;
+
+  @media only screen and (max-width: 780px) {
+    max-width: 100%;
+  }
+`;

@@ -15,6 +15,11 @@ export interface AddSoundOptions {
   file: SaveableSoundFile;
 }
 
+export interface RenameSoundOptions {
+  oldName: string;
+  newName: string;
+}
+
 export class ReadOnlySoundsService extends MongoService {
   protected readonly soundsCollection: Promise<Collection<SoundDocument>>;
 
@@ -24,7 +29,16 @@ export class ReadOnlySoundsService extends MongoService {
     this.soundsCollection = this.db.then(db => db.collection('sounds'));
   }
 
-  async getSound(name: string): Promise<Sound | null> {
+  async getSound(id: string): Promise<Sound | null> {
+    const collection = await this.soundsCollection;
+    const document = await collection.findOne({ _id: new ObjectId(id) });
+
+    if (!document) return null;
+
+    return ReadOnlySoundsService.mapSoundDocumentToSound(document);
+  }
+
+  async getSoundByName(name: string): Promise<Sound | null> {
     const collection = await this.soundsCollection;
     const document = await collection.findOne({ name });
 
@@ -110,6 +124,18 @@ export class SoundsService extends ReadOnlySoundsService {
 
       throw error;
     }
+  }
+
+  async deleteSound(name: string) {
+    const collection = await this.soundsCollection;
+    const deleted = await collection.findOneAndDelete({ name });
+    if (deleted.value)
+      await this.filesService.deleteFile(deleted.value.fileName);
+  }
+
+  async renameSound({ oldName, newName }: RenameSoundOptions) {
+    const collection = await this.soundsCollection;
+    await collection.updateOne({ name: oldName }, { $set: { name: newName } });
   }
 
   private static async determineStreamFileType(stream: Readable): Promise<FileTypeResultWrapper<Readable>> {

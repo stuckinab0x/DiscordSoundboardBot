@@ -77,7 +77,7 @@ export class SoundCommand extends Command {
   }
 
   private async getSoundFile(soundName: string, interaction: ChatInputCommandInteraction, context: BotContext): Promise<Sound | null> {
-    const sound = await context.soundsService.getSound(soundName);
+    const sound = await context.soundsService.getSoundByName(soundName);
 
     if (sound)
       return sound;
@@ -97,10 +97,16 @@ export class SoundCommand extends Command {
   }
 
   private async getUserSoundChoice(searchTerm: string, interaction: ChatInputCommandInteraction, files: Sound[]): Promise<Sound> {
+    let content = `Found multiple sounds that start with "${ searchTerm }", please choose one:`;
+    let components = this.createInteractionButtons(files.map(x => x.name));
+    if (components.length > 5) {
+      content = `Found many sounds that start with "${ searchTerm }." If your sound isn't listed, please narrow your search.`;
+      components = components.slice(0, 5);
+    }
     const message = await interaction.reply({
-      content: `Found multiple sounds that start with "${ searchTerm }", please choose one:`,
+      content,
       ephemeral: true,
-      components: this.createInteractionButtons(files.map(x => x.name)),
+      components,
       fetchReply: true,
     });
 

@@ -7,24 +7,22 @@ const GlobalStyle = createGlobalStyle`
   }
    
   html, body {
-    height: 100%;
     overflow-x: hidden;
+    height: 100%;
   }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     color: white;
     background-color: ${ props => props.theme.colors.bg };
-    display: flex;
-    width: 100%;
     margin: 0;
-    overflow-x: hidden;
 
     ${ props => props.theme.name === 'christmas' && xmasPlaidBG }
     ${ props => props.theme.name === 'america' && flagStripesBg }
 
     #root {
-      width: 100%;
+      display: flex;
+      height: 100%;
     }
 
     h1 {

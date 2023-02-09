@@ -39,8 +39,10 @@ const SkipContainerMain = styled.div`
 `;
 
 const SkipContainer: FC = () => {
-  const skipSound = useCallback(debounce((all = false) => {
-    fetch(`/api/skip${ all ? '?skipAll=true' : '' }`, { method: 'POST', headers: { 'Content-Type': 'text/plain' } });
+  const skipSound = useCallback(debounce(async (all?: boolean) => {
+    const res = await fetch(`/api/skip/${ all && 'skip all' }`);
+    if (res.status === 401)
+      window.location.reload();
   }, 500, true), []);
 
   return (

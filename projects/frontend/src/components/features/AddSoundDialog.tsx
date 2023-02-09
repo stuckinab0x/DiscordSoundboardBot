@@ -107,7 +107,7 @@ const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAd
 
     try {
       setShowConfirm(false);
-      const addSoundRes = await fetch('/api/addsound', {
+      const addSoundRes = await fetch('/api/sounds/', {
         method: 'POST',
         body: formData,
       });

@@ -158,19 +158,19 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
 
   const addOrEditTagRequest = useCallback(async () => {
     let tag: CustomTag = { id: '', name: nameInput, color: tagColor, sounds: [] };
-    let route = 'create';
+    let method = 'POST';
     let newTags = [...customTags];
     if (customTags && currentlyEditing) {
       const foundTag = customTags.find(x => x.id === currentlyEditing.id);
       if (foundTag) tag = foundTag;
-      route = 'edit';
+      method = 'PUT';
       newTags[newTags.findIndex(x => x.id === tag.id)] = { ...(tag), name: nameInput, color: tagColor };
     } else if (customTags) {
       tag.id = 'arealtag';
       newTags = [...newTags, tag];
     }
     const tagRequest = async () => {
-      await fetch(`/api/customTags/${ route }/${ route === 'edit' ? `${ tag.id }/` : '' }${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method: 'POST' });
+      await fetch(`/api/customTags/${ method === 'PUT' ? `${ tag.id }/` : '' }${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method });
       return newTags;
     };
     mutateTags(tagRequest(), { optimisticData: newTags, rollbackOnError: true });
@@ -181,7 +181,7 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
     if (customTags && currentlyEditing) {
       const newTags = customTags.filter(x => x.id !== currentlyEditing.id);
       const deleteTag = async () => {
-        await fetch(`/api/customTags/delete/${ currentlyEditing.id }`, { method: 'DELETE' });
+        await fetch(`/api/customTags/${ currentlyEditing.id }`, { method: 'DELETE' });
         return newTags;
       };
       mutateTags(deleteTag(), { optimisticData: newTags, rollbackOnError: true });

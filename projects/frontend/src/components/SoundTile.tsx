@@ -117,12 +117,11 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
 `;
 
 interface SoundTileProps {
-  id: string;
   preview: boolean;
   small: boolean;
   sound: Sound;
   tagColor: string | undefined;
-  soundRequest: (soundName: string, borderCallback: () => void) => void;
+  soundRequest: (soundId: string, borderCallback: () => void) => void;
   previewRequest: (soundName: string) => void;
   updateFavRequest: (soundId: string) => void;
   currentlyTagging: boolean;
@@ -131,10 +130,9 @@ interface SoundTileProps {
 }
 
 const SoundTile: FC<SoundTileProps> = ({
-  id,
   preview,
   small,
-  sound: { name, isFavorite },
+  sound: { id, name, isFavorite },
   tagColor,
   soundRequest,
   previewRequest,
@@ -150,14 +148,14 @@ const SoundTile: FC<SoundTileProps> = ({
 
   const handleSoundPlayClick = useCallback(() => {
     setStatusBorder('error');
-    soundRequest(name, raiseStatusSet);
+    soundRequest(id, raiseStatusSet);
     setTimeout(() => setStatusBorder(''), 1);
   }, []);
 
   const handleButtonClick = useCallback(() => {
-    if (currentlyTagging && preview) previewRequest(name);
+    if (currentlyTagging && preview) previewRequest(id);
     else if (currentlyTagging) toggleSoundOnTag(id);
-    else if (preview) previewRequest(name);
+    else if (preview) previewRequest(id);
     else handleSoundPlayClick();
   }, [currentlyTagging, unsavedTagged, preview]);
 
