@@ -9,7 +9,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "applicationinsights": "^2.4.1",
+    "applicationinsights": "^2.4.2",
     "axios": "^1.2.3",
     "botman-sounds": "*",
     "botman-users": "*",
