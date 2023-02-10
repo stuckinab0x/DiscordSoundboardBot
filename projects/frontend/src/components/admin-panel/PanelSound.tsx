@@ -57,7 +57,7 @@ const PanelSound: FC<PanelSoundProps> = ({ sound, selectedSoundId, setSelectedSo
     <PanelSoundSection onClick={ () => setSelectedSound(sound) } isSelected={ selectedSoundId === sound.id }>
       <h4>{ sound.name }</h4>
     </PanelSoundSection>
-    <span className='material-icons' role='presentation' onClick={ () => previewRequest(sound.name) }>play_circle</span>
+    <span className='material-icons' role='presentation' onClick={ () => previewRequest(sound.id) }>play_circle</span>
   </PanelSoundMain>
 );
 

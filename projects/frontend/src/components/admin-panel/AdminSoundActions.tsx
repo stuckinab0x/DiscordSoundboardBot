@@ -97,7 +97,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
     <>
       <div>
         <h3>Preview</h3>
-        <span className='material-icons' role='presentation' onClick={ () => previewRequest(selectedSound.name) }>play_circle</span>
+        <span className='material-icons' role='presentation' onClick={ () => previewRequest(selectedSound.id) }>play_circle</span>
       </div>
       <Divider />
       { showConfirmDelete ? (
