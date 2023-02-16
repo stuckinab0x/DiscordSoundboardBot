@@ -14,7 +14,7 @@ const NavMain = styled.div`
   position: relative;
   width: 100%;
 
-  z-index: 21;
+  z-index: 150;
 `;
 
 const LeavesContainer = styled.div`

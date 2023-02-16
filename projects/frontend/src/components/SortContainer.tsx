@@ -2,8 +2,9 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { iconButton } from '../styles/mixins';
 import PreviewInstructions from './PreviewInstructions';
-import TagProps from '../models/tag-props';
 import TaggingInstructions from './TaggingInstructions';
+import { useSortRules } from '../contexts/sort-rules-context';
+import { useCustomTags } from '../contexts/custom-tags-context';
 
 const SortToolbar = styled.div`
   display: flex;
@@ -22,7 +23,6 @@ const SortToolbar = styled.div`
   }
 
   @media only screen and (max-width: 780px) {
-    flex-direction: column;
     justify-content: right;
     margin: 5px;
   }
@@ -75,33 +75,31 @@ const ResizeSpan = styled.span`
 `;
 
 interface SortContainerProps {
-  showPreview: boolean;
-  toggleSmallButtons: () => void;
   setPreviewVolume: (volume: string) => void;
-  currentlyTagging: TagProps | null;
-  saveTagged: () => void;
-  discardTagged: () => void;
 }
 
-const SortContainer: FC<SortContainerProps> = ({ showPreview, toggleSmallButtons, setPreviewVolume, currentlyTagging, saveTagged, discardTagged }) => (
-  <SortToolbar>
-    { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
-    { currentlyTagging && (
+const SortContainer: FC<SortContainerProps> = ({ setPreviewVolume }) => {
+  const { toggleSmallButtons } = useSortRules();
+  const { currentlyTagging } = useCustomTags();
+
+  return (
+    <SortToolbar>
+      { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
+      { currentlyTagging && (
       <TaggingInstructions
         tagName={ currentlyTagging.name }
         tagColor={ currentlyTagging.color }
-        saveTagged={ saveTagged }
-        discardTagged={ discardTagged }
       />
-    ) }
-    { showPreview && <PreviewInstructions setPreviewVolume={ setPreviewVolume } taggingModeOn={ !!currentlyTagging } /> }
-    { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
-    <div>
-      <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
-        { [0, 1].map(x => <ResizeSpan key={ x } className='material-icons'>crop_square</ResizeSpan>) }
-      </ResizeIcon>
-    </div>
-  </SortToolbar>
-);
+      ) }
+      <PreviewInstructions setPreviewVolume={ setPreviewVolume } />
+      { currentlyTagging && <TagModeColorBar tagColor={ currentlyTagging.color } /> }
+      <div>
+        <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
+          { [0, 1].map(x => <ResizeSpan key={ x } className='material-icons'>crop_square</ResizeSpan>) }
+        </ResizeIcon>
+      </div>
+    </SortToolbar>
+  );
+};
 
 export default SortContainer;

@@ -40,7 +40,7 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   border: solid 5px ${ props => props.theme.colors.borderDefault };
   border-radius: 5px;
   right: 5px;
-  top: 56px;
+  top: 64px;
   padding: 10px;
   box-shadow: 0px 5px 10px 3px ${ props => props.theme.colors.innerB };
 
@@ -58,11 +58,13 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   > input {
     ${ mixins.textInput }
     width: auto;
+    margin-bottom: 4px;
   }
 
   > button {
     ${ mixins.button }
     ${ mixins.filterButton }
+    border-color: ${ props => props.theme.colors.borderGold };
   }
 
   @keyframes shake {
@@ -76,6 +78,8 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
 
   @media only screen and (max-width: 780px) {
     border-width: 3px;
+    right: 44px;
+    top: 50px;
     
     > input {
        margin-bottom: 5px;

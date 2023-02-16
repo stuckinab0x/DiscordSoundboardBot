@@ -4,6 +4,7 @@ import { KeyedMutator } from 'swr';
 import * as mixins from '../../styles/mixins';
 import CustomTag from '../../models/custom-tag';
 import TagColorPicker from './TagColorPicker';
+import { useCustomTags } from '../../contexts/custom-tags-context';
 
 const ToolbarMain = styled.div`
   display: flex;
@@ -28,6 +29,38 @@ const Dialog = styled.p`
 
   @media only screen and (max-width: 780px) {
 
+  }
+`;
+
+const CloseBar = styled.div`
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin: 0px 20px;
+  flex-grow: 1;
+  opacity: 0.5;
+  background-color: ${ props => props.theme.colors.borderRed };
+  border-radius: 8px;
+  padding: 5px 0px;
+  cursor: pointer;
+  box-shadow: 0px 3px 4px ${ props => props.theme.colors.shadowDefault };
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  > p {
+    display: flex;
+    align-items: center;
+    color: black;
+    font-weight: bold;
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  @media only screen and (max-width: 780px) {
+    height: 20px;
+    margin: 0px 8px;
   }
 `;
 
@@ -131,6 +164,8 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
     setShowColorPicker(false);
   }, []);
 
+  const { toggleShowCustomTagPicker } = useCustomTags();
+
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   useEffect(() => {
@@ -194,6 +229,11 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
       <Dialog>
         { editMode ? 'Edit tag properties' : 'Select a tag to begin tagging or create/edit a tag. ' }
       </Dialog>
+      { !editMode && (
+        <CloseBar role='presentation' onClick={ toggleShowCustomTagPicker }>
+          <p>Close</p>
+        </CloseBar>
+      ) }
       { editMode && (
       <ToolbarRight>
         <NameField>

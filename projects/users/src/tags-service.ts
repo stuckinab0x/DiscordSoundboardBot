@@ -57,4 +57,9 @@ export class TagsService extends UsersService {
     const collection = await this.usersCollection;
     await collection.updateOne({ userId: options.userId }, { $pull: { 'tags.$[].sounds': { $in: [...options.deleted] } } });
   }
+
+  async removeDeletedSound(soundId: string): Promise<void> {
+    const collection = await this.usersCollection;
+    await collection.updateMany({ 'tags.sounds': soundId }, { $pull: { 'tags.$[].sounds': soundId } });
+  }
 }

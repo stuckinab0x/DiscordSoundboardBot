@@ -61,7 +61,14 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
 
   const renameRequest = useCallback(async () => {
     if (!renameInput) return;
-    const res = await fetch(`/api/sounds/${ selectedSound.name }/${ renameInput }`, { method: 'PUT' });
+    const res = await fetch(
+      `/api/sounds/${ selectedSound.id }`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: renameInput }),
+      },
+    );
     if (res.status === 200) {
       setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
       setSelectedSound({ ...selectedSound, name: renameInput });
@@ -74,7 +81,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
   }, [renameInput, selectedSound]);
 
   const soundDeleteRequest = useCallback(async () => {
-    const res = await fetch(`/api/sounds/${ selectedSound?.name }`, { method: 'DELETE' });
+    const res = await fetch(`/api/sounds/${ selectedSound?.id }`, { method: 'DELETE' });
     if (res.status === 200) {
       setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
       setShowConfirmDelete(false);
@@ -100,19 +107,6 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
         <span className='material-icons' role='presentation' onClick={ () => previewRequest(selectedSound.id) }>play_circle</span>
       </div>
       <Divider />
-      { showConfirmDelete ? (
-        <ActionContainer>
-          <h3>Delete for real?</h3>
-          <span className='material-icons' role='presentation' onClick={ () => setShowConfirmDelete(false) }>cancel</span>
-          <h3>CHOOSE</h3>
-          <span className='material-icons' role='presentation' onClick={ soundDeleteRequest }>check</span>
-        </ActionContainer>
-      ) : (
-        <div>
-          <h3>Delete</h3>
-          <span className='material-icons' role='presentation' onClick={ () => { setShowConfirmDelete(true); setShowRenameInput(false); } }>delete</span>
-        </div>
-      )}
       { showRenameInput
         ? (
           <ActionContainer>
@@ -127,6 +121,19 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
             <span className='material-icons' role='presentation' onClick={ () => { setShowRenameInput(true); setShowConfirmDelete(false); } }>edit</span>
           </div>
         )}
+      { showConfirmDelete ? (
+        <ActionContainer>
+          <h3>{`Delete sound "${ selectedSound.name }"?`}</h3>
+          <span className='material-icons' role='presentation' onClick={ () => setShowConfirmDelete(false) }>cancel</span>
+          <h3>CHOOSE</h3>
+          <span className='material-icons' role='presentation' onClick={ soundDeleteRequest }>check</span>
+        </ActionContainer>
+      ) : (
+        <div>
+          <h3>Delete</h3>
+          <span className='material-icons' role='presentation' onClick={ () => { setShowConfirmDelete(true); setShowRenameInput(false); } }>delete</span>
+        </div>
+      )}
     </>
   );
 };

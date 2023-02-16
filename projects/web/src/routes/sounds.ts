@@ -1,7 +1,7 @@
 import { Router, RequestHandler } from 'express';
 import axios, { RawAxiosRequestConfig } from 'axios';
 import { SoundsService, errors, AddSoundOptions } from 'botman-sounds';
-import { FavoritesService } from 'botman-users';
+import { FavoritesService, TagsService } from 'botman-users';
 import multer from 'multer';
 import environment from '../environment';
 
@@ -11,7 +11,7 @@ const isAdmin: RequestHandler = (req, res, next) => {
   return res.sendStatus(403);
 };
 
-function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService) {
+function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService, tagsService: TagsService) {
   const botConfig: RawAxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
   const router = Router();
   const upload = multer();
@@ -22,20 +22,21 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
     res.send(sounds.map(x => ({ id: x.id, name: x.name, date: x.createdAt, isFavorite: favorites.indexOf(x.id) !== -1 })));
   });
 
-  router.get('/:soundid', (req, res) => {
+  router.get('/:id', (req, res) => {
     console.log('Sound request.');
-    axios.post(`${ environment.botURL }/soundrequest/${ req.cookies.userid }/${ req.params.soundid }`, null, botConfig)
+    axios.post(`${ environment.botURL }/soundrequest/${ req.cookies.userid }/${ req.params.id }`, null, botConfig)
       .catch(error => console.log(error));
     res.end();
   });
 
-  router.delete('/:soundname', isAdmin, async (req, res) => {
-    await soundsService.deleteSound(req.params.soundname);
+  router.delete('/:id', isAdmin, async (req, res) => {
+    await soundsService.deleteSound(req.params.id);
+    await tagsService.removeDeletedSound(req.params.id);
     res.sendStatus(200);
   });
 
-  router.put('/:oldname/:newname', isAdmin, async (req, res) => {
-    await soundsService.renameSound({ oldName: req.params.oldname, newName: req.params.newname });
+  router.put('/:id', isAdmin, async (req, res) => {
+    await soundsService.renameSound({ id: req.params.id, name: req.body.name });
     res.sendStatus(200);
   });
 

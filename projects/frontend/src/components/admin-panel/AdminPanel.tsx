@@ -3,11 +3,12 @@ import useSWR from 'swr';
 import styled from 'styled-components';
 import { CSSTransition, TransitionStatus } from 'react-transition-group';
 import Sound from '../../models/sound';
-import SearchContainer from '../features/SearchContainer';
+import SearchBar from '../SearchBar';
 import PanelSound from './PanelSound';
 import PanelInfoContainer from './PanelInfoContainer';
 import Notification from './Notification';
 import { textShadowVisibility } from '../../styles/mixins';
+import useSoundPreview from '../../hooks/use-sound-preview';
 
 interface AdminStyleProps {
   state?: TransitionStatus;
@@ -25,6 +26,10 @@ const AdminPanelMain = styled.div<AdminStyleProps>`
   overflow-y: hidden;
   z-index: 100;
   background-color: ${ props => props.theme.colors.bg };
+
+  @media only screen and (max-width: 780px) {
+    top: ${ props => props.state === 'entered' || props.state === 'entering' ? '90px' : '100vh' };
+  }
 `;
 
 const AdminFeatures = styled.div`
@@ -40,6 +45,10 @@ const FeaturesHeader = styled.div`
     ${ textShadowVisibility }
     margin: 18px 20px 10px 0px;
 
+    @media only screen and (max-width: 780px) {
+      margin-top: 10px;
+    }
+
     &:first-child {
       color: ${ props => props.theme.colors.borderDefault };
     }
@@ -49,6 +58,7 @@ const FeaturesHeader = styled.div`
 const CloseBar = styled.div`
   display: flex;
   justify-content: center;
+  align-content: center;
   width: 100%;
   opacity: 0.5;
   background-color: ${ props => props.theme.colors.borderRed };
@@ -62,10 +72,16 @@ const CloseBar = styled.div`
   }
 
   > p {
+    display: flex;
+    align-items: center;
     color: black;
     font-weight: bold;
     opacity: 0.8;
     margin: 0;
+  }
+
+  @media only screen and (max-width: 780px) {
+    height: 20px;
   }
 `;
 
@@ -105,22 +121,23 @@ const SoundsContainer = styled.div`
   @media only screen and (max-width: 780px) {
     border-right: none;
     border-bottom: 5px solid ${ props => props.theme.colors.borderDefault };
+    box-shadow: 0px -6px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
   }
 `;
 
 interface AdminPanelProps {
   show: boolean;
   adminPanelClosed: () => void;
-  previewRequest: (soundName: string) => Promise<void>
 }
 
-const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed, previewRequest }) => {
+const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSound, setSelectedSound] = useState<Sound | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationProps, setNotificationProps] = useState({ text: '', color: '' });
 
   const { data: sounds, error } = useSWR<Sound[]>('/api/sounds');
+  const { setPreviewVolume, previewRequest } = useSoundPreview();
 
   const visibleSounds = useMemo(
     () => sounds?.filter(x => x.name.toUpperCase().includes(searchTerm)),
@@ -158,14 +175,20 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed, previewReques
                 <h2>TOP SECRET ADMIN ZONE</h2>
                 <Notification show={ showNotification } textProps={ { text: notificationProps.text, color: notificationProps.color } } />
               </FeaturesHeader>
-              <SearchContainer setSearchTerm={ setSearchTerm } focusOnEnter />
+              <SearchBar setSearchTerm={ setSearchTerm } focusOnEnter />
             </AdminFeatures>
             <LowerContainer>
               <SoundsContainer>
                 <h2>Select a sound for info/delete/rename</h2>
                 { visibleSounds.map(x => (<PanelSound key={ x.id } sound={ x } selectedSoundId={ selectedSound?.id } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } />))}
               </SoundsContainer>
-              <PanelInfoContainer selectedSound={ selectedSound } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } setNotification={ setNotification } />
+              <PanelInfoContainer
+                selectedSound={ selectedSound }
+                setSelectedSound={ setSelectedSound }
+                setPreviewVolume={ setPreviewVolume }
+                previewRequest={ previewRequest }
+                setNotification={ setNotification }
+              />
             </LowerContainer>
           </AdminPanelMain>
         )}

@@ -47,7 +47,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use('/api/sounds', soundsRouter(soundsService, favoritesService));
+app.use('/api/sounds', soundsRouter(soundsService, favoritesService, tagsService));
 app.use('/api/prefs', prefsRouter(prefsService));
 app.use('/api/favorites', favoritesRouter(favoritesService));
 app.use('/api/customtags', customTagsRouter(tagsService));

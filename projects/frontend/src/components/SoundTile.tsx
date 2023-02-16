@@ -2,14 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
-
-interface SoundTileMainProps {
-  preview: boolean;
-  statusBorder: string;
-  small: boolean;
-  isFavorite: boolean;
-  tagColor: string | null;
-}
+import { useCustomTags } from '../contexts/custom-tags-context';
 
 const soundTileSmall = css`
   font-size: 0.6rem;
@@ -31,15 +24,22 @@ const soundTileSmallMobile = css`
     max-width: 15vw;
 `;
 
-const selectSoundTileMainBorder = (props: any) => {
-  if (props.statusBorder === 'success') return mixins.buttonGreen;
-  if (props.statusBorder === 'error') return mixins.buttonRed;
+const selectSoundTileMainBorder = (statusBorder: string) => {
+  if (statusBorder === 'success') return mixins.buttonGreen;
+  if (statusBorder === 'error') return mixins.buttonRed;
   return css`
     transition-property: border-color;
     transition-duration: 1s;
     transition-delay: 2s;
   `;
 };
+
+interface SoundTileMainProps {
+  statusBorder: string;
+  small: boolean;
+  tagColor: string | null;
+  taggingModeOn: boolean;
+}
 
 const SoundTileMain = styled.div<SoundTileMainProps>`
   position: relative;
@@ -51,6 +51,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     color: white;
     border: 5px solid ${ props => props.theme.colors.borderDefault };
     border-radius: 3px;
+    ${ props => props.taggingModeOn && 'border-style: dotted;' }
     box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
     min-width: 150px;
     min-height: 150px;
@@ -62,8 +63,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
   
     ${ props => props.small && soundTileSmall }
 
-    ${ props => props.preview && 'border-style: dashed;' }
-    ${ props => selectSoundTileMainBorder(props) }
+    ${ props => selectSoundTileMainBorder(props.statusBorder) }
   
     @media only screen and (max-width: 780px) {
       border: 3px solid ${ props => props.theme.colors.borderDefault };
@@ -76,61 +76,112 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       ${ props => props.small && soundTileSmallMobile }
     }
   }
+`;
 
-  > span {
-    ${ mixins.iconButton }
-    ${ mixins.textShadowVisibility }
+interface FavStarStyleProps {
+  small: boolean;
+  isFavorite: boolean;
+}
+
+const FavStarButton = styled.span<FavStarStyleProps>`
+  ${ mixins.iconButton }
+  ${ mixins.textShadowVisibility }
     
-    position: absolute;
-    right: 12px;
-    top: 12px;
-    opacity: ${ props => props.theme.name === 'halloween' ? '20%' : '50%' };
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  opacity: ${ props => props.theme.name === 'halloween' ? '20%' : '50%' };
     
-    ${ props => props.small && css`
+  ${ props => props.small && css`
       font-size: 12px;
       right: 8px;
       top: 8px;
-    ` }
+  ` }
 
-    ${ props => props.isFavorite && css`
-      color:#fcc82a;
-      opacity: ${ props.theme.name === 'halloween' ? '85%' : '75%' };
-    ` }
+  ${ props => props.isFavorite && css`
+    color:#fcc82a;
+    opacity: ${ props.theme.name === 'halloween' ? '85%' : '75%' };
+  ` }
 
-    &:hover {
-      opacity: 100%;
-      ${ props => props.theme.name === 'halloween' && 'filter: brightness(1.4)' }
-    }
+  &:hover {
+    opacity: 100%;
+    ${ props => props.theme.name === 'halloween' && 'filter: brightness(1.4)' }
+  }
+
+  @media only screen and (max-width: 780px) {
+    font-size: 1.4rem;
+    right: 11px;
+    top: 11px; 
+    
+    ${ props => props.small && css`
+      font-size: 12px;
+      right: 7px;
+      top: 7px;
+    ` }
+  }
+`;
+
+interface PreviewButtonStyleProps {
+  small: boolean;
+}
+
+const PreviewButton = styled.div<PreviewButtonStyleProps>`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  opacity: 0.6;
+  width: 30px;
+  height: 30px;
+  bottom: ${ props => props.small ? '0px' : '12px' };
+  left: ${ props => props.small ? '8px' : '15px' };
+  text-shadow: 0px 0px 6px ${ props => props.theme.colors.shadowDefault };
+
+  > span {
+    ${ mixins.iconButton }
+    margin-right: 4px;
+    ${ props => props.small && 'font-size: 0.8rem;' }
 
     @media only screen and (max-width: 780px) {
-      font-size: 1.4rem;
-      right: 11px;
-      top: 11px; 
-    
-      ${ props => props.small && css`
-        font-size: 12px;
-        right: 7px;
-        top: 7px;
-    ` }
+      font-size: ${ props => props.small ? '1rem' : '1.3rem' };
+    }
+  }
+
+  > p {
+    display: none;
+    margin: 0;
+    font-size: ${ props => props.small ? '0.6rem' : '0.8rem' };
+    font-weight: bold;
+    pointer-events: none;
+  }
+
+  @media only screen and (max-width: 780px) {
+    bottom: ${ props => props.small ? '0px' : '4px' };
+    left: ${ props => props.small ? '10px' : '12px' };
+  }
+
+  @media only screen and (min-width: 780px) {
+    &:hover {
+      opacity: 1;
+
+      > p {
+        display: block;
+      }
     }
   }
 `;
 
 interface SoundTileProps {
-  preview: boolean;
   small: boolean;
   sound: Sound;
   tagColor: string | undefined;
   soundRequest: (soundId: string, borderCallback: () => void) => void;
-  previewRequest: (soundName: string) => void;
+  previewRequest: (soundId: string) => Promise<void>;
   updateFavRequest: (soundId: string) => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];
-  toggleSoundOnTag: (soundId: string) => void;
 }
 
 const SoundTile: FC<SoundTileProps> = ({
-  preview,
   small,
   sound: { id, name, isFavorite },
   tagColor,
@@ -139,10 +190,10 @@ const SoundTile: FC<SoundTileProps> = ({
   updateFavRequest,
   currentlyTagging,
   unsavedTagged,
-  toggleSoundOnTag,
 }) => {
   const [statusBorder, setStatusBorder] = useState('');
   const theme = useTheme();
+  const { toggleSoundOnTag } = useCustomTags();
 
   const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
 
@@ -153,22 +204,19 @@ const SoundTile: FC<SoundTileProps> = ({
   }, []);
 
   const handleButtonClick = useCallback(() => {
-    if (currentlyTagging && preview) previewRequest(id);
-    else if (currentlyTagging) toggleSoundOnTag(id);
-    else if (preview) previewRequest(id);
-    else handleSoundPlayClick();
-  }, [currentlyTagging, unsavedTagged, preview]);
+    if (currentlyTagging) return toggleSoundOnTag(id);
+    return handleSoundPlayClick();
+  }, [currentlyTagging, unsavedTagged]);
 
   const isFavIcon = theme.name === 'halloween' ? '💀' : 'star';
   const isNotFavIcon = theme.name === 'halloween' ? '💀' : 'star_outline';
 
   return (
     <SoundTileMain
-      preview={ preview }
       statusBorder={ statusBorder }
       small={ small }
-      isFavorite={ isFavorite }
       tagColor={ tagColor ?? null }
+      taggingModeOn={ currentlyTagging }
     >
       <button
         type="button"
@@ -176,13 +224,19 @@ const SoundTile: FC<SoundTileProps> = ({
       >
         { name }
       </button>
-      <span
+      <FavStarButton
         className='material-icons'
         role="presentation"
+        small={ small }
+        isFavorite={ isFavorite }
         onClick={ () => updateFavRequest(name) }
       >
         { isFavorite ? isFavIcon : isNotFavIcon }
-      </span>
+      </FavStarButton>
+      <PreviewButton small={ small }>
+        <span role='presentation' className='material-icons' onClick={ () => previewRequest(id) }>play_circle</span>
+        <p>Preview</p>
+      </PreviewButton>
     </SoundTileMain>
   );
 };

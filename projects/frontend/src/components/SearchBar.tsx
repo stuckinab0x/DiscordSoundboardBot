@@ -1,10 +1,11 @@
 import React, { FC, useCallback, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import * as mixins from '../../styles/mixins';
+import * as mixins from '../styles/mixins';
 
-const SearchContainerMain = styled.div`
+const SearchBarMain = styled.div`
   display: flex;
   position: relative;
+  box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
 
   > input {
     ${ mixins.textInput }
@@ -38,12 +39,12 @@ const SearchContainerMain = styled.div`
   }
 `;
 
-interface SearchContainerProps {
+interface SearchBarProps {
   setSearchTerm: (search: string) => void;
   focusOnEnter: boolean;
 }
 
-const SearchContainer: FC<SearchContainerProps> = ({ setSearchTerm, focusOnEnter }) => {
+const SearchBar: FC<SearchBarProps> = ({ setSearchTerm, focusOnEnter }) => {
   const [showCancel, setShowCancel] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
@@ -69,7 +70,7 @@ const SearchContainer: FC<SearchContainerProps> = ({ setSearchTerm, focusOnEnter
   }, []);
 
   return (
-    <SearchContainerMain>
+    <SearchBarMain>
       <input
         type="text"
         placeholder=" search for a sound..."
@@ -86,8 +87,8 @@ const SearchContainer: FC<SearchContainerProps> = ({ setSearchTerm, focusOnEnter
           cancel
         </span>
       ) : null }
-    </SearchContainerMain>
+    </SearchBarMain>
   );
 };
 
-export default SearchContainer;
+export default SearchBar;

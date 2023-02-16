@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
+import { useCustomTags } from '../contexts/custom-tags-context';
 import { button, filterButton, filterButtonMobile } from '../styles/mixins';
 
 interface TaggingInstructionsMainProps {
@@ -33,22 +34,23 @@ const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
 interface TaggingInstructionsProps {
   tagName: string;
   tagColor: string;
-  saveTagged: () => void;
-  discardTagged: () => void;
 }
 
-const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor, saveTagged, discardTagged }) => (
-  <TaggingInstructionsMain tagColor={ tagColor }>
-    <p>
-      { `Currently tagging sounds for: ${ tagName }` }
-    </p>
-    <button type='button' onClick={ saveTagged }>
-      Save
-    </button>
-    <button type='button' onClick={ discardTagged }>
-      Discard
-    </button>
-  </TaggingInstructionsMain>
-);
+const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor }) => {
+  const { saveTagged, discardTagged } = useCustomTags();
 
+  return (
+    <TaggingInstructionsMain tagColor={ tagColor }>
+      <p>
+        { `Currently tagging sounds for: ${ tagName }` }
+      </p>
+      <button type='button' onClick={ saveTagged }>
+        Save
+      </button>
+      <button type='button' onClick={ discardTagged }>
+        Discard
+      </button>
+    </TaggingInstructionsMain>
+  );
+};
 export default TaggingInstructions;

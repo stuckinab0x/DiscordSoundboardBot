@@ -1,10 +1,40 @@
-import { useState, useCallback } from 'react';
+import React, { FC, useCallback, useState, useMemo, createContext, useContext, ReactNode } from 'react';
 import useSWR from 'swr';
 import CustomTag from '../models/custom-tag';
 import TagProps from '../models/tag-props';
 
-export default function useCustomTags() {
-  const { data: customTags, mutate: mutateTags } = useSWR<CustomTag[]>('/api/customtags');
+interface CustomTagsContextProps {
+  showCustomTagPicker: boolean;
+  toggleShowCustomTagPicker: () => void;
+  disableEditTagsButton: boolean;
+  setDisableEditTagsButton: (disable: boolean) => void;
+  unsavedTagged: string[];
+  currentlyTagging: TagProps | null;
+  beginTagging: (tagId: string) => void;
+  toggleSoundOnTag: (soundId: string) => void;
+  saveTagged: () => Promise<void>;
+  discardTagged: () => void;
+}
+
+const CustomTagsContext = createContext<CustomTagsContextProps | null>(null);
+
+export const useCustomTags = () => {
+  const customTagsContext = useContext(CustomTagsContext);
+
+  if (!customTagsContext)
+    throw new Error(
+      'useCustomTags has to be used within <CustomTagsProvider>',
+    );
+
+  return customTagsContext;
+};
+
+interface CustomTagsProviderProps {
+  children: ReactNode;
+}
+
+const CustomTagsProvider: FC<CustomTagsProviderProps> = ({ children }) => {
+  const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/customtags');
 
   const [unsavedTagged, setUnsavedTagged] = useState<string[]>([]);
   const [currentlyTagging, setCurrentlyTagging] = useState<TagProps | null>(null);
@@ -65,7 +95,7 @@ export default function useCustomTags() {
         await fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         return newCustomTags;
       };
-      mutateTags(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
+      mutate(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
       setCurrentlyTagging(null);
       setUnsavedTagged([]);
       setDisableEditTagsButton(false);
@@ -78,9 +108,7 @@ export default function useCustomTags() {
     setDisableEditTagsButton(false);
   }, []);
 
-  return {
-    customTags,
-    mutateTags,
+  const context = useMemo<CustomTagsContextProps>(() => ({
     showCustomTagPicker,
     toggleShowCustomTagPicker,
     disableEditTagsButton,
@@ -91,5 +119,13 @@ export default function useCustomTags() {
     toggleSoundOnTag,
     saveTagged,
     discardTagged,
-  };
-}
+  }), [showCustomTagPicker, toggleShowCustomTagPicker, disableEditTagsButton, unsavedTagged, currentlyTagging, beginTagging, toggleSoundOnTag, saveTagged, discardTagged]);
+
+  return (
+    <CustomTagsContext.Provider value={ context }>
+      { children }
+    </CustomTagsContext.Provider>
+  );
+};
+
+export default CustomTagsProvider;

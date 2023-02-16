@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
+import { useCustomTags } from '../../contexts/custom-tags-context';
 import { button } from '../../styles/mixins';
 
 interface TagStyleProps {
@@ -55,16 +56,19 @@ interface TagTileProps {
   color: string;
   editMode: boolean;
   handleEditTagClick: (id: string) => void;
-  beginTagging: (tagId: string) => void;
 }
 
-const TagTile: FC<TagTileProps> = ({ id, name, color, editMode, handleEditTagClick, beginTagging }) => (
-  <TagTileMain color={ color }>
-    <button type='button' onClick={ () => editMode ? null : beginTagging(id) }>
-      { name }
-    </button>
-    <span className='material-icons' role='presentation' onClick={ () => handleEditTagClick(id) }>edit</span>
-  </TagTileMain>
-);
+const TagTile: FC<TagTileProps> = ({ id, name, color, editMode, handleEditTagClick }) => {
+  const { beginTagging } = useCustomTags();
+
+  return (
+    <TagTileMain color={ color }>
+      <button type='button' onClick={ () => editMode ? null : beginTagging(id) }>
+        { name }
+      </button>
+      <span className='material-icons' role='presentation' onClick={ () => handleEditTagClick(id) }>edit</span>
+    </TagTileMain>
+  );
+};
 
 export default TagTile;

@@ -1,9 +1,10 @@
 import React, { FC, useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
-import { KeyedMutator } from 'swr';
+import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';
 import TagToolbar from './TagToolbar';
 import TagTileContainer from './TagTileContainer';
+import { useCustomTags } from '../../contexts/custom-tags-context';
 
 const TagPickerMain = styled.div`
   display: flex;
@@ -30,19 +31,16 @@ const ColumnDiv = styled.div`
   width: 100%;
 `;
 
-interface TagPickerProps {
-  customTags: CustomTag[];
-  setDisableEditTagsButton: (disable: boolean) => void;
-  beginTagging: (tagId: string) => void;
-  mutateTags: KeyedMutator<CustomTag[]>
-}
+const TagPicker: FC = () => {
+  const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/customtags');
 
-const TagPicker: FC<TagPickerProps> = ({ customTags, setDisableEditTagsButton, beginTagging, mutateTags }) => {
   const [editMode, setEditMode] = useState(false);
   const [currentlyEditing, setCurrentlyEditing] = useState<CustomTag | null>(null);
   const [newTagProps, setNewTagProps] = useState({ name: '', color: '' });
+  const { setDisableEditTagsButton } = useCustomTags();
+
   const handleEditTagClick = useCallback((id: string) => {
-    const tag = customTags.find(x => (x.id === id));
+    const tag = customTags?.find(x => (x.id === id));
     if (tag) {
       setCurrentlyEditing(tag);
       setEditMode(true);
@@ -60,20 +58,19 @@ const TagPicker: FC<TagPickerProps> = ({ customTags, setDisableEditTagsButton, b
         <TagToolbar
           editMode={ editMode }
           setEditMode={ setEditMode }
-          customTags={ customTags }
+          customTags={ customTags ?? [] }
           currentlyEditing={ currentlyEditing }
           setCurrentlyEditing={ setCurrentlyEditing }
           setNewTagProps={ setNewTagProps }
-          mutateTags={ mutateTags }
+          mutateTags={ mutate }
         />
         <TagTileContainer
-          customTags={ customTags }
+          customTags={ customTags ?? [] }
           editMode={ editMode }
           currentlyEditing={ currentlyEditing }
           setEditMode={ setEditMode }
           newTagProps={ newTagProps }
           handleEditTagClick={ handleEditTagClick }
-          beginTagging={ beginTagging }
         />
       </ColumnDiv>
     </TagPickerMain>

@@ -58,10 +58,9 @@ interface TagTileContainerProps {
   setEditMode: (editmode: boolean) => void;
   newTagProps: { name: string, color: string }
   handleEditTagClick: (id: string) => void;
-  beginTagging: (tagId: string) => void;
 }
 
-const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, currentlyEditing, setEditMode, newTagProps, handleEditTagClick, beginTagging }) => (
+const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, currentlyEditing, setEditMode, newTagProps, handleEditTagClick }) => (
   <TagsContainer>
     { editMode ? <DisabledNewTag>New</DisabledNewTag> : (
       <NewTagButton onClick={ () => setEditMode(true) }>
@@ -76,7 +75,6 @@ const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, cur
         color={ tag.color }
         editMode={ editMode }
         handleEditTagClick={ handleEditTagClick }
-        beginTagging={ beginTagging }
       />
     )) }
     { (editMode && !currentlyEditing) && <EmptyNewTag color={ newTagProps.color } disabled>{ newTagProps.name || '???' }</EmptyNewTag> }
