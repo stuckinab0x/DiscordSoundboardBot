@@ -17,7 +17,7 @@
     "react-scripts": "5.0.1",
     "react-transition-group": "^4.4.5",
     "styled-components": "^5.3.6",
-    "swr": "^2.0.3"
+    "swr": "^2.0.4"
   },
   "devDependencies": {
     "eslint-config-airbnb": "^19.0.4",
