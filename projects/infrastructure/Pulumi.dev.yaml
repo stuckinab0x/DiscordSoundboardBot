@@ -1,0 +1,13 @@
+config:
+  azure-native:location: westeurope
+  botman:botApiKey:
+    secure: AAABAI7bnbuTN3AgiUJd5EFWQ3hxsJm/qTqAuNO5B6j6v15yqfsBPvlXjnIWSO19xcYFokt4bRW9DQ+UautC3UoJJ4I=
+  botman:botHomeGuildId: "735209372824764568"
+  botman:botToken:
+    secure: AAABADWD5mHBjQhb7a0vLHGJ9DSfaKeA7rq+o9DdkgV/MjDKzzSHE7U/XSUF3ly77qwvbHG6RavopdAQNMmX2Q2z3603a8EyM6Xl9lysO9cOs/bO7m8r2MZDIg==
+  botman:dbConnectionString:
+    secure: AAABADmE/q4XWUAarOWbRfvW2qpmzgfZ/XuUdlwEacMi06B8wW5wi1ZQJiMog8FPpj67BiKgi2oz/j2QjTXKUpwoAfH+k19uXkIIWwTb0LNw+QfQNJQ0sITE2DO4g6Qq2LVfESSJcJOtb3o+A8qZxiHjH+nSz9bwOJP0yH9HZQsJics0QeoVAg==
+  botman:webClientId:
+    secure: AAABACPWdPko/YvJkmQSPC0HUbfWTnMYvr7bSuxmj4wOlPUvnI/AXZwJiWBLyrv17zg=
+  botman:webClientSecret:
+    secure: AAABAHOue1ex3DAVuekCKj6QqizpD6q0OCtN/8+2ZvnTQtEJwfQoql22wPW5Rc4dtvsBrGbvH5irPU0+7Zyp5Q==
