@@ -175,7 +175,7 @@ interface SoundTileProps {
   sound: Sound;
   tagColor: string | undefined;
   soundRequest: (soundId: string, borderCallback: () => void) => void;
-  previewRequest: (soundId: string, volume?: string) => Promise<void>;
+  previewRequest: (soundId: string, volume?: number) => Promise<void>;
   updateFavRequest: (soundId: string) => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];

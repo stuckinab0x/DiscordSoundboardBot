@@ -5,5 +5,5 @@ export interface SoundDocument {
   name: string;
   fileName: string;
   createdAt: Date;
-  volume?: string;
+  volume?: number;
 }

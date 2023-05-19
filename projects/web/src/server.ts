@@ -76,8 +76,8 @@ app.get('/api/preview/:id', async (req, res) => {
 });
 
 app.put('/api/volume/:id/:volume', isAdmin, async (req, res) => {
-  await soundsService.updateSoundVolume({ id: req.params.id, volume: req.params.volume });
-  res.sendStatus(200);
+  await soundsService.updateSoundVolume({ id: req.params.id, volume: Number(req.params.volume) });
+  res.sendStatus(204);
 });
 
 if (environment.environment === 'production') app.use(serveStatic);

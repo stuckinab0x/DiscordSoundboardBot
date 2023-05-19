@@ -27,12 +27,12 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
   router.delete('/:id', isAdmin, async (req, res) => {
     await soundsService.deleteSound(req.params.id);
     await tagsService.removeDeletedSound(req.params.id);
-    res.sendStatus(200);
+    res.sendStatus(204);
   });
 
   router.put('/:id', isAdmin, async (req, res) => {
     await soundsService.renameSound({ id: req.params.id, name: req.body.name });
-    res.sendStatus(200);
+    res.sendStatus(204);
   });
 
   router.post('/', upload.single('sound-file'), async (req, res) => {

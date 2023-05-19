@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState, useEffect, useCallback } from 'react';
+import React, { FC, useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { useSWRConfig } from 'swr';
 import useSoundPreview from '../../hooks/use-sound-preview';
@@ -79,14 +79,15 @@ interface VolumeOffsetActionProps {
 const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, volume }, setNotification }) => {
   const { setPreviewVolume, previewRequest } = useSoundPreview();
   const { mutate } = useSWRConfig();
-  const [rangeValue, setRangeValue] = useState(volume || '1');
+  const soundVolume = useMemo(() => (String(volume || '')), [volume]);
+  const [rangeValue, setRangeValue] = useState(String(volume) || '1');
   const [enableSave, setEnableSave] = useState(false);
   const sliderRef = useRef(null);
 
   const resetAction = useCallback(() => {
-    setRangeValue(volume || '1');
+    setRangeValue(soundVolume || '1');
     setEnableSave(false);
-  }, [id, volume]);
+  }, [id, soundVolume]);
 
   useEffect(() => resetAction(), [id]);
 
@@ -94,12 +95,12 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, vo
 
   useEffect(() => {
     setPreviewVolume(rangeValue);
-    setEnableSave((Boolean(volume) && rangeValue !== volume) || (!volume && rangeValue !== '1'));
+    setEnableSave((Boolean(volume) && rangeValue !== soundVolume) || (!volume && rangeValue !== '1'));
   }, [rangeValue, volume]);
 
   const saveVolumeRequest = useCallback(async () => {
     const res = await fetch(`/api/volume/${ id }/${ rangeValue }`, { method: 'PUT' });
-    if (res.status !== 200)
+    if (res.status !== 204)
       return setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
     setEnableSave(false);
     await mutate('/api/sounds');

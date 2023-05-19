@@ -70,28 +70,28 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
         body: JSON.stringify({ name: renameInput }),
       },
     );
-    if (res.status === 200) {
-      setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
-      setSelectedSound({ ...selectedSound, name: renameInput });
-      setRenameInput('');
-      setShowRenameInput(false);
-      await mutate('/api/sounds');
-    } else {
+    if (res.status !== 204) {
       setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
+      return;
     }
+    setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
+    setSelectedSound({ ...selectedSound, name: renameInput });
+    setRenameInput('');
+    setShowRenameInput(false);
+    await mutate('/api/sounds');
   }, [renameInput, selectedSound]);
 
   const soundDeleteRequest = useCallback(async () => {
     const res = await fetch(`/api/sounds/${ selectedSound?.id }`, { method: 'DELETE' });
-    if (res.status === 200) {
-      setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
-      setShowConfirmDelete(false);
-      setRenameInput('');
-      setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', isFavorite: false });
-      await mutate('/api/sounds');
-    } else {
+    if (res.status !== 204) {
       setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
+      return;
     }
+    setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
+    setShowConfirmDelete(false);
+    setRenameInput('');
+    setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', isFavorite: false });
+    await mutate('/api/sounds');
   }, [selectedSound?.name]);
 
   useEffect(() => setRenameInput(selectedSound.name), [selectedSound.name]);
