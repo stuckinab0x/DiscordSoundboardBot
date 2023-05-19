@@ -118,7 +118,7 @@ export default class Bot {
       }
 
       // eslint-disable-next-line no-await-in-loop
-      await this.context.botAudioPlayer.play(soundStream, Number(current.sound.volume));
+      await this.context.botAudioPlayer.play(soundStream, current.sound.volume);
       if (!this.context.soundQueue.length)
         this.context.botAudioPlayer.stop();
       this.context.currentSound = undefined;
