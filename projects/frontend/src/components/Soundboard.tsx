@@ -39,7 +39,7 @@ interface SoundboardProps {
 
 const Soundboard: FC<SoundboardProps> = ({ state }) => {
   const { showCustomTagPicker } = useCustomTags();
-  const { previewRequest, setPreviewVolume } = useSoundPreview();
+  const { soundPreview, setPreviewVolume } = useSoundPreview();
 
   return (
     <SoundboardMain state={ state }>
@@ -52,7 +52,7 @@ const Soundboard: FC<SoundboardProps> = ({ state }) => {
       <TagPicker />
       ) }
       <ButtonContainer
-        previewRequest={ previewRequest }
+        soundPreview={ soundPreview }
       />
 
     </SoundboardMain>

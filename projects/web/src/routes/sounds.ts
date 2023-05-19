@@ -14,25 +14,14 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
   router.get('/', async (req, res) => {
     const sounds = await soundsService.getAllSounds();
     const favorites = await favoritesService.getFavorites(req.cookies.userid);
-    res.send(sounds.map(x => ({ id: x.id, name: x.name, date: x.createdAt, isFavorite: favorites.indexOf(x.id) !== -1, volume: x.volume })));
-  });
-
-  router.get('/:id', (req, res) => {
-    console.log('Sound request.');
-    axios.post(`${ environment.botURL }/soundrequest/${ req.cookies.userid }/${ req.params.id }`, null, botConfig)
-      .catch(error => console.log(error));
-    res.end();
-  });
-
-  router.delete('/:id', isAdmin, async (req, res) => {
-    await soundsService.deleteSound(req.params.id);
-    await tagsService.removeDeletedSound(req.params.id);
-    res.sendStatus(204);
-  });
-
-  router.put('/:id', isAdmin, async (req, res) => {
-    await soundsService.renameSound({ id: req.params.id, name: req.body.name });
-    res.sendStatus(204);
+    res.send(sounds.map(x => ({
+      id: x.id,
+      name: x.name,
+      date: x.createdAt,
+      url: `${ environment.soundsBaseUrl }/${ x.file.fullName }`,
+      isFavorite: favorites.indexOf(x.id) !== -1,
+      volume: x.volume,
+    })));
   });
 
   router.post('/', upload.single('sound-file'), async (req, res) => {
@@ -71,6 +60,27 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
     }
 
     res.sendStatus(204);
+    res.end();
+  });
+
+  router.put('/:id', isAdmin, async (req, res) => {
+    if (!req.body.name)
+      await soundsService.updateSoundVolume({ id: req.params.id, volume: req.body.volume });
+    else
+      await soundsService.renameSound({ id: req.params.id, name: req.body.name });
+    res.sendStatus(204);
+  });
+
+  router.delete('/:id', isAdmin, async (req, res) => {
+    await soundsService.deleteSound(req.params.id);
+    await tagsService.removeDeletedSound(req.params.id);
+    res.sendStatus(204);
+  });
+
+  router.get('/:id', (req, res) => {
+    console.log('Sound request.');
+    axios.post(`${ environment.botURL }/soundrequest/${ req.cookies.userid }/${ req.params.id }`, null, botConfig)
+      .catch(error => console.log(error));
     res.end();
   });
 

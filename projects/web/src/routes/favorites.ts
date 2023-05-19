@@ -4,14 +4,14 @@ import { FavoritesService } from 'botman-users';
 function favoritesRouter(favoritesService: FavoritesService) {
   const router = Router();
 
-  router.put('/:id', async (req, res) => {
-    await favoritesService.addToFavorites({ userId: String(req.cookies.userid), soundId: req.params.id });
+  router.post('/', async (req, res) => {
+    await favoritesService.addToFavorites({ userId: String(req.cookies.userid), soundId: req.body });
     res.sendStatus(204);
     res.end();
   });
 
-  router.delete('/:id', async (req, res) => {
-    await favoritesService.removeFromFavorites({ userId: String(req.cookies.userid), soundId: req.params.id });
+  router.delete('/', async (req, res) => {
+    await favoritesService.removeFromFavorites({ userId: String(req.cookies.userid), soundId: req.body });
     res.sendStatus(204);
     res.end();
   });

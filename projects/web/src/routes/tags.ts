@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { TagsService } from 'botman-users';
 
-function customTagsRouter(tagsService: TagsService) {
+function tagsRouter(tagsService: TagsService) {
   const router = Router();
 
   router.get('/', async (req, res) => {
@@ -9,14 +9,15 @@ function customTagsRouter(tagsService: TagsService) {
     res.send(tags);
   });
 
-  router.post('/:name/:color', async (req, res) => {
-    await tagsService.addNewTag({ userId: String(req.cookies.userid), tagName: req.params.name, tagColor: req.params.color });
+  router.post('/', async (req, res) => {
+    console.log(JSON.stringify(req.body));
+    await tagsService.addNewTag({ userId: String(req.cookies.userid), tagName: req.body.name, tagColor: req.body.color });
     res.sendStatus(204);
     res.end();
   });
 
-  router.put('/:id/:name/:color', async (req, res) => {
-    await tagsService.editTagProps({ tagId: req.params.id, userId: String(req.cookies.userid), tagName: req.params.name, tagColor: req.params.color });
+  router.put('/:id', async (req, res) => {
+    await tagsService.editTagProps({ tagId: req.params.id, userId: String(req.cookies.userid), tagName: req.body.name, tagColor: req.body.color });
     res.sendStatus(204);
     res.end();
   });
@@ -27,9 +28,9 @@ function customTagsRouter(tagsService: TagsService) {
     res.end();
   });
 
-  router.put('/editsounds', async (req, res) => {
+  router.put('/:id/sounds', async (req, res) => {
     if (req.body.deleted.length) await tagsService.removeSoundsFromTags({ deleted: req.body.deleted, userId: String(req.cookies.userid) });
-    if (req.body.added.length) await tagsService.addSoundsToTag({ tagId: req.body.addedId, userId: String(req.cookies.userid), added: req.body.added });
+    if (req.body.added.length) await tagsService.addSoundsToTag({ tagId: req.params.id, userId: String(req.cookies.userid), added: req.body.added });
     res.sendStatus(204);
     res.end();
   });
@@ -37,4 +38,4 @@ function customTagsRouter(tagsService: TagsService) {
   return router;
 }
 
-export default customTagsRouter;
+export default tagsRouter;

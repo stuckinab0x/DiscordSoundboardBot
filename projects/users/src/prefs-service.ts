@@ -1,26 +1,17 @@
 import { UsersService } from './users-service';
+import { SortPrefs } from './user-document';
 
 export class PrefsService extends UsersService {
-  async getSortOrderPref(userId: string): Promise<string> {
+  async getSortPrefs(userId: string): Promise<SortPrefs> {
     const collection = await this.usersCollection;
-    const user = await collection.findOne({ userId }, { projection: { sortPrefs: 1 } });
-    return user?.sortPrefs?.sortOrder ?? 'A-Z';
+    const user = await collection.findOne({ userId }, { projection: { sortPrefs: 1, groupPrefs: 1 } });
+
+    return { sortOrder: user?.sortPrefs.sortOrder || 'A-Z', tagGroups: user?.sortPrefs.tagGroups || 'none' };
   }
 
-  async setSortOrderPref(userId: string, sortOrder: string): Promise<void> {
+  async setSortPrefs(userId: string, sortPrefs: SortPrefs): Promise<void> {
     const collection = await this.usersCollection;
-    await collection.updateOne({ userId }, { $set: { 'sortPrefs.sortOrder': sortOrder } }, { upsert: true });
-  }
-
-  async getGroupsPref(userId: string): Promise<string> {
-    const collection = await this.usersCollection;
-    const user = await collection.findOne({ userId }, { projection: { sortPrefs: 1 } });
-    return user?.sortPrefs?.tagGroups ?? 'none';
-  }
-
-  async setGroupsPref(userId: string, groups: string): Promise<void> {
-    const collection = await this.usersCollection;
-    await collection.updateOne({ userId }, { $set: { 'sortPrefs.tagGroups': groups } }, { upsert: true });
+    await collection.updateOne({ userId }, { $set: { 'sortPrefs.sortOrder': sortPrefs.sortOrder, 'sortPrefs.tagGroups': sortPrefs.tagGroups } }, { upsert: true });
   }
 
   async getUserRole(userId: string): Promise<string | undefined> {

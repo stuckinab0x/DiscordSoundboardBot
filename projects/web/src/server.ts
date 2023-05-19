@@ -7,10 +7,9 @@ import { SoundsService } from 'botman-sounds';
 import { PrefsService, FavoritesService, TagsService } from 'botman-users';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import DiscordAuth from './middlewares/discord-auth';
-import isAdmin from './middlewares/is-admin';
 import soundsRouter from './routes/sounds';
 import favoritesRouter from './routes/favorites';
-import customTagsRouter from './routes/custom-tags';
+import tagsRouter from './routes/tags';
 import prefsRouter from './routes/prefs';
 import environment from './environment';
 
@@ -41,17 +40,16 @@ app.post('/logout', (req, res) => {
 
 app.use(DiscordAuth(prefsService));
 app.use(async (req, res, next) => {
-  const sortRule = await prefsService.getSortOrderPref(String(req.cookies.userid));
-  const groupRule = await prefsService.getGroupsPref(String(req.cookies.userid));
-  res.cookie('sortpref', sortRule);
-  res.cookie('groupspref', groupRule);
+  const sortPrefs = await prefsService.getSortPrefs(String(req.cookies.userid));
+  res.cookie('sortpref', sortPrefs.sortOrder);
+  res.cookie('groupspref', sortPrefs.tagGroups);
   next();
 });
 
 app.use('/api/sounds', soundsRouter(soundsService, favoritesService, tagsService));
 app.use('/api/prefs', prefsRouter(prefsService));
 app.use('/api/favorites', favoritesRouter(favoritesService));
-app.use('/api/customtags', customTagsRouter(tagsService));
+app.use('/api/tags', tagsRouter(tagsService));
 
 const botConfig: RawAxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
 app.get('/api/skip/:all', async (req, res) => {
@@ -62,22 +60,6 @@ app.get('/api/skip/:all', async (req, res) => {
 
   res.sendStatus(204);
   res.end();
-});
-
-app.get('/api/preview/:id', async (req, res) => {
-  const sound = await soundsService.getSound(req.params.id);
-
-  if (!sound) {
-    res.sendStatus(404).end();
-    return;
-  }
-
-  res.send(`${ environment.soundsBaseUrl }/${ sound.file.fullName }`);
-});
-
-app.put('/api/volume/:id/:volume', isAdmin, async (req, res) => {
-  await soundsService.updateSoundVolume({ id: req.params.id, volume: Number(req.params.volume) });
-  res.sendStatus(204);
 });
 
 if (environment.environment === 'production') app.use(serveStatic);

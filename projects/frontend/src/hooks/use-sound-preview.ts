@@ -9,13 +9,8 @@ export default function useSoundPreview() {
       previewGain.gain.value = soundVolume >= 1 ? Number(previewVolume) - (1 - soundVolume) : Number(previewVolume) * soundVolume;
   }, [previewVolume, previewGain, soundVolume]);
 
-  const previewRequest = useCallback(async (soundId: string, volumeOffset?: number) => {
-    const soundUrl = await fetch(`/api/preview/${ soundId }`, { headers: { 'Content-Type': 'text/plain' } });
-    if (soundUrl.status === 401) {
-      window.location.reload();
-      return;
-    }
-    const audioRes = await fetch(await soundUrl.text());
+  const soundPreview = useCallback(async (url: string, volumeOffset?: number) => {
+    const audioRes = await fetch(url);
     const resBuffer = await audioRes.arrayBuffer();
     const context = new AudioContext();
     const gain = context.createGain();
@@ -31,5 +26,5 @@ export default function useSoundPreview() {
     });
   }, [previewVolume]);
 
-  return { previewRequest, setPreviewVolume };
+  return { soundPreview, setPreviewVolume };
 }

@@ -205,7 +205,14 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
       newTags = [...newTags, tag];
     }
     const tagRequest = async () => {
-      await fetch(`/api/customTags/${ method === 'PUT' ? `${ tag.id }/` : '' }${ nameInput }/${ `%23${ tagColor.split('#')[1] }` }`, { method });
+      await fetch(
+        `/api/tags/${ method === 'PUT' ? `${ tag.id }` : '' }`,
+        {
+          method,
+          body: JSON.stringify({ name: nameInput, color: tagColor }),
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
       return newTags;
     };
     mutateTags(tagRequest(), { optimisticData: newTags, rollbackOnError: true });
@@ -216,7 +223,7 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
     if (customTags && currentlyEditing) {
       const newTags = customTags.filter(x => x.id !== currentlyEditing.id);
       const deleteTag = async () => {
-        await fetch(`/api/customTags/${ currentlyEditing.id }`, { method: 'DELETE' });
+        await fetch(`/api/tags/${ currentlyEditing.id }`, { method: 'DELETE' });
         return newTags;
       };
       mutateTags(deleteTag(), { optimisticData: newTags, rollbackOnError: true });

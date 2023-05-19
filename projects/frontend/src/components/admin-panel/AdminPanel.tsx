@@ -137,7 +137,7 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
   const [notificationProps, setNotificationProps] = useState({ text: '', color: '' });
 
   const { data: sounds, error } = useSWR<Sound[]>('/api/sounds');
-  const { setPreviewVolume, previewRequest } = useSoundPreview();
+  const { soundPreview, setPreviewVolume } = useSoundPreview();
 
   useEffect(() => {
     if (selectedSound)
@@ -185,7 +185,16 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
             <LowerContainer>
               <SoundsContainer>
                 <h2>Select a sound for info/settings</h2>
-                { visibleSounds.map(x => (<PanelSound key={ x.id } sound={ x } selectedSoundId={ selectedSound?.id } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } />))}
+                { visibleSounds.map(x =>
+                  (
+                    <PanelSound
+                      key={ x.id }
+                      sound={ x }
+                      selectedSoundId={ selectedSound?.id }
+                      setSelectedSound={ setSelectedSound }
+                      soundPreview={ () => soundPreview(x.url, x.volume) }
+                    />
+                  ))}
               </SoundsContainer>
               <PanelInfoContainer
                 selectedSound={ selectedSound }

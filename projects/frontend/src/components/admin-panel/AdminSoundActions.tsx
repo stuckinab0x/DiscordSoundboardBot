@@ -58,7 +58,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
   const [renameInput, setRenameInput] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate } = useSWRConfig();
-  const { previewRequest } = useSoundPreview();
+  const { soundPreview } = useSoundPreview();
 
   const renameRequest = useCallback(async () => {
     if (!renameInput) return;
@@ -90,7 +90,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
     setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
     setShowConfirmDelete(false);
     setRenameInput('');
-    setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', isFavorite: false });
+    setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', url: 'okay', isFavorite: false });
     await mutate('/api/sounds');
   }, [selectedSound?.name]);
 
@@ -108,7 +108,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
       </div>
       <div>
         <h3>File Volume</h3>
-        <span className='material-icons' role='presentation' onClick={ () => previewRequest(selectedSound.id) }>play_circle</span>
+        <span className='material-icons' role='presentation' onClick={ () => soundPreview(selectedSound.url) }>play_circle</span>
       </div>
       <VolumeOffsetAction sound={ selectedSound } setNotification={ setNotification } />
       <Divider />

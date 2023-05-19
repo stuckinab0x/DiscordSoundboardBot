@@ -34,7 +34,7 @@ interface CustomTagsProviderProps {
 }
 
 const CustomTagsProvider: FC<CustomTagsProviderProps> = ({ children }) => {
-  const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/customtags');
+  const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/tags');
 
   const [unsavedTagged, setUnsavedTagged] = useState<string[]>([]);
   const [currentlyTagging, setCurrentlyTagging] = useState<TagProps | null>(null);
@@ -91,8 +91,8 @@ const CustomTagsProvider: FC<CustomTagsProviderProps> = ({ children }) => {
 
       const updateTagSounds = async () => {
         const added = unsavedTagged.filter(x => !oldCurrentTagSounds.includes(x));
-        const body = { addedId: currentlyTagging.id, added, deleted };
-        await fetch('/api/customtags/editsounds', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const body = { added, deleted };
+        await fetch(`/api/tags/${ currentlyTagging.id }/sounds`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         return newCustomTags;
       };
       mutate(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });

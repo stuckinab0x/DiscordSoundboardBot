@@ -44,7 +44,7 @@ const ButtonToggle = styled.button<ButtonProps>`
 
 const FiltersBar: FC = () => {
   const { sortRules, toggleFavs } = useSortRules();
-  const { data: customTags } = useSWR<CustomTag[]>('/api/customtags');
+  const { data: customTags } = useSWR<CustomTag[]>('/api/tags');
 
   return (
     <FiltersBarMain>

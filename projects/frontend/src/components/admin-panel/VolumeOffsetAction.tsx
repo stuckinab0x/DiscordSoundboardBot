@@ -23,6 +23,7 @@ const ActionContainer = styled.div`
 `;
 
 const sliderThumb = css`
+  appearance: none;
   -webkit-appearance: none;
   height: 20px;
   width: 20px;
@@ -34,6 +35,7 @@ const sliderThumb = css`
 
 const StyledSlider = styled.input`
   &[type="range"] {
+    appearance: none;
     -webkit-appearance: none;
     margin-left: 15px;
     height: 7px;
@@ -76,8 +78,8 @@ interface VolumeOffsetActionProps {
   setNotification: (text: string, color: string) => void;
 }
 
-const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, volume }, setNotification }) => {
-  const { setPreviewVolume, previewRequest } = useSoundPreview();
+const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, url, volume }, setNotification }) => {
+  const { setPreviewVolume, soundPreview } = useSoundPreview();
   const { mutate } = useSWRConfig();
   const soundVolume = useMemo(() => (String(volume || '')), [volume]);
   const [rangeValue, setRangeValue] = useState(String(volume) || '1');
@@ -99,7 +101,14 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, vo
   }, [rangeValue, volume]);
 
   const saveVolumeRequest = useCallback(async () => {
-    const res = await fetch(`/api/volume/${ id }/${ rangeValue }`, { method: 'PUT' });
+    const res = await fetch(
+      `/api/sounds/${ id }`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ volume: Number(rangeValue) }),
+      },
+    );
     if (res.status !== 204)
       return setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
     setEnableSave(false);
@@ -110,7 +119,7 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, vo
   return (
     <ActionContainer>
       <h3>Offset</h3>
-      <span className='material-icons' role='presentation' onClick={ () => previewRequest(id) }>play_circle</span>
+      <span className='material-icons' role='presentation' onClick={ () => soundPreview(url) }>play_circle</span>
       <StyledSlider
         ref={ sliderRef }
         type='range'

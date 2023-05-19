@@ -46,12 +46,12 @@ function sortSoundGroups(sounds: Sound[], groupOrder: GroupOrder, customTags: Cu
 }
 
 interface ButtonContainerProps {
-  previewRequest: (soundId: string) => Promise<void>;
+  soundPreview: (soundId: string, volumeOffset?: number) => Promise<void>;
 }
 
-const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
+const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
   const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
-  const { data: customTags } = useSWR<CustomTag[]>('/api/customtags');
+  const { data: customTags } = useSWR<CustomTag[]>('/api/tags');
   const theme = useTheme();
   const { sortRules: { favorites, small, searchTerm, sortOrder, groupOrder, tags } } = useSortRules();
   const { currentlyTagging, unsavedTagged } = useCustomTags();
@@ -71,7 +71,14 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
         const soundIndex = newSounds.findIndex(x => x.id === sound?.id);
         newSounds[soundIndex] = { ...(sound), isFavorite: !sound?.isFavorite };
         const updateFav = async () => {
-          await fetch(`/api/favorites/${ sound?.id }`, { method: sound?.isFavorite ? 'DELETE' : 'PUT' });
+          await fetch(
+            '/api/favorites',
+            {
+              method: sound?.isFavorite ? 'DELETE' : 'POST',
+              body: JSON.stringify(sound.id),
+              headers: { 'Content-Type': 'application/json' },
+            },
+          );
           return newSounds;
         };
         mutateSounds(updateFav(), { optimisticData: newSounds, rollbackOnError: true });
@@ -106,7 +113,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ previewRequest }) => {
               small={ small }
               sound={ x }
               soundRequest={ soundRequest }
-              previewRequest={ previewRequest }
+              soundPreview={ () => soundPreview(x.url, x.volume) }
               tagColor={ tagColor }
               updateFavRequest={ updateFavoritesRequest }
               currentlyTagging={ !!currentlyTagging }

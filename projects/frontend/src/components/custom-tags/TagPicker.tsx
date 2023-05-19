@@ -32,7 +32,7 @@ const ColumnDiv = styled.div`
 `;
 
 const TagPicker: FC = () => {
-  const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/customtags');
+  const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/tags');
 
   const [editMode, setEditMode] = useState(false);
   const [currentlyEditing, setCurrentlyEditing] = useState<CustomTag | null>(null);
