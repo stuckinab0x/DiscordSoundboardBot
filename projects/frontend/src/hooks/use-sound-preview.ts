@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 
 export default function useSoundPreview() {
-  const [previewVolume, setPreviewVolume] = useState('.5');
+  const [previewVolume, setPreviewVolume] = useState('1');
   const [previewGain, setPreviewGain] = useState<GainNode | null>(null);
+  const [soundVolume, setSoundVolume] = useState('1');
   useEffect(() => {
     if (previewGain)
-      previewGain.gain.value = Number(previewVolume);
-  }, [previewVolume, previewGain]);
+      previewGain.gain.value = Number(soundVolume) >= 1 ? Number(previewVolume) - (1 - Number(soundVolume)) : Number(previewVolume) * (Number(soundVolume));
+  }, [previewVolume, previewGain, soundVolume]);
 
-  const previewRequest = useCallback(async (soundId: string) => {
+  const previewRequest = useCallback(async (soundId: string, volumeOffset?: string) => {
     const soundUrl = await fetch(`/api/preview/${ soundId }`, { headers: { 'Content-Type': 'text/plain' } });
     if (soundUrl.status === 401) {
       window.location.reload();
@@ -19,6 +20,7 @@ export default function useSoundPreview() {
     const context = new AudioContext();
     const gain = context.createGain();
 
+    setSoundVolume(volumeOffset || '1');
     setPreviewGain(gain);
 
     await context.decodeAudioData(resBuffer, buffer => {

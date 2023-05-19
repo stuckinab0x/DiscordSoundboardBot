@@ -6,7 +6,8 @@ import axios, { RawAxiosRequestConfig } from 'axios';
 import { SoundsService } from 'botman-sounds';
 import { PrefsService, FavoritesService, TagsService } from 'botman-users';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import DiscordAuth from './discord-auth';
+import DiscordAuth from './middlewares/discord-auth';
+import isAdmin from './middlewares/is-admin';
 import soundsRouter from './routes/sounds';
 import favoritesRouter from './routes/favorites';
 import customTagsRouter from './routes/custom-tags';
@@ -72,6 +73,11 @@ app.get('/api/preview/:id', async (req, res) => {
   }
 
   res.send(`${ environment.soundsBaseUrl }/${ sound.file.fullName }`);
+});
+
+app.put('/api/volume/:id/:volume', isAdmin, async (req, res) => {
+  await soundsService.updateSoundVolume({ id: req.params.id, volume: req.params.volume });
+  res.sendStatus(200);
 });
 
 if (environment.environment === 'production') app.use(serveStatic);

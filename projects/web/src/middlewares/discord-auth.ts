@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { RequestHandler } from 'express';
 import { PrefsService } from 'botman-users';
-import environment from './environment';
+import environment from '../environment';
 
 declare global {
   namespace Express {

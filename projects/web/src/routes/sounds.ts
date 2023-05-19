@@ -1,15 +1,10 @@
-import { Router, RequestHandler } from 'express';
+import { Router } from 'express';
 import axios, { RawAxiosRequestConfig } from 'axios';
 import { SoundsService, errors, AddSoundOptions } from 'botman-sounds';
 import { FavoritesService, TagsService } from 'botman-users';
 import multer from 'multer';
+import isAdmin from '../middlewares/is-admin';
 import environment from '../environment';
-
-const isAdmin: RequestHandler = (req, res, next) => {
-  if (req.userRole === 'admin')
-    return next();
-  return res.sendStatus(403);
-};
 
 function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService, tagsService: TagsService) {
   const botConfig: RawAxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
@@ -19,7 +14,7 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
   router.get('/', async (req, res) => {
     const sounds = await soundsService.getAllSounds();
     const favorites = await favoritesService.getFavorites(req.cookies.userid);
-    res.send(sounds.map(x => ({ id: x.id, name: x.name, date: x.createdAt, isFavorite: favorites.indexOf(x.id) !== -1 })));
+    res.send(sounds.map(x => ({ id: x.id, name: x.name, date: x.createdAt, isFavorite: favorites.indexOf(x.id) !== -1, volume: x.volume })));
   });
 
   router.get('/:id', (req, res) => {

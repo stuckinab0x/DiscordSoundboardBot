@@ -175,7 +175,7 @@ interface SoundTileProps {
   sound: Sound;
   tagColor: string | undefined;
   soundRequest: (soundId: string, borderCallback: () => void) => void;
-  previewRequest: (soundId: string) => Promise<void>;
+  previewRequest: (soundId: string, volume?: string) => Promise<void>;
   updateFavRequest: (soundId: string) => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];
@@ -183,7 +183,7 @@ interface SoundTileProps {
 
 const SoundTile: FC<SoundTileProps> = ({
   small,
-  sound: { id, name, isFavorite },
+  sound: { id, name, isFavorite, volume },
   tagColor,
   soundRequest,
   previewRequest,
@@ -234,7 +234,7 @@ const SoundTile: FC<SoundTileProps> = ({
         { isFavorite ? isFavIcon : isNotFavIcon }
       </FavStarButton>
       <PreviewButton small={ small }>
-        <span role='presentation' className='material-icons' onClick={ () => previewRequest(id) }>play_circle</span>
+        <span role='presentation' className='material-icons' onClick={ () => previewRequest(id, volume) }>play_circle</span>
         <p>Preview</p>
       </PreviewButton>
     </SoundTileMain>

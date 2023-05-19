@@ -139,6 +139,11 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
   const { data: sounds, error } = useSWR<Sound[]>('/api/sounds');
   const { setPreviewVolume, previewRequest } = useSoundPreview();
 
+  useEffect(() => {
+    if (selectedSound)
+      setSelectedSound(sounds?.find(x => x.id === selectedSound.id) ?? null);
+  }, [sounds]);
+
   const visibleSounds = useMemo(
     () => sounds?.filter(x => x.name.toUpperCase().includes(searchTerm)),
     [sounds, searchTerm],
@@ -179,14 +184,13 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
             </AdminFeatures>
             <LowerContainer>
               <SoundsContainer>
-                <h2>Select a sound for info/delete/rename</h2>
+                <h2>Select a sound for info/settings</h2>
                 { visibleSounds.map(x => (<PanelSound key={ x.id } sound={ x } selectedSoundId={ selectedSound?.id } setSelectedSound={ setSelectedSound } previewRequest={ previewRequest } />))}
               </SoundsContainer>
               <PanelInfoContainer
                 selectedSound={ selectedSound }
                 setSelectedSound={ setSelectedSound }
                 setPreviewVolume={ setPreviewVolume }
-                previewRequest={ previewRequest }
                 setNotification={ setNotification }
               />
             </LowerContainer>

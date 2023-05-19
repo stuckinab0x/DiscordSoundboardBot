@@ -53,11 +53,10 @@ interface PanelInfoContainerProps {
   selectedSound: Sound | null;
   setSelectedSound: (sound: Sound | null) => void;
   setPreviewVolume: (volume: string) => void;
-  previewRequest: (soundName: string) => Promise<void>
   setNotification: (text: string, color: string) => void;
 }
 
-const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSelectedSound, setPreviewVolume, previewRequest, setNotification }) => {
+const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSelectedSound, setPreviewVolume, setNotification }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRenameInput, setShowRenameInput] = useState(false);
 
@@ -69,7 +68,7 @@ const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSele
   return (
     <InfoContainer>
       <div>
-        <h2>Preview Volume</h2>
+        <h2>List Volume</h2>
         <VolumeSlider setPreviewVolume={ setPreviewVolume } />
       </div>
       <Divider />
@@ -95,7 +94,6 @@ const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSele
         setShowConfirmDelete={ setShowConfirmDelete }
         showRenameInput={ showRenameInput }
         setShowRenameInput={ setShowRenameInput }
-        previewRequest={ previewRequest }
         setNotification={ setNotification }
       />
       )}

@@ -3,4 +3,5 @@ export default interface Sound {
   name: string;
   date: string;
   isFavorite: boolean;
+  volume?: string;
 }

@@ -23,7 +23,7 @@ const StyledSlider = styled.input`
     background: rgba(255, 255, 255, 0.6);
     border-radius: 5px;
     background-image: linear-gradient( ${ props => props.theme.colors.volumeSliderFill }, ${ props => props.theme.colors.volumeSliderFill } );
-    background-size: 25%;
+    background-size: 50%;
     background-repeat: no-repeat;
   }
   
@@ -74,7 +74,7 @@ const VolumeSlider: FC<VolumeSliderProps> = ({ setPreviewVolume }) => {
       type="range"
       min={ 0 }
       max={ 2 }
-      defaultValue=".5"
+      defaultValue="1"
       step="0.01"
       onInput={ event => {
         setPreviewVolume(event.currentTarget.value);

@@ -1,9 +1,11 @@
 import React, { FC, useCallback, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useSWRConfig } from 'swr';
+import useSoundPreview from '../../hooks/use-sound-preview';
 import Sound from '../../models/sound';
 import { textInput, adminPanelDivider } from '../../styles/mixins';
 import { defaultTheme } from '../../styles/themes';
+import VolumeOffsetAction from './VolumeOffsetAction';
 
 const Divider = styled.hr`
   ${ adminPanelDivider }
@@ -41,7 +43,6 @@ interface AdminSoundActionsProps {
   setShowConfirmDelete: (show: boolean) => void;
   showRenameInput: boolean;
   setShowRenameInput: (show: boolean) => void;
-  previewRequest: (soundName: string) => Promise<void>
   setNotification: (text: string, color: string) => void;
 }
 
@@ -52,12 +53,12 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
   setShowConfirmDelete,
   showRenameInput,
   setShowRenameInput,
-  previewRequest,
   setNotification,
 }) => {
   const [renameInput, setRenameInput] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate } = useSWRConfig();
+  const { previewRequest } = useSoundPreview();
 
   const renameRequest = useCallback(async () => {
     if (!renameInput) return;
@@ -103,9 +104,13 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
   return (
     <>
       <div>
-        <h3>Preview</h3>
+        <h2>Volume Settings</h2>
+      </div>
+      <div>
+        <h3>File Volume</h3>
         <span className='material-icons' role='presentation' onClick={ () => previewRequest(selectedSound.id) }>play_circle</span>
       </div>
+      <VolumeOffsetAction sound={ selectedSound } setNotification={ setNotification } />
       <Divider />
       { showRenameInput
         ? (

@@ -52,8 +52,10 @@ class BotAudioPlayer {
     connection.subscribe(this.player);
   }
 
-  play(stream: Readable): Promise<any> {
-    const resource = createAudioResource(stream);
+  play(stream: Readable, volume: number): Promise<any> {
+    const resource = createAudioResource(stream, { inlineVolume: !!volume });
+    if (volume)
+      resource.volume?.setVolumeLogarithmic(volume);
     this.player.play(resource);
     return new Promise(resolve => {
       this.player.on(AudioPlayerStatus.Idle, resolve);

@@ -20,6 +20,11 @@ export interface RenameSoundOptions {
   name: string;
 }
 
+export interface UpdateVolumeOptions {
+  id: string;
+  volume: string;
+}
+
 export class ReadOnlySoundsService extends MongoService {
   protected readonly soundsCollection: Promise<Collection<SoundDocument>>;
 
@@ -71,6 +76,7 @@ export class ReadOnlySoundsService extends MongoService {
       name: document.name,
       file: ReadOnlySoundsService.mapFileNameToSoundFile(document.fileName),
       createdAt: document.createdAt,
+      volume: document.volume,
     };
   }
 
@@ -131,6 +137,11 @@ export class SoundsService extends ReadOnlySoundsService {
     const deleted = await collection.findOneAndDelete({ _id: new ObjectId(id) });
     if (deleted.value)
       await this.filesService.deleteFile(deleted.value.fileName);
+  }
+
+  async updateSoundVolume({ id, volume }: UpdateVolumeOptions) {
+    const collection = await this.soundsCollection;
+    await collection.updateOne({ _id: new ObjectId(id) }, { $set: { volume } }, { upsert: true });
   }
 
   async renameSound({ id, name }: RenameSoundOptions) {
