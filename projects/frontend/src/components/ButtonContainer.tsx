@@ -58,14 +58,14 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
 
   const soundRequest = useCallback(debounce(async (soundId: string, borderCallback: () => void) => {
     borderCallback();
-    const res = await fetch(`/api/sounds/${ soundId }`);
+    const res = await fetch(`/api/queue/${ soundId }`, { method: 'POST' });
     if (res.status === 401)
       window.location.reload();
   }, 2000, true), []);
 
-  const updateFavoritesRequest = useCallback((soundName: string) => {
+  const updateFavoritesRequest = useCallback((soundId: string) => {
     if (sounds) {
-      const sound = sounds.find(x => x.name === soundName);
+      const sound = sounds.find(x => x.id === soundId);
       if (sound) {
         const newSounds = [...sounds];
         const soundIndex = newSounds.findIndex(x => x.id === sound?.id);
@@ -75,7 +75,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
             '/api/favorites',
             {
               method: sound?.isFavorite ? 'DELETE' : 'POST',
-              body: JSON.stringify(sound.id),
+              body: JSON.stringify({ soundId: sound.id }),
               headers: { 'Content-Type': 'application/json' },
             },
           );
@@ -115,7 +115,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
               soundRequest={ soundRequest }
               soundPreview={ () => soundPreview(x.url, x.volume) }
               tagColor={ tagColor }
-              updateFavRequest={ updateFavoritesRequest }
+              updateFavRequest={ () => updateFavoritesRequest(x.id) }
               currentlyTagging={ !!currentlyTagging }
               unsavedTagged={ unsavedTagged }
             />

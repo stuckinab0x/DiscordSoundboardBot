@@ -43,7 +43,7 @@ const SkipContainerMain = styled.div`
 
 const SkipContainer: FC = () => {
   const skipSound = useCallback(debounce(async (all?: boolean) => {
-    const res = await fetch(`/api/skip/${ all && 'skip all' }`);
+    const res = await fetch(`/api/queue/${ all && 'skip all' }`, { method: 'DELETE' });
     if (res.status === 401)
       window.location.reload();
   }, 500, true), []);

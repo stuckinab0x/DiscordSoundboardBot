@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { RequestHandler } from 'express';
 import { PrefsService } from 'botman-users';
-import environment from '../environment';
+import logger from '../../logger';
+import { WebServerEnvironment } from '../../environment';
 
 declare global {
   namespace Express {
@@ -11,9 +12,7 @@ declare global {
   }
 }
 
-const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.webServerURL) }&response_type=code&scope=identify&prompt=none`;
-
-function discordAuth(prefsService: PrefsService) {
+export default function discordAuth(environment: WebServerEnvironment, prefsService: PrefsService, authUrl: string) {
   const middleware: RequestHandler = async (req, res, next) => {
     let userReqToken = req.cookies.accesstoken ?? null;
 
@@ -25,7 +24,7 @@ function discordAuth(prefsService: PrefsService) {
       });
       if (req.query.code) {
         params.append('code', String(req.query.code));
-        params.append('redirect_uri', environment.webServerURL);
+        params.append('redirect_uri', environment.webServerUrl);
       } else { params.append('refresh_token', req.cookies.refreshtoken); }
       try {
         const tokenRes = await axios.post('https://discord.com/api/oauth2/token', params, { headers: { 'Accept-encoding': 'application/json' } });
@@ -36,9 +35,9 @@ function discordAuth(prefsService: PrefsService) {
           return;
         }
         userReqToken = tokenRes.data.access_token;
-        console.log('token response from discord');
+        logger.info('token response from discord');
       } catch (error) {
-        console.log(error);
+        logger.info(error);
       }
     }
 
@@ -48,12 +47,13 @@ function discordAuth(prefsService: PrefsService) {
         res.cookie('username', userRes.data.username);
         res.cookie('userid', userRes.data.id);
         res.cookie('avatar', userRes.data.avatar);
-        req.userRole = await prefsService.getUserRole(userRes.data.id);
+        const userRole = await prefsService.getUserRole(userRes.data.id);
+        req.userRole = userRole!;
         res.cookie('role', req.userRole);
         next();
         return;
       } catch (error) {
-        console.log(error);
+        logger.info(error);
       }
 
     if (req.url.includes('/api')) {
@@ -61,10 +61,8 @@ function discordAuth(prefsService: PrefsService) {
       res.end();
       return;
     }
-    res.redirect(authURL);
+    res.redirect(authUrl);
   };
 
   return middleware;
 }
-
-export default discordAuth;

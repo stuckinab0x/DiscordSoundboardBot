@@ -6,8 +6,8 @@ import { Readable } from 'node:stream';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
-import SoundRequestServer from './sound-request-server';
-import Environment from '../environment';
+import Environment, { WebServerEnvironment } from '../environment';
+import WebServer from '../web/web-server';
 
 export default class Bot {
   private readonly client = new Client({
@@ -16,11 +16,11 @@ export default class Bot {
   });
 
   private readonly context: BotContext;
-  private readonly soundRequestServer: SoundRequestServer;
+  private readonly webServer: WebServer;
 
   private soundPlaying = false;
 
-  constructor(private readonly environment: Environment) {
+  constructor(private readonly environment: Environment, private readonly webServerEnvironment: WebServerEnvironment) {
     this.client.on('ready', () => this.onReady());
     this.client.on('interactionCreate', interaction => this.onInteraction(interaction));
     this.client.on('warn', m => {
@@ -37,10 +37,12 @@ export default class Bot {
     this.context = new BotContext(soundsService);
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
 
-    this.soundRequestServer = new SoundRequestServer(80, environment);
+    this.webServer = new WebServer(webServerEnvironment);
 
-    this.soundRequestServer.subscribeToSoundRequests((userID, soundId) => this.onServerSoundRequest(userID, soundId));
-    this.soundRequestServer.subscribeToSkipRequests((userID, skipAll) => this.onServerSkipRequest(userID, skipAll));
+    this.webServer.subscribeToSoundRequests((userId: string, soundId: string) => this.onServerSoundRequest(userId, soundId));
+    this.webServer.subscribeToSkipRequests((userId: string, skipAll: boolean) => this.onServerSkipRequest(userId, skipAll));
+
+    this.webServer.start();
   }
 
   start(): Promise<string> {
@@ -146,8 +148,8 @@ export default class Bot {
     logger.info(`Server sound request. User: ${ userId }. Queue length: ${ this.context.soundQueue.length }.`);
   }
 
-  private async onServerSkipRequest(userID: string, skipAll: boolean) {
-    const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userID);
+  private async onServerSkipRequest(userId: string, skipAll: boolean) {
+    const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userId);
     if (!soundBoardUser?.channel) {
       logger.info('Skip request received but user is not connected');
       return;

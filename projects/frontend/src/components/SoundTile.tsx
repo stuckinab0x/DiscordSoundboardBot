@@ -176,7 +176,7 @@ interface SoundTileProps {
   tagColor: string | undefined;
   soundRequest: (soundId: string, borderCallback: () => void) => void;
   soundPreview: () => Promise<void>;
-  updateFavRequest: (soundId: string) => void;
+  updateFavRequest: () => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];
 }
@@ -229,7 +229,7 @@ const SoundTile: FC<SoundTileProps> = ({
         role="presentation"
         small={ small }
         isFavorite={ isFavorite }
-        onClick={ () => updateFavRequest(name) }
+        onClick={ updateFavRequest }
       >
         { isFavorite ? isFavIcon : isNotFavIcon }
       </FavStarButton>

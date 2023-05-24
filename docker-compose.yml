@@ -13,19 +13,6 @@ services:
     ports:
       - "8000:80"
 
-  web:
-    build:
-      dockerfile: projects/web/Dockerfile
-      context: .
-      args:
-        NODE_ENV: development
-    env_file: projects/web/.env
-    volumes:
-      - ./projects:/app/projects
-    entrypoint: [ "yarn", "run", "start:dev" ]
-    ports:
-      - "8080:80"
-
   frontend:
     build:
       dockerfile: projects/frontend/Dockerfile

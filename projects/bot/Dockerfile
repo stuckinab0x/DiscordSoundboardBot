@@ -14,8 +14,15 @@ COPY projects/mongo/src/ src/
 WORKDIR ../sounds
 COPY projects/sounds/package.json projects/sounds/tsconfig.json ./
 COPY projects/sounds/src/ src/
-WORKDIR ../bot
+WORKDIR ../users
+COPY projects/users/package.json projects/users/tsconfig.json ./
+COPY projects/users/src/ src/
+WORKDIR ../frontend
+COPY projects/frontend/package.json projects/frontend/tsconfig.json ./
+COPY projects/frontend/src/ src/
+COPY projects/frontend/public/ public/
 RUN yarn --pure-lockfile
+RUN if [ "$NODE_ENV" = "production" ] ; then set -e; yarn run build ; mv build ../web/src/public ; rm -rf ../frontend ; fi
 
 FROM alpine:3.15
 ARG NODE_ENV=production

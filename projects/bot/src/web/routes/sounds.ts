@@ -1,13 +1,11 @@
 import { Router } from 'express';
-import axios, { RawAxiosRequestConfig } from 'axios';
 import { SoundsService, errors, AddSoundOptions } from 'botman-sounds';
 import { FavoritesService, TagsService } from 'botman-users';
 import multer from 'multer';
+import logger from '../../logger';
 import isAdmin from '../middlewares/is-admin';
-import environment from '../environment';
 
-function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService, tagsService: TagsService) {
-  const botConfig: RawAxiosRequestConfig = { headers: { Authorization: environment.botApiKey } };
+function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService, tagsService: TagsService, soundsBaseUrl: string) {
   const router = Router();
   const upload = multer();
 
@@ -18,14 +16,14 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
       id: x.id,
       name: x.name,
       date: x.createdAt,
-      url: `${ environment.soundsBaseUrl }/${ x.file.fullName }`,
+      url: `${ soundsBaseUrl }/${ x.file.fullName }`,
       isFavorite: favorites.indexOf(x.id) !== -1,
       volume: x.volume,
     })));
   });
 
   router.post('/', upload.single('sound-file'), async (req, res) => {
-    console.log('Addsound request.');
+    logger.info('Addsound request.');
     const name = req.body['custom-name'];
 
     if (!name) {
@@ -34,23 +32,24 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
       return;
     }
 
-    const newSound: AddSoundOptions = {
-      name,
-      file: req.file?.buffer,
-    };
-
     try {
-      await soundsService.addSound(newSound);
-    } catch (error) {
+      if (req.file) {
+        const newSound: AddSoundOptions = {
+          name,
+          file: req.file?.buffer,
+        };
+        await soundsService.addSound(newSound);
+      }
+    } catch (error: any) {
       if (error.message === errors.soundAlreadyExists) {
-        console.log(error);
+        logger.info(error);
         res.sendStatus(409);
         res.end();
         return;
       }
 
       if (error.message === errors.unsupportedFileExtension) {
-        console.log(error);
+        logger.info(error);
         res.sendStatus(400);
         res.end();
         return;
@@ -75,13 +74,6 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
     await soundsService.deleteSound(req.params.id);
     await tagsService.removeDeletedSound(req.params.id);
     res.sendStatus(204);
-  });
-
-  router.get('/:id', (req, res) => {
-    console.log('Sound request.');
-    axios.post(`${ environment.botURL }/soundrequest/${ req.cookies.userid }/${ req.params.id }`, null, botConfig)
-      .catch(error => console.log(error));
-    res.end();
   });
 
   return router;

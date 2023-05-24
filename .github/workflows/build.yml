@@ -46,12 +46,6 @@ jobs:
     with:
       directory: projects/bot
 
-  web:
-    name: Build web
-    uses: ./.github/workflows/build-project.yml
-    with:
-      directory: projects/web
-
   frontend:
     name: Build frontend
     uses: ./.github/workflows/build-project.yml

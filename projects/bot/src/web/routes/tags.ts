@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { TagsService } from 'botman-users';
+import logger from '../../logger';
 
 function tagsRouter(tagsService: TagsService) {
   const router = Router();
@@ -10,7 +11,7 @@ function tagsRouter(tagsService: TagsService) {
   });
 
   router.post('/', async (req, res) => {
-    console.log(JSON.stringify(req.body));
+    logger.info(JSON.stringify(req.body));
     await tagsService.addNewTag({ userId: String(req.cookies.userid), tagName: req.body.name, tagColor: req.body.color });
     res.sendStatus(204);
     res.end();
