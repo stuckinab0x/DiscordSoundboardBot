@@ -1,7 +1,6 @@
 import * as applicationInsights from 'applicationinsights';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import { SoundsService } from 'botman-sounds';
 import { PrefsService, FavoritesService, TagsService } from 'botman-users';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -13,9 +12,7 @@ import tagsRouter from './routes/tags';
 import prefsRouter from './routes/prefs';
 import queueRouter from './routes/queue';
 import { WebServerEnvironment } from '../environment';
-
-type SoundRequestSubscriber = (userId: string, soundId: string) => void;
-type SkipRequestSubscriber = (userId: string, skipAll: boolean) => void;
+import Bot from '../bot/bot';
 
 export default class WebServer {
   private readonly soundsService: SoundsService;
@@ -25,15 +22,16 @@ export default class WebServer {
 
   private readonly authURL: string;
 
-  private soundSubscribers: SoundRequestSubscriber[] = [];
-  private skipSubscribers: SkipRequestSubscriber[] = [];
+  private readonly bot: Bot;
 
-  constructor(private readonly environment: WebServerEnvironment) {
+  constructor(private readonly environment: WebServerEnvironment, bot: Bot) {
     if (environment.environment === 'production') {
       applicationInsights.setup();
       applicationInsights.defaultClient.context.tags[applicationInsights.defaultClient.context.keys.cloudRole] = 'Web backend';
       applicationInsights.start();
     }
+
+    this.bot = bot;
 
     this.soundsService = new SoundsService(environment.dbConnectionString, environment.blobStorageConnectionString);
     this.prefsService = new PrefsService(environment.dbConnectionString);
@@ -43,30 +41,15 @@ export default class WebServer {
     this.authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.webServerUrl) }&response_type=code&scope=identify&prompt=none`;
   }
 
-  private onSoundRequest(userId: string, soundId: string) {
-    this.soundSubscribers.forEach(x => x(userId, soundId));
-  }
-
-  private onSkipRequest(userId: string, skipAll: boolean) {
-    this.skipSubscribers.forEach(x => x(userId, skipAll));
-  }
-
-  subscribeToSoundRequests(subscriber: SoundRequestSubscriber) {
-    this.soundSubscribers.push(subscriber);
-  }
-
-  subscribeToSkipRequests(subscriber: SkipRequestSubscriber) {
-    this.skipSubscribers.push(subscriber);
-  }
-
   start() {
     const app = express();
     app.use(requestLogger);
     const serveStatic = express.static('src/public', { extensions: ['html'] });
 
     app.use(cookieParser());
-    app.use(cors({ origin: this.environment.webServerUrl }));
     app.use(express.json());
+
+    app.get('/health', (req, res) => res.sendStatus(204));
 
     app.post('/logout', (req, res) => {
       res.clearCookie('accesstoken');
@@ -87,7 +70,7 @@ export default class WebServer {
     app.use('/api/prefs', prefsRouter(this.prefsService));
     app.use('/api/favorites', favoritesRouter(this.favoritesService));
     app.use('/api/tags', tagsRouter(this.tagsService));
-    app.use('/api/queue', queueRouter((userId: string, soundId: string) => this.onSoundRequest(userId, soundId), (userId: string, skipAll: boolean) => this.onSkipRequest(userId, skipAll)));
+    app.use('/api/queue', queueRouter(this.bot.playSound, this.bot.skipSounds));
 
     if (this.environment.environment === 'production') app.use(serveStatic);
     else app.use('/', createProxyMiddleware({ target: 'http://frontend:3000', changeOrigin: true }));

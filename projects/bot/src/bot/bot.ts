@@ -6,8 +6,7 @@ import { Readable } from 'node:stream';
 import logger from '../logger';
 import BotContext from './bot-context';
 import commands from './commands';
-import Environment, { WebServerEnvironment } from '../environment';
-import WebServer from '../web/web-server';
+import Environment from '../environment';
 
 export default class Bot {
   private readonly client = new Client({
@@ -16,11 +15,10 @@ export default class Bot {
   });
 
   private readonly context: BotContext;
-  private readonly webServer: WebServer;
 
   private soundPlaying = false;
 
-  constructor(private readonly environment: Environment, private readonly webServerEnvironment: WebServerEnvironment) {
+  constructor(private readonly environment: Environment) {
     this.client.on('ready', () => this.onReady());
     this.client.on('interactionCreate', interaction => this.onInteraction(interaction));
     this.client.on('warn', m => {
@@ -36,13 +34,6 @@ export default class Bot {
     const soundsService = new SoundsService(environment.soundsConnectionString, environment.blobStorageConnectionString);
     this.context = new BotContext(soundsService);
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
-
-    this.webServer = new WebServer(webServerEnvironment);
-
-    this.webServer.subscribeToSoundRequests((userId: string, soundId: string) => this.onServerSoundRequest(userId, soundId));
-    this.webServer.subscribeToSkipRequests((userId: string, skipAll: boolean) => this.onServerSkipRequest(userId, skipAll));
-
-    this.webServer.start();
   }
 
   start(): Promise<string> {
@@ -129,10 +120,14 @@ export default class Bot {
     this.soundPlaying = false;
   }
 
-  private async onServerSoundRequest(userId: string, soundId: string) {
-    const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userId);
+  private async getUserVoiceState(userId: string): Promise<VoiceState | undefined> {
+    return (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userId);
+  }
 
-    if (!soundBoardUser?.channel) {
+  playSound = async (userId: string, soundId: string) => {
+    const userVoiceState = await this.getUserVoiceState(userId);
+
+    if (!userVoiceState?.channel) {
       logger.info('Sound request received but user is not connected');
       return;
     }
@@ -144,17 +139,17 @@ export default class Bot {
       return;
     }
 
-    this.context.soundQueue.add({ sound, channel: soundBoardUser.channel });
+    this.context.soundQueue.add({ sound, channel: userVoiceState.channel });
     logger.info(`Server sound request. User: ${ userId }. Queue length: ${ this.context.soundQueue.length }.`);
-  }
+  };
 
-  private async onServerSkipRequest(userId: string, skipAll: boolean) {
-    const soundBoardUser = (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userId);
-    if (!soundBoardUser?.channel) {
+  skipSounds = async (userId: string, skipAll: boolean) => {
+    const userVoiceState = await this.getUserVoiceState(userId);
+    if (!userVoiceState?.channel) {
       logger.info('Skip request received but user is not connected');
       return;
     }
     if (skipAll) this.context.soundQueue.clear();
     this.context.botAudioPlayer.stop();
-  }
+  };
 }

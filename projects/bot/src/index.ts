@@ -1,5 +1,6 @@
 import * as applicationInsights from 'applicationinsights';
 import Bot from './bot/bot';
+import WebServer from './web/web-server';
 import logger from './logger';
 import Environment, { WebServerEnvironment } from './environment';
 
@@ -53,10 +54,13 @@ if (
 
   logger.info('Starting in %s environment', environment.environment);
 
-  new Bot(environment, webServerEnvironment)
-    .start()
+  const bot = new Bot(environment);
+  bot.start()
     .then(() => logger.info('Bot started'))
     .catch(logger.error);
+
+  new WebServer(webServerEnvironment, bot)
+    .start();
 } else {
   process.exitCode = 1;
 }
