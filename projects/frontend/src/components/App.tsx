@@ -21,7 +21,7 @@ const AppMain = styled.div`
 
 function getThemeFromDate() {
   const date = new Date().toString();
-  if (date.includes('July 4')) return themes.americaTheme;
+  if (date.includes('Jul 04')) return themes.americaTheme;
   if (date.includes('Oct')) return themes.halloweenTheme;
   if (date.includes('Dec')) return themes.christmasTheme;
   return themes.defaultTheme;
