@@ -43,7 +43,6 @@ const Soundboard: FC<SoundboardProps> = ({ state }) => {
 
   return (
     <SoundboardMain state={ state }>
-
       <Features />
       <SortContainer
         setPreviewVolume={ setPreviewVolume }
@@ -54,7 +53,6 @@ const Soundboard: FC<SoundboardProps> = ({ state }) => {
       <ButtonContainer
         soundPreview={ soundPreview }
       />
-
     </SoundboardMain>
   );
 };

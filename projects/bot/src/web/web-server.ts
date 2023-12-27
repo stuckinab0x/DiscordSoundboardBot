@@ -44,7 +44,7 @@ export default class WebServer {
   start() {
     const app = express();
     app.use(requestLogger);
-    const serveStatic = express.static('src/public', { extensions: ['html'] });
+    const serveStatic = express.static('src/web/public', { extensions: ['html'] });
 
     app.use(cookieParser());
     app.use(express.json());
