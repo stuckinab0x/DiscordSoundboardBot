@@ -91,7 +91,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
       const sound = sounds.find(x => x.id === soundId);
       if (sound) {
         const newSounds = [...sounds];
-        const soundIndex = newSounds.findIndex(x => x.id === sound?.id);
+        const soundIndex = newSounds.findIndex(x => x.id === sound.id);
         newSounds[soundIndex] = { ...(sound), isIntroSound: true };
         const updateIntroSound = async () => {
           await fetch(`/api/prefs/${ soundId }`, { method: 'PUT' });

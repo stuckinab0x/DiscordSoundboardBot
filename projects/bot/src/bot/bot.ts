@@ -16,7 +16,7 @@ export default class Bot {
   });
 
   private readonly context: BotContext;
-  private prefsService: PrefsService;
+  private readonly prefsService: PrefsService;
 
   private soundPlaying = false;
 
@@ -70,7 +70,7 @@ export default class Bot {
   }
 
   private async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
-    if ((newState.channel && newState.guild.id !== this.environment.homeGuildId) || (oldState.channel && oldState.guild.id !== this.environment.homeGuildId))
+    if ([oldState.guild.id, newState.guild.id].every(x => x !== this.environment.homeGuildId))
       return;
 
     if (oldState.channel?.members.every(x => x.id === this.client.user!.id)) {
