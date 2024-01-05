@@ -134,9 +134,9 @@ export class SoundsService extends ReadOnlySoundsService {
 
   async deleteSound(id: string) {
     const collection = await this.soundsCollection;
-    const deleted = await collection.findOneAndDelete({ _id: new ObjectId(id) });
-    if (deleted.value)
-      await this.filesService.deleteFile(deleted.value.fileName);
+    const deleted = await collection.findOneAndDelete({ _id: new ObjectId(id) }, { projection: { fileName: 1 } });
+    if (deleted)
+      await this.filesService.deleteFile(deleted.fileName);
   }
 
   async updateSoundVolume({ id, volume }: UpdateVolumeOptions) {
