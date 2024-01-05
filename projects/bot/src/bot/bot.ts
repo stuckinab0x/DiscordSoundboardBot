@@ -70,6 +70,9 @@ export default class Bot {
   }
 
   private async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
+    if ((newState.channel && newState.guild.id !== this.environment.homeGuildId) || (oldState.channel && oldState.guild.id !== this.environment.homeGuildId))
+      return;
+
     if (oldState.channel?.members.every(x => x.id === this.client.user!.id)) {
       this.context.soundQueue.removeByChannel(oldState.channelId!);
       if (this.context.currentSound?.channel === oldState.channel)
@@ -80,11 +83,9 @@ export default class Bot {
     }
 
     if (newState.member && newState.channel && newState.member.id !== this.client.user!.id) {
-      const soundId = await this.prefsService.getIntroSound(newState.member?.id);
-
+      const soundId = await this.prefsService.getIntroSound(newState.member.id);
       if (soundId) {
         const sound = await this.context.soundsService.getSound(soundId);
-
         if (sound)
           this.context.soundQueue.add({ sound, channel: newState.channel });
       }
