@@ -86,6 +86,22 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
     }
   }, [sounds]);
 
+  const updateMySound = useCallback(async (soundId: string) => {
+    if (sounds) {
+      const sound = sounds.find(x => x.id === soundId);
+      if (sound) {
+        const newSounds = [...sounds];
+        const soundIndex = newSounds.findIndex(x => x.id === sound?.id);
+        newSounds[soundIndex] = { ...(sound), isIntroSound: true };
+        const updateIntroSound = async () => {
+          await fetch(`/api/prefs/${ soundId }`, { method: 'PUT' });
+          return newSounds;
+        };
+        mutateSounds(updateIntroSound(), { optimisticData: newSounds, rollbackOnError: true });
+      }
+    }
+  }, [sounds]);
+
   const orderedSounds = useMemo(() => {
     if (!sounds || !customTags)
       return null;
@@ -116,6 +132,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
               soundPreview={ () => soundPreview(x.url, x.volume) }
               tagColor={ tagColor }
               updateFavRequest={ () => updateFavoritesRequest(x.id) }
+              updateMySound={ () => updateMySound(x.id) }
               currentlyTagging={ !!currentlyTagging }
               unsavedTagged={ unsavedTagged }
             />

@@ -2,7 +2,7 @@ export default interface Environment {
   environment: string;
   botToken: string;
   homeGuildId: string;
-  soundsConnectionString: string;
+  dbConnectionString: string;
   soundsBaseUrl: string;
   blobStorageConnectionString: string;
 }

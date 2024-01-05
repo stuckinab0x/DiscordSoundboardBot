@@ -1,6 +1,7 @@
 import { Client, GatewayIntentBits, ActivityType, Interaction, VoiceState } from 'discord.js';
 import { DiscordGatewayAdapterCreator, joinVoiceChannel, getVoiceConnection } from '@discordjs/voice';
 import { SoundsService } from 'botman-sounds';
+import { PrefsService } from 'botman-users';
 import axios from 'axios';
 import { Readable } from 'node:stream';
 import logger from '../logger';
@@ -15,6 +16,7 @@ export default class Bot {
   });
 
   private readonly context: BotContext;
+  private prefsService: PrefsService;
 
   private soundPlaying = false;
 
@@ -29,9 +31,10 @@ export default class Bot {
       logger.log('error', m);
     });
 
-    this.client.on('voiceStateUpdate', oldState => this.onVoiceStateUpdate(oldState));
+    this.client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => this.onVoiceStateUpdate(oldState, newState));
 
-    const soundsService = new SoundsService(environment.soundsConnectionString, environment.blobStorageConnectionString);
+    const soundsService = new SoundsService(environment.dbConnectionString, environment.blobStorageConnectionString);
+    this.prefsService = new PrefsService(environment.dbConnectionString);
     this.context = new BotContext(soundsService);
     this.context.soundQueue.onPush(() => this.onSoundQueuePush());
   }
@@ -66,11 +69,25 @@ export default class Bot {
       await command.execute(interaction, this.context);
   }
 
-  private onVoiceStateUpdate(oldState: VoiceState) {
+  private async onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
     if (oldState.channel?.members.every(x => x.id === this.client.user!.id)) {
       this.context.soundQueue.removeByChannel(oldState.channelId!);
-      if (this.context.currentSound?.channel === oldState.channel) this.context.botAudioPlayer.stop();
-      if (!this.context.soundQueue.length) getVoiceConnection(this.environment.homeGuildId)?.disconnect();
+      if (this.context.currentSound?.channel === oldState.channel)
+        this.context.botAudioPlayer.stop();
+      if (!this.context.soundQueue.length)
+        getVoiceConnection(this.environment.homeGuildId)?.disconnect();
+      return;
+    }
+
+    if (newState.member && newState.channel && newState.member.id !== this.client.user!.id) {
+      const soundId = await this.prefsService.getIntroSound(newState.member?.id);
+
+      if (soundId) {
+        const sound = await this.context.soundsService.getSound(soundId);
+
+        if (sound)
+          this.context.soundQueue.add({ sound, channel: newState.channel });
+      }
     }
   }
 

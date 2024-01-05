@@ -90,7 +90,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
     setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
     setShowConfirmDelete(false);
     setRenameInput('');
-    setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', url: 'okay', isFavorite: false });
+    setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', url: 'okay', isFavorite: false, isIntroSound: false });
     await mutate('/api/sounds');
   }, [selectedSound?.name]);
 

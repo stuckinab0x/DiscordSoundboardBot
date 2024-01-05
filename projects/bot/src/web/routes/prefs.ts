@@ -9,6 +9,11 @@ function prefsRouter(prefsService: PrefsService) {
     res.sendStatus(204);
   });
 
+  router.put('/:introsound', async (req, res) => {
+    await prefsService.setIntroSound(String(req.cookies.userid), req.params.introsound);
+    res.sendStatus(204);
+  });
+
   return router;
 }
 

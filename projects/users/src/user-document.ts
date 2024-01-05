@@ -11,4 +11,5 @@ export interface UserDocument {
   favorites: string[];
   tags: Tag[];
   sortPrefs: SortPrefs;
+  introSound?: string;
 }

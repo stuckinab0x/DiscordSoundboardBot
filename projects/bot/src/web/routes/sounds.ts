@@ -1,23 +1,25 @@
 import { Router } from 'express';
 import { SoundsService, errors, AddSoundOptions } from 'botman-sounds';
-import { FavoritesService, TagsService } from 'botman-users';
+import { FavoritesService, TagsService, PrefsService } from 'botman-users';
 import multer from 'multer';
 import logger from '../../logger';
 import isAdmin from '../middlewares/is-admin';
 
-function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService, tagsService: TagsService, soundsBaseUrl: string) {
+function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesService, tagsService: TagsService, prefsService: PrefsService, soundsBaseUrl: string) {
   const router = Router();
   const upload = multer();
 
   router.get('/', async (req, res) => {
     const sounds = await soundsService.getAllSounds();
     const favorites = await favoritesService.getFavorites(req.cookies.userid);
+    const introSound = await prefsService.getIntroSound(req.cookies.userid);
     res.send(sounds.map(x => ({
       id: x.id,
       name: x.name,
       date: x.createdAt,
       url: `${ soundsBaseUrl }/${ x.file.fullName }`,
       isFavorite: favorites.indexOf(x.id) !== -1,
+      isIntroSound: x.id === introSound,
       volume: x.volume,
     })));
   });

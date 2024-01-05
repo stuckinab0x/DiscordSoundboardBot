@@ -66,7 +66,7 @@ export default class WebServer {
       next();
     });
 
-    app.use('/api/sounds', soundsRouter(this.soundsService, this.favoritesService, this.tagsService, this.environment.frontendSoundsBaseUrl));
+    app.use('/api/sounds', soundsRouter(this.soundsService, this.favoritesService, this.tagsService, this.prefsService, this.environment.frontendSoundsBaseUrl));
     app.use('/api/prefs', prefsRouter(this.prefsService));
     app.use('/api/favorites', favoritesRouter(this.favoritesService));
     app.use('/api/tags', tagsRouter(this.tagsService));

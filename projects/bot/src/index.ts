@@ -36,14 +36,14 @@ if (
     environment: process.env.NODE_ENV || 'development',
     botToken: process.env.BOT_TOKEN,
     homeGuildId: process.env.HOME_GUILD_ID,
-    soundsConnectionString: process.env.SOUNDS_CONNECTION_STRING,
+    dbConnectionString: process.env.SOUNDS_CONNECTION_STRING,
     soundsBaseUrl: process.env.SOUNDS_BASE_URL,
     blobStorageConnectionString: process.env.BLOB_STORAGE_CONNECTION_STRING,
   };
 
   const webServerEnvironment: WebServerEnvironment = {
     environment: environment.environment,
-    dbConnectionString: environment.soundsConnectionString,
+    dbConnectionString: environment.dbConnectionString,
     blobStorageConnectionString: environment.blobStorageConnectionString,
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,

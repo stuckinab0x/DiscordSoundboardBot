@@ -78,45 +78,82 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
   }
 `;
 
-interface FavStarStyleProps {
+interface ButtonBaseProps {
   small: boolean;
-  isFavorite: boolean;
+  active: boolean;
 }
 
-const FavStarButton = styled.span<FavStarStyleProps>`
+const ButtonBase = styled.span<ButtonBaseProps>`
   ${ mixins.iconButton }
   ${ mixins.textShadowVisibility }
     
   position: absolute;
+    
+  &:hover {
+    opacity: 100%;
+  }
+
+  @media only screen and (max-width: 780px) {
+    font-size: 1.4rem;
+    
+    ${ props => props.small && css`
+      font-size: 12px;
+    ` }
+  }
+`;
+
+const FavStarButton = styled(ButtonBase)`
   right: 12px;
   top: 12px;
   opacity: ${ props => props.theme.name === 'halloween' ? '20%' : '50%' };
     
   ${ props => props.small && css`
-      font-size: 12px;
       right: 8px;
       top: 8px;
   ` }
 
-  ${ props => props.isFavorite && css`
+  ${ props => props.active && css`
     color:#fcc82a;
     opacity: ${ props.theme.name === 'halloween' ? '85%' : '75%' };
   ` }
 
   &:hover {
-    opacity: 100%;
     ${ props => props.theme.name === 'halloween' && 'filter: brightness(1.4)' }
   }
 
   @media only screen and (max-width: 780px) {
-    font-size: 1.4rem;
     right: 11px;
     top: 11px; 
     
     ${ props => props.small && css`
-      font-size: 12px;
       right: 7px;
       top: 7px;
+    ` }
+  }
+`;
+
+const MySoundButton = styled(ButtonBase)`
+  right: 14px;
+  bottom: 14px;
+  opacity: 50%;
+
+  ${ props => props.small && css`
+      right: 8px;
+      bottom: 8px;
+  ` }
+
+  ${ props => props.active && css`
+    color:#fcc82a;
+    opacity: 100%;
+  ` }
+
+  @media only screen and (max-width: 780px) {
+    right: 11px;
+    bottom: 11px; 
+    
+    ${ props => props.small && css`
+      right: 7px;
+      bottom: 7px;
     ` }
   }
 `;
@@ -177,17 +214,19 @@ interface SoundTileProps {
   soundRequest: (soundId: string, borderCallback: () => void) => void;
   soundPreview: () => Promise<void>;
   updateFavRequest: () => void;
+  updateMySound: () => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];
 }
 
 const SoundTile: FC<SoundTileProps> = ({
   small,
-  sound: { id, name, isFavorite },
+  sound: { id, name, isFavorite, isIntroSound },
   tagColor,
   soundRequest,
   soundPreview,
   updateFavRequest,
+  updateMySound,
   currentlyTagging,
   unsavedTagged,
 }) => {
@@ -228,7 +267,7 @@ const SoundTile: FC<SoundTileProps> = ({
         className='material-icons'
         role="presentation"
         small={ small }
-        isFavorite={ isFavorite }
+        active={ isFavorite }
         onClick={ updateFavRequest }
       >
         { isFavorite ? isFavIcon : isNotFavIcon }
@@ -237,6 +276,9 @@ const SoundTile: FC<SoundTileProps> = ({
         <span role='presentation' className='material-icons' onClick={ soundPreview }>play_circle</span>
         <p>Preview</p>
       </PreviewButton>
+      <MySoundButton className='material-icons' small={ small } onClick={ updateMySound } active={ isIntroSound }>
+        face
+      </MySoundButton>
     </SoundTileMain>
   );
 };
