@@ -13,6 +13,8 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
     const sounds = await soundsService.getAllSounds();
     const favorites = await favoritesService.getFavorites(req.cookies.userid);
     const introSound = await prefsService.getIntroSound(req.cookies.userid);
+    if (introSound && sounds.every(x => x.id !== introSound))
+      res.cookie('missingIntroSound', introSound);
     res.send(sounds.map(x => ({
       id: x.id,
       name: x.name,

@@ -6,6 +6,7 @@ const user: User = {
   name: cookies.get('username')!,
   avatarId: cookies.get('avatar')!,
   role: cookies.get('role')!,
+  missingIntroSound: cookies.get('missingIntroSound')!,
 };
 
 const useUser = (): User => user;

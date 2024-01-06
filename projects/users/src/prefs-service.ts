@@ -20,14 +20,20 @@ export class PrefsService extends UsersService {
     return user?.role;
   }
 
-  async setIntroSound(userId: string, soundId: string): Promise<void> {
-    const collection = await this.usersCollection;
-    await collection.updateOne({ userId }, { $set: { introSound: soundId } }, { upsert: true });
-  }
-
   async getIntroSound(userId: string): Promise<string | undefined> {
     const collection = await this.usersCollection;
     const user = await collection.findOne({ userId }, { projection: { introSound: 1 } });
     return user?.introSound;
+  }
+
+  async setIntroSound(userId: string, soundId: string): Promise<void> {
+    const collection = await this.usersCollection;
+    let newSound: string | undefined = soundId;
+
+    const oldSound = await this.getIntroSound(userId);
+    if (oldSound === soundId)
+      newSound = undefined;
+
+    await collection.updateOne({ userId }, { $set: { introSound: newSound } }, { upsert: true });
   }
 }
