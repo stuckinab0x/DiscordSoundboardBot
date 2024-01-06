@@ -79,8 +79,10 @@ export default class Bot {
         this.context.botAudioPlayer.stop();
       if (!this.context.soundQueue.length)
         getVoiceConnection(this.environment.homeGuildId)?.disconnect();
-      return;
     }
+
+    if (oldState?.channel === newState?.channel || newState.channel?.members.size === 1)
+      return;
 
     if (newState.member && newState.channel && newState.member.id !== this.client.user!.id) {
       const soundId = await this.prefsService.getIntroSound(newState.member.id);
