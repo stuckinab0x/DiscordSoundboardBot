@@ -136,17 +136,17 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationProps, setNotificationProps] = useState({ text: '', color: '' });
 
-  const { data: sounds, error } = useSWR<Sound[]>('/api/sounds');
+  const { data: soundsData, error } = useSWR<{ introSound: string | undefined, sounds: Sound[] }>('/api/sounds');
   const { soundPreview, setPreviewVolume } = useSoundPreview();
 
   useEffect(() => {
     if (selectedSound)
-      setSelectedSound(sounds?.find(x => x.id === selectedSound.id) ?? null);
-  }, [sounds]);
+      setSelectedSound(soundsData?.sounds.find(x => x.id === selectedSound.id) ?? null);
+  }, [soundsData?.sounds]);
 
   const visibleSounds = useMemo(
-    () => sounds?.filter(x => x.name.toUpperCase().includes(searchTerm)),
-    [sounds, searchTerm],
+    () => soundsData?.sounds.filter(x => x.name.toUpperCase().includes(searchTerm)),
+    [soundsData?.sounds, searchTerm],
   );
 
   const setNotification = useCallback((text: string, color: string) => {

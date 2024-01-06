@@ -13,17 +13,18 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
     const sounds = await soundsService.getAllSounds();
     const favorites = await favoritesService.getFavorites(req.cookies.userid);
     const introSound = await prefsService.getIntroSound(req.cookies.userid);
-    if (introSound && sounds.every(x => x.id !== introSound))
-      res.cookie('missingIntroSound', introSound);
-    res.send(sounds.map(x => ({
-      id: x.id,
-      name: x.name,
-      date: x.createdAt,
-      url: `${ soundsBaseUrl }/${ x.file.fullName }`,
-      isFavorite: favorites.indexOf(x.id) !== -1,
-      isIntroSound: x.id === introSound,
-      volume: x.volume,
-    })));
+
+    res.send({
+      introSound,
+      sounds: sounds.map(x => ({
+        id: x.id,
+        name: x.name,
+        date: x.createdAt,
+        url: `${ soundsBaseUrl }/${ x.file.fullName }`,
+        isFavorite: favorites.indexOf(x.id) !== -1,
+        volume: x.volume,
+      })),
+    });
   });
 
   router.post('/', upload.single('sound-file'), async (req, res) => {

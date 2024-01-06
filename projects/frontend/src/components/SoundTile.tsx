@@ -210,6 +210,7 @@ const PreviewButton = styled.div<PreviewButtonStyleProps>`
 interface SoundTileProps {
   small: boolean;
   sound: Sound;
+  isIntroSound: boolean;
   tagColor: string | undefined;
   soundRequest: (soundId: string, borderCallback: () => void) => void;
   soundPreview: () => Promise<void>;
@@ -221,7 +222,8 @@ interface SoundTileProps {
 
 const SoundTile: FC<SoundTileProps> = ({
   small,
-  sound: { id, name, isFavorite, isIntroSound },
+  sound: { id, name, isFavorite },
+  isIntroSound,
   tagColor,
   soundRequest,
   soundPreview,

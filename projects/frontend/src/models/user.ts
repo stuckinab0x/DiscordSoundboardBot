@@ -3,5 +3,4 @@ export default interface User {
   name: string;
   avatarId: string;
   role: string;
-  missingIntroSound?: string;
 }

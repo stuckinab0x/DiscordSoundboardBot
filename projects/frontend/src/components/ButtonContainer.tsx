@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import styled, { useTheme } from 'styled-components';
 import debounce from '../utils';
@@ -9,7 +9,6 @@ import CustomTag from '../models/custom-tag';
 import { useSortRules } from '../contexts/sort-rules-context';
 import { useCustomTags } from '../contexts/custom-tags-context';
 import { GroupOrder, SortOrder } from '../models/sort-rules';
-import useUser from '../hooks/use-user';
 
 const ContainerMain = styled.div`
   display: flex;
@@ -76,15 +75,19 @@ interface ButtonContainerProps {
 }
 
 const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
-  const { data: sounds, error, mutate: mutateSounds } = useSWR<Sound[]>('/api/sounds');
+  const { data: soundsData, error, mutate: mutateSounds } = useSWR<{ introSound: string | undefined, sounds: Sound[] }>('/api/sounds');
   const { data: customTags } = useSWR<CustomTag[]>('/api/tags');
 
-  const { missingIntroSound } = useUser();
   const theme = useTheme();
   const { sortRules: { favorites, small, searchTerm, sortOrder, groupOrder, tags } } = useSortRules();
   const { currentlyTagging, unsavedTagged } = useCustomTags();
 
-  const [showIntroError, setShowIntroError] = useState(!!missingIntroSound);
+  const [showIntroError, setShowIntroError] = useState(false);
+
+  useEffect(() => {
+    if (soundsData?.introSound && soundsData.sounds.every(x => x.id !== soundsData.introSound))
+      setShowIntroError(true);
+  }, [soundsData]);
 
   const soundRequest = useCallback(debounce(async (soundId: string, borderCallback: () => void) => {
     borderCallback();
@@ -94,10 +97,10 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
   }, 2000, true), []);
 
   const updateFavoritesRequest = useCallback((soundId: string) => {
-    if (sounds) {
-      const sound = sounds.find(x => x.id === soundId);
+    if (soundsData) {
+      const sound = soundsData.sounds.find(x => x.id === soundId);
       if (sound) {
-        const newSounds = [...sounds];
+        const newSounds = [...soundsData.sounds];
         const soundIndex = newSounds.findIndex(x => x.id === sound.id);
         newSounds[soundIndex] = { ...(sound), isFavorite: !sound.isFavorite };
         const updateFav = async () => {
@@ -109,44 +112,38 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
               headers: { 'Content-Type': 'application/json' },
             },
           );
-          return newSounds;
+          return { introSound: soundsData.introSound, sounds: newSounds };
         };
-        mutateSounds(updateFav(), { optimisticData: newSounds, rollbackOnError: true });
+        mutateSounds(updateFav(), { optimisticData: { introSound: soundsData.introSound, sounds: newSounds }, rollbackOnError: true });
       }
     }
-  }, [sounds]);
+  }, [soundsData]);
 
-  const handleDismissIntroError = useCallback(async () => {
-    await fetch(`/api/prefs/${ missingIntroSound }`, { method: 'PUT' });
+  const updateMySound = useCallback((soundId: string) => {
+    if (soundsData) {
+      const updateIntroSound = async () => {
+        await fetch(`/api/prefs/${ soundId }`, { method: 'PUT' });
+        return { introSound: soundId === soundsData.introSound ? undefined : soundId, sounds: soundsData.sounds };
+      };
+      mutateSounds(updateIntroSound(), { optimisticData: { introSound: soundId === soundsData.introSound ? undefined : soundId, sounds: soundsData.sounds }, rollbackOnError: true });
+    }
+  }, [soundsData]);
+
+  const handleDismissIntroError = useCallback(() => {
+    updateMySound(soundsData?.introSound!);
     setShowIntroError(false);
-  }, [missingIntroSound]);
-
-  const updateMySound = useCallback(async (soundId: string) => {
-    if (sounds) {
-      const sound = sounds.find(x => x.id === soundId);
-      if (sound) {
-        const newSounds = [...sounds];
-        const soundIndex = newSounds.findIndex(x => x.id === sound.id);
-        newSounds[soundIndex] = { ...(sound), isIntroSound: true };
-        const updateIntroSound = async () => {
-          await fetch(`/api/prefs/${ soundId }`, { method: 'PUT' });
-          return newSounds;
-        };
-        mutateSounds(updateIntroSound(), { optimisticData: newSounds, rollbackOnError: true });
-      }
-    }
-  }, [sounds]);
+  }, [soundsData?.introSound, updateMySound]);
 
   const orderedSounds = useMemo(() => {
-    if (!sounds || !customTags)
+    if (!soundsData?.sounds || !customTags)
       return null;
-    return sortSoundGroups(sortByDate(sounds, sortOrder), groupOrder, customTags);
-  }, [sounds, sortOrder, groupOrder, customTags]);
+    return sortSoundGroups(sortByDate(soundsData.sounds, sortOrder), groupOrder, customTags);
+  }, [soundsData?.sounds, sortOrder, groupOrder, customTags]);
 
   if (orderedSounds && customTags)
     return (
       <ContainerMain>
-        { missingIntroSound && showIntroError && (
+        { showIntroError && (
         <IntroError onClick={ handleDismissIntroError }>
           <h2>your intro sound got deleted, sorry buddy (click to dismiss)</h2>
         </IntroError>
@@ -166,6 +163,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
               <SoundTile
                 key={ x.id }
                 small={ small }
+                isIntroSound={ x.id === soundsData?.introSound }
                 sound={ x }
                 soundRequest={ soundRequest }
                 soundPreview={ () => soundPreview(x.url, x.volume) }

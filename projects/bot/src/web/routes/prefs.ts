@@ -11,7 +11,6 @@ function prefsRouter(prefsService: PrefsService) {
 
   router.put('/:introsound', async (req, res) => {
     await prefsService.setIntroSound(String(req.cookies.userid), req.params.introsound);
-    res.clearCookie('missingIntroSound');
     res.sendStatus(204);
   });
 
