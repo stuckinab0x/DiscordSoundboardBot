@@ -49,6 +49,10 @@ export default class WebServer {
     app.use(cookieParser());
     app.use(express.json());
 
+    app.use(async (req, res, next) => {
+      try { next(); } catch (error: any) { res.sendStatus(500); }
+    });
+
     app.get('/health', (req, res) => res.sendStatus(204));
 
     app.post('/logout', (req, res) => {
