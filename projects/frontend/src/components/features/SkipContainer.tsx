@@ -7,15 +7,14 @@ const SkipContainerMain = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 0;
-  height: 56%;
-  flex-grow: 1;
   position: relative;
   z-index: 10;
+  height: 100%;
 
   > button {
     ${ button }
-    
-    font-size: 1.2rem;
+
+    font-size: 1.3rem;
     color: white;
     background-color: ${ props => props.theme.colors.innerA };
     border: 5px solid ${ props => props.theme.colors.borderDefault };
@@ -23,7 +22,7 @@ const SkipContainerMain = styled.div`
     border-width: 5px;
     border-radius: 3px;
     width: 50%;
-    margin: 6px 0px;
+    margin-bottom: 6px;
 
     &:first-child {
       margin-right: 6px;
@@ -31,12 +30,10 @@ const SkipContainerMain = styled.div`
   }
 
   @media only screen and (max-width: 780px) {
-    min-height: 40;
-    margin: 0px 4px;
-
     > button {
       border-width: 3px;
       min-height: 50px;
+      font-size: 1.6rem;
     }
   }
 `;

@@ -10,8 +10,13 @@ interface TaggingInstructionsMainProps {
 const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
   display: flex;
   align-items: center;
-  flex-grow: 0.5;
+  padding: 4px 10px;
+  margin: 0px 100px;
+  flex-grow: 2;
   justify-content: center;
+  border: solid ${ props => props.tagColor };
+  border-width: 5px 15px;
+  border-radius: 5px;
   
   > p {
     color: ${ props => props.tagColor };

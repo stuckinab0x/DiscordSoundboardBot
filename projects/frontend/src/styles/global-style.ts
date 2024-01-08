@@ -17,6 +17,11 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${ props => props.theme.colors.bg };
     margin: 0;
 
+    button, input {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-size: 1rem;
+    }
+
     ${ props => props.theme.name === 'christmas' && xmasPlaidBG }
     ${ props => props.theme.name === 'america' && flagStripesBg }
 

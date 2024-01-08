@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import * as mixins from '../../styles/mixins';
 import AddSoundDialog from './AddSoundDialog';
 import GroupTagsButton from './GroupTagsButton';
@@ -10,19 +10,20 @@ const OptionsContainerMain = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${ props => props.theme.colors.innerA };
-  justify-content: space-between;
-  align-items: center;
-  min-width: 348px;
+  padding: 3px 2px;
   margin-left: 14px;
-  padding: 6px 6px;
+  height: 94px;
   border-radius: 5px;
   position: relative;
   z-index: 20;
-  box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
+  box-shadow: 0px 0px 10px 2px ${ props => props.theme.colors.shadowDefault };
 
   @media only screen and (max-width: 780px) {
+    flex-direction: row;
+    align-items: center;
     margin: 4px 8px;
-    padding: 2px 6px 4px;
+    height: auto;
+    width: 100%;
   }
 `;
 
@@ -32,65 +33,47 @@ const ButtonRow = styled.div`
   justify-content: space-between;
   width: 100%;
   position: relative;
+  word-wrap: wrap;
 
-  > p {
-    margin: 0px 5px;
-  }
-
-  &:nth-child(2) {
-    margin-top: 6px;
-
-    @media only screen and (max-width: 780px) {
-      margin-top: 2px;
+  @media only screen and (min-width: 780px) {
+    &:first-of-type {
+      margin-bottom: 2px;
     }
   }
 `;
 
-interface ButtonProps {
-  toggled: boolean;
-}
-
-const ButtonToggle = styled.button<ButtonProps>`
-  ${ mixins.button }
-  ${ mixins.filterButton }
-  ${ mixins.filterButtonMobile }
-  ${ mixins.textShadowVisibility }
-  min-width: 169px;
+const OptionsButton = styled(mixins.ToggleButtonBase)`
+  width: 174px;
+  margin: 2px;
 
   @media only screen and (max-width: 780px) {
-    margin-top: 2px;
+    height: 60px;
+    width: 50%;
+    font-size: 1.4rem;
   }
 
-  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+  @media only screen and (max-width: 550px) {
+    font-size: 1.2rem;
+  }
 `;
 
-const EditTagsButton = styled(ButtonToggle)`
-  ${ mixins.textShadowVisibility }
-  
+const EditTagsButton = styled(OptionsButton)`
   background: rgb(249,139,139);
   background: linear-gradient(90deg, rgba(249,139,139,1) 0%, rgba(252,250,133,1) 20%, rgba(128,254,138,1) 40%, rgba(151,160,255,1) 60%, rgba(255,177,251,1) 80%, rgba(255,142,165,1) 100%);
+
+  ${ props => props.disabled && css`
+    opacity: 0.5;
+    pointer-events: none;
+  ` }
 `;
 
-const DisableEditButton = styled.button`
-  ${ mixins.filterButton }
-  background: linear-gradient(90deg, rgba(249,139,139,1) 0%, rgba(252,250,133,1) 20%, rgba(128,254,138,1) 40%, rgba(151,160,255,1) 60%, rgba(255,177,251,1) 80%, rgba(255,142,165,1) 100%);
-  opacity: 0.6;
-`;
-
-const AddSoundButton = styled.button<ButtonProps>`
-  ${ mixins.filterButton }
-  ${ mixins.filterButtonMobile }
-  min-width: 171px;
-  
+const AddSoundButton = styled(OptionsButton)`
   border-color: ${ props => props.theme.colors.borderGold };
   ${ props => props.toggled ? mixins.buttonGreen : mixins.button }
 
   @media only screen and (max-width: 780px) {
     border-color: ${ props => props.theme.colors.borderGold };
-    margin-top: 2px;
-    width: 174px;
   }
-  
 `;
 
 const OptionsContainer: FC = () => {
@@ -102,14 +85,13 @@ const OptionsContainer: FC = () => {
   return (
     <OptionsContainerMain>
       <ButtonRow>
-        { disableEditTagsButton ? <DisableEditButton>Edit Custom Tags</DisableEditButton> : (
-          <EditTagsButton
-            toggled={ showCustomTagPicker }
-            onClick={ toggleShowCustomTagPicker }
-          >
-            Edit Custom Tags
-          </EditTagsButton>
-        ) }
+        <EditTagsButton
+          toggled={ showCustomTagPicker }
+          onClick={ toggleShowCustomTagPicker }
+          disabled={ disableEditTagsButton }
+        >
+          Edit Custom Tags
+        </EditTagsButton>
         <AddSoundButton
           toggled={ disableAddSoundButton }
           disabled={ disableAddSoundButton }
@@ -119,9 +101,9 @@ const OptionsContainer: FC = () => {
         </AddSoundButton>
       </ButtonRow>
       <ButtonRow>
-        <ButtonToggle toggled={ false } onClick={ toggleSoundSortOrder }>
+        <OptionsButton toggled={ false } onClick={ toggleSoundSortOrder }>
           { `Sort: ${ sortRules.sortOrder }` }
-        </ButtonToggle>
+        </OptionsButton>
         <GroupTagsButton />
       </ButtonRow>
       { showAddSound && <AddSoundDialog setShowAddsound={ setShowAddSound } setDisableAddSoundButton={ setDisableAddSoundButton } /> }

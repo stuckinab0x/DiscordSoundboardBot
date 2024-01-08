@@ -15,7 +15,7 @@ const soundTileSmall = css`
 `;
 
 const soundTileSmallMobile = css`
-    font-size: 0.8rem;
+    font-size: 1rem;
     border: 3px solid ${ props => props.theme.colors.borderDefault };
     border-width: 3px;
     border-radius: 2px;
@@ -89,6 +89,10 @@ const ButtonBase = styled.span<ButtonBaseProps>`
     
   position: absolute;
     
+  ${ props => props.small && css`
+    font-size: 15px;
+  ` }
+
   &:hover {
     opacity: 100%;
   }
@@ -108,8 +112,8 @@ const FavStarButton = styled(ButtonBase)`
   opacity: ${ props => props.theme.name === 'halloween' ? '20%' : '50%' };
     
   ${ props => props.small && css`
-      right: 8px;
-      top: 8px;
+    right: 8px;
+    top: 8px;
   ` }
 
   ${ props => props.active && css`
@@ -126,8 +130,8 @@ const FavStarButton = styled(ButtonBase)`
     top: 11px; 
     
     ${ props => props.small && css`
-      right: 7px;
-      top: 7px;
+      right: 10px;
+      top: 10px;
     ` }
   }
 `;
@@ -138,8 +142,8 @@ const MySoundButton = styled(ButtonBase)`
   opacity: 50%;
 
   ${ props => props.small && css`
-      right: 8px;
-      bottom: 8px;
+    right: 8px;
+    bottom: 8px;
   ` }
 
   ${ props => props.active && css`
@@ -152,8 +156,8 @@ const MySoundButton = styled(ButtonBase)`
     bottom: 11px; 
     
     ${ props => props.small && css`
-      right: 7px;
-      bottom: 7px;
+      right: 10px;
+      bottom: 10px;
     ` }
   }
 `;

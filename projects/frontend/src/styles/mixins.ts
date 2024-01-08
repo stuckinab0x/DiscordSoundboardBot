@@ -1,4 +1,4 @@
-import { css } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const button = css`
   cursor: pointer;
@@ -22,11 +22,6 @@ export const filterButton = css`
   border: 5px solid ${ props => props.theme.colors.borderDefault };
   border-radius: 6px;
   background-color: ${ props => props.theme.colors.innerB };
-  margin-right: 5px;
-
-  &:last-child {
-    margin-right: 0px;
-  }
 `;
 
 export const filterButtonMobile = css`
@@ -117,4 +112,18 @@ export const adminPanelDivider = css`
   @media only screen and (max-width: 780px) {
     display: none;
   }
+`;
+
+interface ButtonProps {
+  toggled?: boolean;
+}
+
+export const ToggleButtonBase = styled.button<ButtonProps>`
+  ${ button }
+  ${ filterButton }
+  ${ filterButtonMobile }
+  ${ textShadowVisibility }
+  user-select: none;
+
+  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;

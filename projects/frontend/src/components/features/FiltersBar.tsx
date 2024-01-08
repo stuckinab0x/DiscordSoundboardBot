@@ -9,19 +9,10 @@ import { useSortRules } from '../../contexts/sort-rules-context';
 const FiltersBarMain = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: left;
   align-items: center;
-  
-  @media only screen and (max-width: 780px) {
-    margin: -2px;
-    justify-content: left;
-  }
 
-  > p {
-    margin: 0;
-    margin-left: 10px;
-    color: ${ props => props.theme.colors.borderDefault };
-    font-weight: bold;
+  > button {
+    margin-right: 5px;
   }
 `;
 

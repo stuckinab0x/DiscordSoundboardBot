@@ -1,26 +1,18 @@
 import React, { FC, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
+import { ToggleButtonBase } from '../../styles/mixins';
 import usePrefs from '../../hooks/use-prefs';
 import { useSortRules } from '../../contexts/sort-rules-context';
 import { GroupOrder } from '../../models/sort-rules';
 
-interface ButtonMainProps {
-  toggled: boolean;
-}
-
-const ButtonMain = styled.button<ButtonMainProps>`
-  ${ button }
-  ${ filterButton }
-  ${ filterButtonMobile }
-  ${ textShadowVisibility }
-
-
-  min-width: 174px;
-  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+const ButtonMain = styled(ToggleButtonBase)`
+  width: 174px;
+  margin: 2px;
 
   @media only screen and (max-width: 780px) {
-    margin-top: 2px;
+    height: 60px;
+    width: 50%;
+    font-size: 1.4rem;
   }
 `;
 
