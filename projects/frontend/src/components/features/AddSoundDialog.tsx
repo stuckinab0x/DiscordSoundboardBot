@@ -37,7 +37,7 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   flex-direction: column;
   background-color: ${ props => props.theme.colors.innerA };
   position: absolute;
-  border: solid 5px ${ props => props.theme.colors.borderDefault };
+  border: solid 5px ${ props => props.theme.colors.accent };
   border-radius: 5px;
   right: 5px;
   top: 64px;

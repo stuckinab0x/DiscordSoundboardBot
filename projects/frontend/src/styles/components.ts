@@ -1,0 +1,58 @@
+import styled from 'styled-components';
+import { button, filterButton, filterButtonMobile, textShadowVisibility } from './mixins';
+
+interface ButtonProps {
+  toggled?: boolean;
+}
+
+export const ToggleButtonBase = styled.button<ButtonProps>`
+  ${ button }
+  ${ filterButton }
+  ${ filterButtonMobile }
+  ${ textShadowVisibility }
+  user-select: none;
+
+  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+`;
+
+export const InnerShadow = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  box-shadow: inset 0px 0px 4px 0px ${ props => props.theme.colors.shadowSoundInner };
+  pointer-events: none;
+`;
+
+export const CloseBar = styled.div`
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin: 0px;
+  flex-grow: 1;
+  opacity: 0.5;
+  background-color: ${ props => props.theme.colors.closeButton };
+  border-radius: 8px;
+  padding: 5px 0px;
+  cursor: pointer;
+  box-shadow: 0px 3px 4px ${ props => props.theme.colors.shadowDefault };
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  > p {
+    display: flex;
+    align-items: center;
+    color: black;
+    font-weight: bold;
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  @media only screen and (max-width: 780px) {
+    height: 20px;
+    margin: 0px 8px;
+  }
+`;

@@ -50,6 +50,9 @@ export default function discordAuth(environment: WebServerEnvironment, prefsServ
         const userRole = await prefsService.getUserRole(userRes.data.id);
         req.userRole = userRole!;
         res.cookie('role', req.userRole);
+        const userTheme = await prefsService.getUserTheme(userRes.data.id);
+        res.cookie('theme', userTheme?.theme);
+        res.cookie('useSeasonal', userTheme?.useSeasonal);
         next();
         return;
       } catch (error) {

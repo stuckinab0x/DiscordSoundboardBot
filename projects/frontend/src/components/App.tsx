@@ -1,15 +1,16 @@
-import React, { FC, useState } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import React, { FC, useMemo, useState } from 'react';
+import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 import Nav from './nav/Nav';
 import AdminPanel from './admin-panel/AdminPanel';
 import Soundboard from './Soundboard';
-import * as themes from '../styles/themes';
 import GlobalStyle from '../styles/global-style';
 import Snowflakes from './decorative/Snowflakes';
 import Fireworks from './decorative/Fireworks';
-import SortRulesProvider from '../contexts/sort-rules-context';
 import CustomTagsProvider from '../contexts/custom-tags-context';
+import { usePrefs } from '../contexts/prefs-context';
+import themes from '../styles/themes';
+import { getSeasonalThemeName } from '../utils';
 
 const AppMain = styled.div`
   display: flex;
@@ -19,34 +20,33 @@ const AppMain = styled.div`
   overflow-y: hidden;
 `;
 
-function getThemeFromDate() {
-  const date = new Date().toString();
-  if (date.includes('Jul 04')) return themes.americaTheme;
-  if (date.includes('Oct')) return themes.halloweenTheme;
-  if (date.includes('Dec')) return themes.christmasTheme;
-  return themes.defaultTheme;
-}
-
-const theme = getThemeFromDate();
-
 const App: FC = () => {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
 
+  const { themePrefs: { theme, useSeasonal } } = usePrefs();
+
+  const resolvedTheme = useMemo<DefaultTheme>(() => {
+    if (!useSeasonal && theme === 'Classic')
+      return themes[0];
+    if (theme === 'Classic')
+      return themes.find(x => x.name === getSeasonalThemeName()) || themes[0];
+
+    return themes.find(x => x.name === theme) || themes[0];
+  }, [theme, useSeasonal]);
+
   return (
     <AppMain>
-      <ThemeProvider theme={ theme }>
+      <ThemeProvider theme={ resolvedTheme }>
         <GlobalStyle />
-        { theme.name === 'america' && <Fireworks /> }
-        { (theme.name === 'christmas' || theme.name === 'halloween') && <Snowflakes /> }
+        { theme === 'America' && <Fireworks /> }
+        { (theme === 'Christmas' || theme === 'Halloween') && <Snowflakes /> }
         <Nav showAdminPanel={ showAdminPanel } setShowAdminPanel={ setShowAdminPanel } />
         <AdminPanel show={ showAdminPanel } adminPanelClosed={ () => setShowAdminPanel(false) } />
-        <SortRulesProvider>
-          <CustomTagsProvider>
-            <CSSTransition in={ !showAdminPanel } timeout={ 410 }>
-              { state => (<Soundboard state={ state } />) }
-            </CSSTransition>
-          </CustomTagsProvider>
-        </SortRulesProvider>
+        <CustomTagsProvider>
+          <CSSTransition in={ !showAdminPanel } timeout={ 410 }>
+            { state => (<Soundboard state={ state } />) }
+          </CSSTransition>
+        </CustomTagsProvider>
       </ThemeProvider>
     </AppMain>
   );

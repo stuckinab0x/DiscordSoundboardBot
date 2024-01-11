@@ -6,10 +6,13 @@ const SearchBarMain = styled.div`
   display: flex;
   position: relative;
   box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
+  width: 100%;
 
   > input {
     ${ mixins.textInput }
     ${ mixins.textInputMobile }
+    box-sizing: border-box;
+    height: 40px;
   
     &::placeholder {
       color: rgb(199, 199, 199);
@@ -19,23 +22,13 @@ const SearchBarMain = styled.div`
   > span {
     ${ mixins.iconButton }
     right: 8px;
-    top: 7px;
+    top: 8px;
     position: absolute;
     opacity: 50%;
   
     &:hover {
       opacity: 100%;
     }
-  
-    @media only screen and (max-width: 780px) {
-      right: 6px;
-      top: 4px;
-      font-size: 1.8rem;
-    }
-  }
-
-  @media only screen and (max-width: 780px) {
-    width: 100%;
   }
 `;
 

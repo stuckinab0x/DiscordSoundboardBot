@@ -11,7 +11,7 @@ const ColorPickerMain = styled.div`
   left: -60px;
 
   background-color: ${ props => props.theme.colors.bg };
-  border: 3px solid ${ props => props.theme.colors.borderDefault };
+  border: 3px solid ${ props => props.theme.colors.accent };
   border-radius: 3px;
   box-shadow: 2px 2px 5px ${ props => props.theme.colors.shadowDefault };
 `;

@@ -1,7 +1,8 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { useSortRules } from '../../contexts/sort-rules-context';
+import { usePrefs } from '../../contexts/prefs-context';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
+import { InnerShadow } from '../../styles/components';
 
 interface ButtonMainProps {
   color: string;
@@ -13,6 +14,8 @@ const ButtonMain = styled.button<ButtonMainProps>`
   ${ filterButton }
   ${ filterButtonMobile }
   ${ textShadowVisibility }
+
+  box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
 
   background-color: ${ props => props.color };
   ${ props => props.toggled ? `border-color: ${ props.theme.colors.borderGreen }` : null };
@@ -30,7 +33,7 @@ interface TagFilterButtonProps {
 
 const TagFilterButton: FC<TagFilterButtonProps> = ({ id, name, color }) => {
   const [toggled, setToggled] = useState(false);
-  const { toggleTagFilter } = useSortRules();
+  const { toggleTagFilter } = usePrefs();
 
   const handleClick = useCallback(() => {
     setToggled(!toggled);
@@ -38,6 +41,7 @@ const TagFilterButton: FC<TagFilterButtonProps> = ({ id, name, color }) => {
 
   return (
     <ButtonMain color={ color } toggled={ toggled } onClick={ () => { toggleTagFilter(id); handleClick(); } }>
+      <InnerShadow />
       { name }
     </ButtonMain>
   );

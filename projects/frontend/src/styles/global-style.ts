@@ -12,18 +12,18 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: ${ props => props.theme.font };
     color: white;
     background-color: ${ props => props.theme.colors.bg };
     margin: 0;
 
     button, input {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-family: ${ props => props.theme.font };
       font-size: 1rem;
     }
 
-    ${ props => props.theme.name === 'christmas' && xmasPlaidBG }
-    ${ props => props.theme.name === 'america' && flagStripesBg }
+    ${ props => props.theme.name === 'Christmas' && xmasPlaidBG }
+    ${ props => props.theme.name === 'America' && flagStripesBg }
 
     #root {
       display: flex;
@@ -31,7 +31,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     h1 {
-      color: ${ props => props.theme.colors.borderDefault }
+      color: ${ props => props.theme.colors.accent }
     }
   } 
 

@@ -4,7 +4,7 @@ import { useSWRConfig } from 'swr';
 import useSoundPreview from '../../hooks/use-sound-preview';
 import Sound from '../../models/sound';
 import { textInput, adminPanelDivider } from '../../styles/mixins';
-import { defaultTheme } from '../../styles/themes';
+import themes from '../../styles/themes';
 import VolumeOffsetAction from './VolumeOffsetAction';
 
 const Divider = styled.hr`
@@ -71,7 +71,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
       },
     );
     if (res.status !== 204) {
-      setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
+      setNotification('YIKES, something broke', themes[0].colors.borderRed);
       return;
     }
     setNotification(`Renamed sound "${ selectedSound.name }" to "${ renameInput }"`, '');
@@ -84,7 +84,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
   const soundDeleteRequest = useCallback(async () => {
     const res = await fetch(`/api/sounds/${ selectedSound?.id }`, { method: 'DELETE' });
     if (res.status !== 204) {
-      setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
+      setNotification('YIKES, something broke', themes[0].colors.borderRed);
       return;
     }
     setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');

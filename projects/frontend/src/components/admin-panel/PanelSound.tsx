@@ -25,7 +25,7 @@ interface SoundSectionStyleProps {
 const PanelSoundSection = styled.div<SoundSectionStyleProps>`
   display: flex;
   justify-content: space-between;
-  border: 3px solid ${ props => props.theme.colors.borderDefault };
+  border: 3px solid ${ props => props.theme.colors.accent };
   border-radius: 3px;
   padding: 5px 15px;
   margin: 7px 7px 7px 0px;

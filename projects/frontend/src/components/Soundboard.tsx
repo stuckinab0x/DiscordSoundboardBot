@@ -4,7 +4,7 @@ import { TransitionStatus } from 'react-transition-group';
 import useSoundPreview from '../hooks/use-sound-preview';
 import { useCustomTags } from '../contexts/custom-tags-context';
 import Features from './features/Features';
-import SortContainer from './SortContainer';
+import SoundBoardToolbar from './toolbar/SoundboardToolbar';
 import TagPicker from './custom-tags/TagPicker';
 import ButtonContainer from './ButtonContainer';
 
@@ -44,7 +44,7 @@ const Soundboard: FC<SoundboardProps> = ({ state }) => {
   return (
     <SoundboardMain state={ state }>
       <Features />
-      <SortContainer
+      <SoundBoardToolbar
         setPreviewVolume={ setPreviewVolume }
       />
       { showCustomTagPicker && (

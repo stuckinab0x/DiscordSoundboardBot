@@ -9,6 +9,7 @@ import PanelInfoContainer from './PanelInfoContainer';
 import Notification from './Notification';
 import { textShadowVisibility } from '../../styles/mixins';
 import useSoundPreview from '../../hooks/use-sound-preview';
+import { CloseBar } from '../../styles/components';
 
 interface AdminStyleProps {
   state?: TransitionStatus;
@@ -50,38 +51,8 @@ const FeaturesHeader = styled.div`
     }
 
     &:first-child {
-      color: ${ props => props.theme.colors.borderDefault };
+      color: ${ props => props.theme.colors.accent };
     }
-  }
-`;
-
-const CloseBar = styled.div`
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  width: 100%;
-  opacity: 0.5;
-  background-color: ${ props => props.theme.colors.borderRed };
-  border-radius: 8px;
-  padding: 5px 0px;
-  cursor: pointer;
-  box-shadow: 0px 3px 4px ${ props => props.theme.colors.shadowDefault };
-
-  &:hover {
-    opacity: 0.7;
-  }
-
-  > p {
-    display: flex;
-    align-items: center;
-    color: black;
-    font-weight: bold;
-    opacity: 0.8;
-    margin: 0;
-  }
-
-  @media only screen and (max-width: 780px) {
-    height: 20px;
   }
 `;
 
@@ -100,10 +71,10 @@ const SoundsContainer = styled.div`
   flex-direction: column;
   overflow-y: scroll;
   padding: 20px 30px;
-  border-right: 5px solid ${ props => props.theme.colors.borderDefault };
+  border-right: 5px solid ${ props => props.theme.colors.accent };
 
   > h2 {
-    color: ${ props => props.theme.colors.borderDefault };
+    color: ${ props => props.theme.colors.accent };
     margin: 5px 0px;
     
     ${ textShadowVisibility }
@@ -120,7 +91,7 @@ const SoundsContainer = styled.div`
 
   @media only screen and (max-width: 780px) {
     border-right: none;
-    border-bottom: 5px solid ${ props => props.theme.colors.borderDefault };
+    border-bottom: 5px solid ${ props => props.theme.colors.accent };
     box-shadow: 0px -6px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
   }
 `;

@@ -13,7 +13,7 @@ const tagButtonTemplate = css`
   color: white;
   font-weight: bold;
   background-color: ${ props => props.theme.colors.innerB };
-  border: 3px solid ${ props => props.theme.colors.borderDefault };
+  border: 3px solid ${ props => props.theme.colors.accent };
   border-radius: 3px;
    
   margin: 3px;
@@ -34,7 +34,7 @@ const NewTagButton = styled.button`
 
 const DisabledNewTag = styled.button`
   ${ tagButtonTemplate }
-  border-color: ${ props => props.theme.colors.borderDefault };
+  border-color: ${ props => props.theme.colors.accent };
   background-color: ${ props => props.color || '' };
   opacity: 0.6;
 `;

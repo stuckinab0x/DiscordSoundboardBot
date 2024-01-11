@@ -6,7 +6,7 @@ import { useCustomTags } from '../contexts/custom-tags-context';
 
 const soundTileSmall = css`
   font-size: 0.6rem;
-  border: 2px solid ${ props => props.theme.colors.borderDefault };
+  border: 2px solid ${ props => props.theme.colors.accent };
   border-radius: 2px;
   min-width: 75px;
   min-height: 75px;
@@ -16,7 +16,7 @@ const soundTileSmall = css`
 
 const soundTileSmallMobile = css`
     font-size: 1rem;
-    border: 3px solid ${ props => props.theme.colors.borderDefault };
+    border: 3px solid ${ props => props.theme.colors.accent };
     border-width: 3px;
     border-radius: 2px;
     min-width: 15vw;
@@ -39,6 +39,7 @@ interface SoundTileMainProps {
   small: boolean;
   tagColor: string | null;
   taggingModeOn: boolean;
+  disableBorder: boolean;
 }
 
 const SoundTileMain = styled.div<SoundTileMainProps>`
@@ -46,10 +47,11 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
 
   > button {
     ${ mixins.button }
+    position: relative;
     
     font-size: 1.2rem;
     color: white;
-    border: 5px solid ${ props => props.theme.colors.borderDefault };
+    border: 5px solid ${ props => props.theme.colors.accent };
     border-radius: 3px;
     ${ props => props.taggingModeOn && 'border-style: dotted;' }
     box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
@@ -63,10 +65,10 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
   
     ${ props => props.small && soundTileSmall }
 
-    ${ props => selectSoundTileMainBorder(props.statusBorder) }
+    ${ props => props.disableBorder ? null : selectSoundTileMainBorder(props.statusBorder) }
   
     @media only screen and (max-width: 780px) {
-      border: 3px solid ${ props => props.theme.colors.borderDefault };
+      border: 3px solid ${ props => props.theme.colors.accent };
       border-width: 3px;
       border-radius: 2px;
       min-width: 20vw;
@@ -76,6 +78,15 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       ${ props => props.small && soundTileSmallMobile }
     }
   }
+`;
+
+const InnerShadow = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  box-shadow: inset 0px 0px 4px 0px ${ props => props.theme.colors.shadowSoundInner };
 `;
 
 interface ButtonBaseProps {
@@ -109,7 +120,7 @@ const ButtonBase = styled.span<ButtonBaseProps>`
 const FavStarButton = styled(ButtonBase)`
   right: 12px;
   top: 12px;
-  opacity: ${ props => props.theme.name === 'halloween' ? '20%' : '50%' };
+  opacity: ${ props => props.theme.name === 'Halloween' ? '20%' : '50%' };
     
   ${ props => props.small && css`
     right: 8px;
@@ -118,11 +129,11 @@ const FavStarButton = styled(ButtonBase)`
 
   ${ props => props.active && css`
     color:#fcc82a;
-    opacity: ${ props.theme.name === 'halloween' ? '85%' : '75%' };
+    opacity: ${ props.theme.name === 'Halloween' ? '85%' : '75%' };
   ` }
 
   &:hover {
-    ${ props => props.theme.name === 'halloween' && 'filter: brightness(1.4)' }
+    ${ props => props.theme.name === 'Halloween' && 'filter: brightness(1.4)' }
   }
 
   @media only screen and (max-width: 780px) {
@@ -222,6 +233,7 @@ interface SoundTileProps {
   updateMySound: () => void;
   currentlyTagging: boolean;
   unsavedTagged: string[];
+  disableBorder: boolean;
 }
 
 const SoundTile: FC<SoundTileProps> = ({
@@ -235,9 +247,10 @@ const SoundTile: FC<SoundTileProps> = ({
   updateMySound,
   currentlyTagging,
   unsavedTagged,
+  disableBorder,
 }) => {
   const [statusBorder, setStatusBorder] = useState('');
-  const theme = useTheme();
+  const { name: themeName } = useTheme();
   const { toggleSoundOnTag } = useCustomTags();
 
   const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
@@ -253,8 +266,8 @@ const SoundTile: FC<SoundTileProps> = ({
     return handleSoundPlayClick();
   }, [currentlyTagging, unsavedTagged]);
 
-  const isFavIcon = theme.name === 'halloween' ? '💀' : 'star';
-  const isNotFavIcon = theme.name === 'halloween' ? '💀' : 'star_outline';
+  const isFavIcon = themeName === 'Halloween' ? '💀' : 'star';
+  const isNotFavIcon = themeName === 'Halloween' ? '💀' : 'star_outline';
 
   return (
     <SoundTileMain
@@ -262,11 +275,13 @@ const SoundTile: FC<SoundTileProps> = ({
       small={ small }
       tagColor={ tagColor ?? null }
       taggingModeOn={ currentlyTagging }
+      disableBorder={ disableBorder }
     >
       <button
         type="button"
         onClick={ handleButtonClick }
       >
+        <InnerShadow />
         { name }
       </button>
       <FavStarButton

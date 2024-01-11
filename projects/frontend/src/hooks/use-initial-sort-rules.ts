@@ -6,12 +6,12 @@ const prefs = {
   groups: cookies.get('groupspref')!,
 };
 
-interface Prefs {
+interface SortRules {
   sortOrder: SortOrder;
   groupOrder: GroupOrder;
 }
 
-const usePrefs = (): Prefs => {
+const useInitialSortRules = (): SortRules => {
   if (!prefs.groups || !prefs.sort)
     throw new Error();
   return {
@@ -20,4 +20,4 @@ const usePrefs = (): Prefs => {
   };
 };
 
-export default usePrefs;
+export default useInitialSortRules;

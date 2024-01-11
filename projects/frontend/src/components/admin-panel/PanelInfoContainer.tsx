@@ -20,7 +20,7 @@ const InfoContainer = styled.div`
 
     h2 {
       &:first-child {
-      color: ${ props => props.theme.colors.borderDefault }
+      color: ${ props => props.theme.colors.accent }
       }
     }
 

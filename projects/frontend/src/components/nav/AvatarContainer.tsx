@@ -17,7 +17,7 @@ const AvatarContainerMain = styled.div`
   
   > img {
     border-radius: 50%;
-    border: 2px solid ${ props => props.theme.colors.borderDefault };
+    border: 2px solid ${ props => props.theme.colors.accent };
     border-width: 2px;
     overflow: hidden;
     box-shadow: 3px 3px 5px ${ props => props.theme.colors.shadowDefault };
@@ -25,7 +25,7 @@ const AvatarContainerMain = styled.div`
   }
 
   > img:hover {
-    box-shadow: 0px 0px 3px 2.5px ${ props => props.theme.colors.borderDefault };
+    box-shadow: 0px 0px 3px 2.5px ${ props => props.theme.colors.accent };
   }
 `;
 

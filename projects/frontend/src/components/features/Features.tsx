@@ -5,28 +5,27 @@ import SkipContainer from './SkipContainer';
 import OptionsContainer from './OptionsContainer';
 import SearchBar from '../SearchBar';
 import { candyCaneBG } from '../../styles/mixins';
-import { useSortRules } from '../../contexts/sort-rules-context';
+import { usePrefs } from '../../contexts/prefs-context';
 
 const FeaturesContainer = styled.div`
-  margin-top: 16px;
-  padding-bottom: 8px;
+  padding: 16px 0px 8px;
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
 
   input {
     height: 30px;
   }
 
-  ${ props => props.theme.name === 'christmas' && candyCaneBG };
+  ${ props => props.theme.name === 'Christmas' && candyCaneBG };
 `;
 
 const UpperRow = styled.div`
   display: flex;
-  margin: 20px 30px 10px;
+  margin: 0px 30px 10px;
   align-items: center;
 
   @media only screen and (max-width: 780px) {
     flex-direction: column;
-    margin: 10px 10px 5px;
+    margin: 0px 10px 5px;
   }
 `;
 
@@ -62,7 +61,7 @@ const SkipAndSearch = styled.div`
 `;
 
 const Features: FC = () => {
-  const { updateSearchTerm } = useSortRules();
+  const { updateSearchTerm } = usePrefs();
 
   return (
     <FeaturesContainer>

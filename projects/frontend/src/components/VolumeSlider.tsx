@@ -42,6 +42,8 @@ const StyledSlider = styled.input`
     ${ sliderThumb }
   }
 
+  box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
+
   @media only screen and (max-width: 780px) {
     &[type="range"] {
       height: 5px;

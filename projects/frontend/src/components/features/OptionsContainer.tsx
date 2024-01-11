@@ -1,9 +1,10 @@
 import React, { FC, useState } from 'react';
 import styled, { css } from 'styled-components';
-import * as mixins from '../../styles/mixins';
+import { buttonGreen, button } from '../../styles/mixins';
+import { InnerShadow, ToggleButtonBase } from '../../styles/components';
 import AddSoundDialog from './AddSoundDialog';
 import GroupTagsButton from './GroupTagsButton';
-import { useSortRules } from '../../contexts/sort-rules-context';
+import { usePrefs } from '../../contexts/prefs-context';
 import { useCustomTags } from '../../contexts/custom-tags-context';
 
 const OptionsContainerMain = styled.div`
@@ -17,6 +18,10 @@ const OptionsContainerMain = styled.div`
   position: relative;
   z-index: 20;
   box-shadow: 0px 0px 10px 2px ${ props => props.theme.colors.shadowDefault };
+
+  button {
+    box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
+  }
 
   @media only screen and (max-width: 780px) {
     flex-direction: row;
@@ -33,7 +38,6 @@ const ButtonRow = styled.div`
   justify-content: space-between;
   width: 100%;
   position: relative;
-  word-wrap: wrap;
 
   @media only screen and (min-width: 780px) {
     &:first-of-type {
@@ -42,7 +46,7 @@ const ButtonRow = styled.div`
   }
 `;
 
-const OptionsButton = styled(mixins.ToggleButtonBase)`
+const OptionsButton = styled(ToggleButtonBase)`
   width: 174px;
   margin: 2px;
 
@@ -69,7 +73,7 @@ const EditTagsButton = styled(OptionsButton)`
 
 const AddSoundButton = styled(OptionsButton)`
   border-color: ${ props => props.theme.colors.borderGold };
-  ${ props => props.toggled ? mixins.buttonGreen : mixins.button }
+  ${ props => props.toggled ? buttonGreen : button }
 
   @media only screen and (max-width: 780px) {
     border-color: ${ props => props.theme.colors.borderGold };
@@ -79,7 +83,7 @@ const AddSoundButton = styled(OptionsButton)`
 const OptionsContainer: FC = () => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
-  const { toggleSoundSortOrder, sortRules } = useSortRules();
+  const { toggleSoundSortOrder, sortRules } = usePrefs();
   const { showCustomTagPicker, disableEditTagsButton, toggleShowCustomTagPicker } = useCustomTags();
 
   return (
@@ -90,6 +94,7 @@ const OptionsContainer: FC = () => {
           onClick={ toggleShowCustomTagPicker }
           disabled={ disableEditTagsButton }
         >
+          <InnerShadow />
           Edit Custom Tags
         </EditTagsButton>
         <AddSoundButton
@@ -97,11 +102,13 @@ const OptionsContainer: FC = () => {
           disabled={ disableAddSoundButton }
           onClick={ () => setShowAddSound(!showAddSound) }
         >
+          <InnerShadow />
           Add Sound
         </AddSoundButton>
       </ButtonRow>
       <ButtonRow>
         <OptionsButton toggled={ false } onClick={ toggleSoundSortOrder }>
+          <InnerShadow />
           { `Sort: ${ sortRules.sortOrder }` }
         </OptionsButton>
         <GroupTagsButton />

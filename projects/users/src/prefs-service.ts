@@ -1,5 +1,5 @@
 import { UsersService } from './users-service';
-import { SortPrefs } from './user-document';
+import { SortPrefs, ThemePrefs } from './user-document';
 
 export class PrefsService extends UsersService {
   async getSortPrefs(userId: string): Promise<SortPrefs> {
@@ -35,5 +35,16 @@ export class PrefsService extends UsersService {
       newSound = undefined;
 
     await collection.updateOne({ userId }, { $set: { introSound: newSound } }, { upsert: true });
+  }
+
+  async getUserTheme(userId: string): Promise<ThemePrefs | undefined> {
+    const collection = await this.usersCollection;
+    const user = await collection.findOne({ userId }, { projection: { themePrefs: 1 } });
+    return { theme: user?.themePrefs?.theme || 'Classic', useSeasonal: user?.themePrefs?.useSeasonal === undefined ? true : user?.themePrefs?.useSeasonal };
+  }
+
+  async setUserTheme(userId: string, newThemePrefs: ThemePrefs): Promise<void> {
+    const collection = await this.usersCollection;
+    await collection.updateOne({ userId }, { $set: { 'themePrefs.theme': newThemePrefs.theme, 'themePrefs.useSeasonal': newThemePrefs.useSeasonal } }, { upsert: true });
   }
 }

@@ -1,8 +1,8 @@
 import React, { FC, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { ToggleButtonBase } from '../../styles/mixins';
-import usePrefs from '../../hooks/use-prefs';
-import { useSortRules } from '../../contexts/sort-rules-context';
+import { InnerShadow, ToggleButtonBase } from '../../styles/components';
+import useInitialSortRules from '../../hooks/use-initial-sort-rules';
+import { usePrefs } from '../../contexts/prefs-context';
 import { GroupOrder } from '../../models/sort-rules';
 
 const ButtonMain = styled(ToggleButtonBase)`
@@ -17,9 +17,9 @@ const ButtonMain = styled(ToggleButtonBase)`
 `;
 
 const GroupTagsButton: FC = () => {
-  const [mode, setMode] = useState(usePrefs().groupOrder);
+  const [mode, setMode] = useState(useInitialSortRules().groupOrder);
   const [text, setText] = useState('Off');
-  const { toggleSoundGrouping } = useSortRules();
+  const { toggleSoundGrouping } = usePrefs();
 
   useEffect(() => {
     let newText = 'Off';
@@ -37,6 +37,7 @@ const GroupTagsButton: FC = () => {
 
   return (
     <ButtonMain toggled={ mode !== 'none' } onClick={ () => { handleClick(); toggleSoundGrouping(); } }>
+      <InnerShadow />
       { `Group Tags: ${ text }` }
     </ButtonMain>
   );

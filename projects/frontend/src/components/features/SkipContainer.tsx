@@ -1,7 +1,8 @@
 import React, { FC, useCallback } from 'react';
 import styled from 'styled-components';
 import { button } from '../../styles/mixins';
-import debounce from '../../utils';
+import { InnerShadow } from '../../styles/components';
+import { debounce } from '../../utils';
 
 const SkipContainerMain = styled.div`
   display: flex;
@@ -13,11 +14,12 @@ const SkipContainerMain = styled.div`
 
   > button {
     ${ button }
-
+    
+    position: relative;
     font-size: 1.3rem;
     color: white;
     background-color: ${ props => props.theme.colors.innerA };
-    border: 5px solid ${ props => props.theme.colors.borderDefault };
+    border: 5px solid ${ props => props.theme.colors.accent };
     box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
     border-width: 5px;
     border-radius: 3px;
@@ -48,9 +50,11 @@ const SkipContainer: FC = () => {
   return (
     <SkipContainerMain>
       <button type="button" onClick={ () => skipSound() }>
+        <InnerShadow />
         Skip one
       </button>
       <button type="button" onClick={ () => skipSound(true) }>
+        <InnerShadow />
         Skip all
       </button>
     </SkipContainerMain>

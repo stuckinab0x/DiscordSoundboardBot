@@ -3,14 +3,17 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import Logout from '../pages/Logout';
 import SWRProvider from '../providers/SWRProvider';
+import PrefsProvider from '../contexts/prefs-context';
 
 const Router: FC = () => (
   <BrowserRouter>
     <SWRProvider>
-      <Routes>
-        <Route path="/" element={ <App /> } />
-        <Route path="/logout" element={ <Logout /> } />
-      </Routes>
+      <PrefsProvider>
+        <Routes>
+          <Route path="/" element={ <App /> } />
+          <Route path="/logout" element={ <Logout /> } />
+        </Routes>
+      </PrefsProvider>
     </SWRProvider>
   </BrowserRouter>
 );

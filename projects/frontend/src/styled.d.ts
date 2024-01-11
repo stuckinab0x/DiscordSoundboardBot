@@ -3,19 +3,22 @@ import 'styled-components';
 declare module 'styled-components' {
   export interface DefaultTheme {
     name: string;
+    seasonal: boolean;
+    font: string;
     colors: {
+      accent: string;
       bg: string;
       nav: string;
       innerA: string;
       innerB: string;
-      borderDefault: sring;
       borderGold: string;
       borderRed: string;
       borderGreen: string;
-      buttonHover: string;
       buttonHighlighted: string;
+      closeButton: string;
       favStarSet: string;
       shadowDefault: string;
+      shadowSoundInner: string;
       volumeSliderFill: string;
       volumeSliderThumb: string;
     },

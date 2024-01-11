@@ -1,11 +1,11 @@
-import styled, { css } from 'styled-components';
+import { css } from 'styled-components';
 
 export const button = css`
   cursor: pointer;
 
   &:active {
     background-color: white;
-    color: ${ props => props.theme.colors.borderDefault };
+    color: ${ props => props.theme.colors.accent };
   }
 
   @media only screen and (min-width: 780px) {
@@ -19,9 +19,10 @@ export const filterButton = css`
   min-height: 42px;
   font-weight: bold;
   color: white;
-  border: 5px solid ${ props => props.theme.colors.borderDefault };
+  border: 5px solid ${ props => props.theme.colors.accent };
   border-radius: 6px;
   background-color: ${ props => props.theme.colors.innerB };
+  position: relative;
 `;
 
 export const filterButtonMobile = css`
@@ -29,7 +30,7 @@ export const filterButtonMobile = css`
     min-height: 30px;
     font-size: 1.2rem;
     font-weight: normal;
-    border: 3px solid ${ props => props.theme.colors.borderDefault };
+    border: 3px solid ${ props => props.theme.colors.accent };
     border-radius: 3px;
   }
 `;
@@ -42,7 +43,7 @@ export const textInput = css`
   color: white;
   background-color: ${ props => props.theme.colors.innerB };
   font-size: 1.2rem;
-  border: 5px solid ${ props => props.theme.colors.borderDefault };
+  border: 5px solid ${ props => props.theme.colors.accent };
   border-radius: 3px;
   width: 100%;
 
@@ -54,7 +55,7 @@ export const textInput = css`
 export const textInputMobile = css`
   @media only screen and (max-width: 780px) {
     font-size: 1.6rem;
-    border: 3px solid ${ props => props.theme.colors.borderDefault };
+    border: 3px solid ${ props => props.theme.colors.accent };
     border-radius: 2px;
     margin: 0;
   }
@@ -102,7 +103,7 @@ export const textShadowVisibility = css`
 `;
 
 export const adminPanelDivider = css`
-  background: ${ props => props.theme.colors.borderDefault };
+  background: ${ props => props.theme.colors.accent };
   border: none;
   border-radius: 3px;
   height: 10px;
@@ -112,18 +113,4 @@ export const adminPanelDivider = css`
   @media only screen and (max-width: 780px) {
     display: none;
   }
-`;
-
-interface ButtonProps {
-  toggled?: boolean;
-}
-
-export const ToggleButtonBase = styled.button<ButtonProps>`
-  ${ button }
-  ${ filterButton }
-  ${ filterButtonMobile }
-  ${ textShadowVisibility }
-  user-select: none;
-
-  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;

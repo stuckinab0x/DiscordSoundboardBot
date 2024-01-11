@@ -1,12 +1,12 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import styled, { useTheme } from 'styled-components';
-import debounce from '../utils';
+import { debounce } from '../utils';
 import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
 import CustomTag from '../models/custom-tag';
-import { useSortRules } from '../contexts/sort-rules-context';
+import { usePrefs } from '../contexts/prefs-context';
 import { useCustomTags } from '../contexts/custom-tags-context';
 import { GroupOrder, SortOrder } from '../models/sort-rules';
 
@@ -39,7 +39,7 @@ const IntroError = styled.div`
     margin: 0;
     padding: 10px;
     border-radius: 10px;
-    border: 2px solid ${ props => props.theme.colors.borderDefault };
+    border: 2px solid ${ props => props.theme.colors.accent };
     background-color: ${ props => props.theme.colors.innerA };
     cursor: pointer;
     opacity: 0.7;
@@ -78,8 +78,8 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
   const { data: soundsData, error, mutate: mutateSounds } = useSWR<{ introSound: string | undefined, sounds: Sound[] }>('/api/sounds');
   const { data: customTags } = useSWR<CustomTag[]>('/api/tags');
 
-  const theme = useTheme();
-  const { sortRules: { favorites, small, searchTerm, sortOrder, groupOrder, tags } } = useSortRules();
+  const { name: themeName } = useTheme();
+  const { sortRules: { favorites, small, searchTerm, sortOrder, groupOrder, tags }, showThemePicker } = usePrefs();
   const { currentlyTagging, unsavedTagged } = useCustomTags();
 
   const [showIntroError, setShowIntroError] = useState(false);
@@ -149,7 +149,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
         </IntroError>
         ) }
         <Buttons>
-          { theme.name === 'halloween' && <FullMoon /> }
+          { themeName === 'Halloween' && <FullMoon /> }
           { orderedSounds.map(x => {
             let tagColor;
             const savedTag = customTags.find(tag => tag.sounds.includes(x.id));
@@ -172,6 +172,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
                 updateMySound={ () => updateMySound(x.id) }
                 currentlyTagging={ !!currentlyTagging }
                 unsavedTagged={ unsavedTagged }
+                disableBorder={ showThemePicker }
               />
             );
           })}

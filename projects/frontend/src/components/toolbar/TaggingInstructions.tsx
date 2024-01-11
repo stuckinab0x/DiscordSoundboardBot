@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { useCustomTags } from '../contexts/custom-tags-context';
-import { button, filterButton, filterButtonMobile } from '../styles/mixins';
+import { useCustomTags } from '../../contexts/custom-tags-context';
+import { button, filterButton, filterButtonMobile } from '../../styles/mixins';
 
 interface TaggingInstructionsMainProps {
   tagColor: string;

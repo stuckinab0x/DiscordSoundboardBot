@@ -11,7 +11,7 @@ const TagPickerMain = styled.div`
   flex-wrap: wrap;
   
   background-color: ${ props => props.theme.colors.innerA };
-  border: 5px solid ${ props => props.theme.colors.borderDefault };
+  border: 5px solid ${ props => props.theme.colors.accent };
   border-radius: 5px;
   box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
 
@@ -20,7 +20,7 @@ const TagPickerMain = styled.div`
 
   @media only screen and (max-width: 780px) {
     margin: 10px 10px 0px;
-    border: 3px solid ${ props => props.theme.colors.borderDefault };
+    border: 3px solid ${ props => props.theme.colors.accent };
     border-radius: 3px;
   }
 `;

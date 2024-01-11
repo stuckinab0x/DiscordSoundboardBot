@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { useSWRConfig } from 'swr';
 import useSoundPreview from '../../hooks/use-sound-preview';
 import Sound from '../../models/sound';
-import { defaultTheme } from '../../styles/themes';
+import themes from '../../styles/themes';
 
 const ActionContainer = styled.div`
   h4 {
@@ -110,7 +110,7 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, ur
       },
     );
     if (res.status !== 204)
-      return setNotification('YIKES, something broke', defaultTheme.colors.borderRed);
+      return setNotification('YIKES, something broke', themes[0].colors.borderRed);
     setEnableSave(false);
     await mutate('/api/sounds');
     return setNotification(`Updated volume of "${ name }" to ${ rangeValue }`, '');

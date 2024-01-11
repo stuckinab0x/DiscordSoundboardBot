@@ -5,8 +5,13 @@ function prefsRouter(prefsService: PrefsService) {
   const router = Router();
 
   router.put('/', async (req, res) => {
-    await prefsService.setSortPrefs(String(req.cookies.userid), { sortOrder: req.body.sortOrder, tagGroups: req.body.groupOrder });
-    res.sendStatus(204);
+    if (req.body.sortOrder) {
+      await prefsService.setSortPrefs(String(req.cookies.userid), { sortOrder: req.body.sortOrder, tagGroups: req.body.groupOrder });
+      return res.sendStatus(204);
+    }
+
+    await prefsService.setUserTheme(String(req.cookies.userid), { theme: req.body.themeName, useSeasonal: req.body.useSeasonal });
+    return res.sendStatus(204);
   });
 
   router.put('/:introsound', async (req, res) => {

@@ -5,17 +5,22 @@ import * as mixins from '../../styles/mixins';
 import CustomTag from '../../models/custom-tag';
 import TagColorPicker from './TagColorPicker';
 import { useCustomTags } from '../../contexts/custom-tags-context';
+import { CloseBar } from '../../styles/components';
 
 const ToolbarMain = styled.div`
   display: flex;
   align-items: center;
   
-  color: ${ props => props.theme.colors.borderDefault };
+  color: ${ props => props.theme.colors.accent };
   margin: 3px;
-  border-bottom: 4px solid ${ props => props.theme.colors.borderDefault };
+  border-bottom: 4px solid ${ props => props.theme.colors.accent };
   border-radius: 4px;
   height: fit-content;
   padding-left: 20px;
+
+  > ${ CloseBar } {
+    margin: 0px 10px;
+  }
 
   @media only screen and (max-width: 780px) {
     justify-content: center;
@@ -26,48 +31,12 @@ const ToolbarMain = styled.div`
 const Dialog = styled.p`
   text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
   font-weight: bold;
-
-  @media only screen and (max-width: 780px) {
-
-  }
-`;
-
-const CloseBar = styled.div`
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  margin: 0px 20px;
-  flex-grow: 1;
-  opacity: 0.5;
-  background-color: ${ props => props.theme.colors.borderRed };
-  border-radius: 8px;
-  padding: 5px 0px;
-  cursor: pointer;
-  box-shadow: 0px 3px 4px ${ props => props.theme.colors.shadowDefault };
-
-  &:hover {
-    opacity: 0.7;
-  }
-
-  > p {
-    display: flex;
-    align-items: center;
-    color: black;
-    font-weight: bold;
-    opacity: 0.8;
-    margin: 0;
-  }
-
-  @media only screen and (max-width: 780px) {
-    height: 20px;
-    margin: 0px 8px;
-  }
 `;
 
 const ToolbarRight = styled.div`
   display: flex;
   align-items: center;
-  border-left: 4px solid ${ props => props.theme.colors.borderDefault };
+  border-left: 4px solid ${ props => props.theme.colors.accent };
   margin: 0px 0px 4px 12px;
 
   @media only screen and (max-width: 780px) {
