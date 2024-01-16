@@ -8,7 +8,7 @@ const themes: DefaultTheme[] = [
     seasonal: false,
     font: baseFont,
     colors: {
-      accent: '#ab9eff',
+      accent: '#b5aafa',
       bg: '#383b43',
       nav: '#2f3136',
       innerA: '#50555f',
@@ -124,7 +124,7 @@ const themes: DefaultTheme[] = [
       innerA: '#3e3f42',
       innerB: '#2b2c2e',
       borderGold: '#FFE864',
-      borderRed: '#FF7400',
+      borderRed: '#ff7480',
       borderGreen: '#8cffa5',
       buttonHighlighted: '#686868',
       closeButton: '#bb26c5',

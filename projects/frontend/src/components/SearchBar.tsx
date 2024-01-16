@@ -11,8 +11,6 @@ const SearchBarMain = styled.div`
   > input {
     ${ mixins.textInput }
     ${ mixins.textInputMobile }
-    box-sizing: border-box;
-    height: 40px;
   
     &::placeholder {
       color: rgb(199, 199, 199);
@@ -22,7 +20,7 @@ const SearchBarMain = styled.div`
   > span {
     ${ mixins.iconButton }
     right: 8px;
-    top: 8px;
+    top: 7.5px;
     position: absolute;
     opacity: 50%;
   

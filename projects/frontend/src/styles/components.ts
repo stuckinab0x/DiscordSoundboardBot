@@ -50,9 +50,17 @@ export const CloseBar = styled.div`
     opacity: 0.8;
     margin: 0;
   }
+`;
+
+export const AdminPanelDivider = styled.hr`
+  background: ${ props => props.theme.colors.accent };
+  border: none;
+  border-radius: 3px;
+  height: 10px;
+  width: 470px;
+  margin: 2px 0px;
 
   @media only screen and (max-width: 780px) {
-    height: 20px;
-    margin: 0px 8px;
+    display: none;
   }
 `;

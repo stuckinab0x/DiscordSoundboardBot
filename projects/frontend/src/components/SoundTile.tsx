@@ -3,14 +3,14 @@ import styled, { css, useTheme } from 'styled-components';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
 import { useCustomTags } from '../contexts/custom-tags-context';
+import { InnerShadow } from '../styles/components';
 
 const soundTileSmall = css`
   font-size: 0.6rem;
   border: 2px solid ${ props => props.theme.colors.accent };
   border-radius: 2px;
-  min-width: 75px;
-  min-height: 75px;
-  max-width: 75px;
+  width: 75px;
+  height: 75px;
   margin: 4px 4px;
 `;
 
@@ -19,9 +19,8 @@ const soundTileSmallMobile = css`
     border: 3px solid ${ props => props.theme.colors.accent };
     border-width: 3px;
     border-radius: 2px;
-    min-width: 15vw;
-    min-height: 15vw;
-    max-width: 15vw;
+    width: 15vw;
+    height: 15vw;
 `;
 
 const selectSoundTileMainBorder = (statusBorder: string) => {
@@ -44,6 +43,7 @@ interface SoundTileMainProps {
 
 const SoundTileMain = styled.div<SoundTileMainProps>`
   position: relative;
+  overflow: hidden;
 
   > button {
     ${ mixins.button }
@@ -55,9 +55,8 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     border-radius: 3px;
     ${ props => props.taggingModeOn && 'border-style: dotted;' }
     box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
-    min-width: 150px;
-    min-height: 150px;
-    max-width: 150px;
+    height: 150px;
+    width: 150px;
     margin: 6px 6px;
     background-color: ${ props => props.tagColor ? props.tagColor : props.theme.colors.innerA };
     word-wrap: break-word;
@@ -71,37 +70,33 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       border: 3px solid ${ props => props.theme.colors.accent };
       border-width: 3px;
       border-radius: 2px;
-      min-width: 20vw;
-      min-height: 20vw;
-      max-width: 20vw;
+      width: 20vw;
+      height: 20vw;
 
       ${ props => props.small && soundTileSmallMobile }
     }
   }
 `;
 
-const InnerShadow = styled.div`
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  box-shadow: inset 0px 0px 4px 0px ${ props => props.theme.colors.shadowSoundInner };
-`;
-
 interface ButtonBaseProps {
   small: boolean;
-  active: boolean;
+  toggled?: boolean;
 }
 
 const ButtonBase = styled.span<ButtonBaseProps>`
   ${ mixins.iconButton }
   ${ mixins.textShadowVisibility }
+  opacity: 0.6;
     
   position: absolute;
     
   ${ props => props.small && css`
     font-size: 15px;
+  ` }
+
+  ${ props => props.toggled && css`
+    color:#fcc82a;
+    opacity: 1;
   ` }
 
   &:hover {
@@ -118,106 +113,63 @@ const ButtonBase = styled.span<ButtonBaseProps>`
 `;
 
 const FavStarButton = styled(ButtonBase)`
-  right: 12px;
-  top: 12px;
-  opacity: ${ props => props.theme.name === 'Halloween' ? '20%' : '50%' };
-    
+  right: 14px;
+  top: 14px;
+  ${ props => props.theme.name === 'Halloween' && 'opacity: 0.4;' }
+
   ${ props => props.small && css`
     right: 8px;
     top: 8px;
   ` }
-
-  ${ props => props.active && css`
-    color:#fcc82a;
-    opacity: ${ props.theme.name === 'Halloween' ? '85%' : '75%' };
-  ` }
-
-  &:hover {
-    ${ props => props.theme.name === 'Halloween' && 'filter: brightness(1.4)' }
-  }
-
-  @media only screen and (max-width: 780px) {
-    right: 11px;
-    top: 11px; 
-    
-    ${ props => props.small && css`
-      right: 10px;
-      top: 10px;
-    ` }
-  }
 `;
 
 const MySoundButton = styled(ButtonBase)`
   right: 14px;
   bottom: 14px;
-  opacity: 50%;
 
   ${ props => props.small && css`
     right: 8px;
     bottom: 8px;
   ` }
-
-  ${ props => props.active && css`
-    color:#fcc82a;
-    opacity: 100%;
-  ` }
-
-  @media only screen and (max-width: 780px) {
-    right: 11px;
-    bottom: 11px; 
-    
-    ${ props => props.small && css`
-      right: 10px;
-      bottom: 10px;
-    ` }
-  }
 `;
 
 interface PreviewButtonStyleProps {
   small: boolean;
 }
 
-const PreviewButton = styled.div<PreviewButtonStyleProps>`
+const PreviewButton = styled(ButtonBase)<PreviewButtonStyleProps>`
   display: flex;
   align-items: center;
-  position: absolute;
-  opacity: 0.6;
-  width: 30px;
-  height: 30px;
-  bottom: ${ props => props.small ? '0px' : '12px' };
-  left: ${ props => props.small ? '8px' : '15px' };
+  bottom: 14px;
+  left: 14px;
   text-shadow: 0px 0px 6px ${ props => props.theme.colors.shadowDefault };
+  ${ mixins.iconButton }
 
-  > span {
-    ${ mixins.iconButton }
-    margin-right: 4px;
-    ${ props => props.small && 'font-size: 0.8rem;' }
+  ${ props => props.small && css`
+    left: 8px;
+    bottom: 8px;
+  ` }
 
-    @media only screen and (max-width: 780px) {
-      font-size: ${ props => props.small ? '1rem' : '1.3rem' };
-    }
-  }
-
-  > p {
+  &::after {
+    content: 'Preview';
     display: none;
-    margin: 0;
+    padding-left: 2px;
     font-size: ${ props => props.small ? '0.6rem' : '0.8rem' };
+    font-family: ${ props => props.theme.font };
     font-weight: bold;
-    pointer-events: none;
   }
 
+  &:hover::after {
+    display: inline;
+  }
+  
   @media only screen and (max-width: 780px) {
-    bottom: ${ props => props.small ? '0px' : '4px' };
-    left: ${ props => props.small ? '10px' : '12px' };
+    font-size: ${ props => props.small ? '1rem' : '1.3rem' };
   }
 
   @media only screen and (min-width: 780px) {
     &:hover {
       opacity: 1;
-
-      > p {
-        display: block;
-      }
     }
   }
 `;
@@ -281,23 +233,16 @@ const SoundTile: FC<SoundTileProps> = ({
         type="button"
         onClick={ handleButtonClick }
       >
-        <InnerShadow />
         { name }
+        <InnerShadow />
       </button>
-      <FavStarButton
-        className='material-icons'
-        role="presentation"
-        small={ small }
-        active={ isFavorite }
-        onClick={ updateFavRequest }
-      >
+      <FavStarButton className='material-icons' small={ small } toggled={ isFavorite } onClick={ updateFavRequest }>
         { isFavorite ? isFavIcon : isNotFavIcon }
       </FavStarButton>
-      <PreviewButton small={ small }>
-        <span role='presentation' className='material-icons' onClick={ soundPreview }>play_circle</span>
-        <p>Preview</p>
+      <PreviewButton small={ small } className='material-icons' onClick={ soundPreview }>
+        play_circle
       </PreviewButton>
-      <MySoundButton className='material-icons' small={ small } onClick={ updateMySound } active={ isIntroSound }>
+      <MySoundButton className='material-icons' small={ small } onClick={ updateMySound } toggled={ isIntroSound }>
         face
       </MySoundButton>
     </SoundTileMain>

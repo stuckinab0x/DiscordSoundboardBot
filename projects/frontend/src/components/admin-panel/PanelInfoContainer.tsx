@@ -1,7 +1,8 @@
 import React, { FC, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Sound from '../../models/sound';
-import { textShadowVisibility, adminPanelDivider } from '../../styles/mixins';
+import { textShadowVisibility } from '../../styles/mixins';
+import { AdminPanelDivider as Divider } from '../../styles/components';
 import AdminSoundActions from './AdminSoundActions';
 import VolumeSlider from '../VolumeSlider';
 
@@ -12,7 +13,7 @@ const InfoContainer = styled.div`
   > div {
     display: flex;
     align-items: center;
-    min-height: 40px;
+    margin: 6px 0px;
   
     > h2, h3 {
       margin: 0px 7px 0px 0px;
@@ -36,17 +37,13 @@ const InfoContainer = styled.div`
     }
 
     @media only screen and (max-width: 780px) {
-      min-height: 30px;
+      margin: 4px 0px;
     }
   }
 
   @media only screen and (max-width: 780px) {
     box-shadow: 0px 4px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
   }
-`;
-
-const Divider = styled.hr`
-  ${ adminPanelDivider }
 `;
 
 interface PanelInfoContainerProps {

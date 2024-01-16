@@ -23,7 +23,7 @@ const SelectorMain = styled.div`
     display: flex;
   }
 
-  ${ CloseBar } {
+  > ${ CloseBar } {
     margin: 6px;
   }
 

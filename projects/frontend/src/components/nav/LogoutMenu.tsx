@@ -6,7 +6,7 @@ import { button } from '../../styles/mixins';
 const LogOutMenuMain = styled.div`
   position: absolute;
   top: 90px;
-  left: -18px;
+  left: -25px;
 
   @media only screen and (max-width: 780px) {
     top: 84px;
@@ -35,6 +35,12 @@ const LogOutMenuMain = styled.div`
     border-bottom-width: 7px;
     border-right-width: 14px;
     border-left-width: 14px;
+  }
+
+  @media only screen and (max-width: 780px) {
+    &::after {
+      left: 12.5px;
+    }
   }
 `;
 

@@ -26,7 +26,6 @@ interface AddSoundDialogMainProps {
 
 const AddSoundError = css`
   animation: shake 0.5s 1 linear;
-
   ${ mixins.buttonRed }
 `;
 
@@ -41,7 +40,7 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   border-radius: 5px;
   right: 5px;
   top: 64px;
-  padding: 10px;
+  padding: 6px 8px;
   box-shadow: 0px 5px 10px 3px ${ props => props.theme.colors.innerB };
 
   ${ props => {
@@ -50,15 +49,13 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
     return null;
   } }
 
-  > h4 {
-    margin: 0;
-    margin-bottom: 10px;
+  > h4, input, button {
+    margin: 2px 0px;
   }
 
   > input {
     ${ mixins.textInput }
     width: auto;
-    margin-bottom: 4px;
   }
 
   > button {
@@ -78,11 +75,16 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
 
   @media only screen and (max-width: 780px) {
     border-width: 3px;
-    right: 44px;
-    top: 50px;
-    
-    > input {
-       margin-bottom: 5px;
+    padding: 4px 6px;
+    position: fixed;
+    top: 300px;
+    right: 50%;
+    left: 50%;
+    margin-left: -150px;
+    margin-right: -150px;
+
+    > input, button {
+      border-width: 3px;
     }
   }
 `;

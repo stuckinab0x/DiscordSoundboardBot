@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import Sound from '../../models/sound';
 import { textShadowVisibility, button } from '../../styles/mixins';
+import { InnerShadow } from '../../styles/components';
 
 const PanelSoundMain = styled.div`
   display: flex;
@@ -11,6 +12,7 @@ const PanelSoundMain = styled.div`
   span {
     cursor: pointer;
     opacity: 0.7;
+    margin: 2px;
 
     &:hover {
       opacity: 1;
@@ -24,11 +26,13 @@ interface SoundSectionStyleProps {
 
 const PanelSoundSection = styled.div<SoundSectionStyleProps>`
   display: flex;
+  position: relative;
   justify-content: space-between;
+  align-items: center;
   border: 3px solid ${ props => props.theme.colors.accent };
   border-radius: 3px;
   padding: 5px 15px;
-  margin: 7px 7px 7px 0px;
+  margin: 4px;
   background-color: ${ props => props.isSelected ? props.theme.colors.buttonHighlighted : props.theme.colors.innerA };
   ${ textShadowVisibility }
   
@@ -57,6 +61,7 @@ interface PanelSoundProps {
 const PanelSound: FC<PanelSoundProps> = ({ sound, selectedSoundId, setSelectedSound, soundPreview }) => (
   <PanelSoundMain>
     <PanelSoundSection onClick={ () => setSelectedSound(sound) } isSelected={ selectedSoundId === sound.id }>
+      <InnerShadow />
       <h4>{ sound.name }</h4>
       { (sound.volume && sound.volume !== 1) && <span className='material-icons'>equalizer</span> }
     </PanelSoundSection>

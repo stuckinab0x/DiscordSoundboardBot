@@ -3,13 +3,10 @@ import styled from 'styled-components';
 import { useSWRConfig } from 'swr';
 import useSoundPreview from '../../hooks/use-sound-preview';
 import Sound from '../../models/sound';
-import { textInput, adminPanelDivider } from '../../styles/mixins';
+import { textInput } from '../../styles/mixins';
+import { AdminPanelDivider as Divider } from '../../styles/components';
 import themes from '../../styles/themes';
 import VolumeOffsetAction from './VolumeOffsetAction';
-
-const Divider = styled.hr`
-  ${ adminPanelDivider }
-`;
 
 const ActionContainer = styled.div`
   display: flex;

@@ -93,6 +93,7 @@ const SoundsContainer = styled.div`
     border-right: none;
     border-bottom: 5px solid ${ props => props.theme.colors.accent };
     box-shadow: 0px -6px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
+    padding: 15px;
   }
 `;
 

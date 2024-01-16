@@ -7,13 +7,7 @@ import LogoutMenu from './LogoutMenu';
 const AvatarContainerMain = styled.div`
   display: flex;
   align-items: center;
-  padding: 0px 20px 0px 7px;
   position: relative;
-
-  @media only screen and (max-width: 780px) {
-    margin: 0px 10px;
-    padding: 0px 6px;
-  }
   
   > img {
     border-radius: 50%;

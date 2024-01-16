@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 
 const ChristmasLeavesMain = styled.svg`
-  position: absolute;
+  position: fixed;
   top: -70px;
   width: 2000px;
   min-height: 144px;
@@ -13,7 +13,7 @@ const ChristmasLeavesMain = styled.svg`
     top: -58px;
   }
 
-  &:nth-of-type(odd) {
+  &:first-of-type {
     filter: brightness(1.4) saturate(1.5);
     top: -30px;
 

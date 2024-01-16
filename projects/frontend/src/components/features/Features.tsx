@@ -11,10 +11,6 @@ const FeaturesContainer = styled.div`
   padding: 16px 0px 8px;
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
 
-  input {
-    height: 30px;
-  }
-
   ${ props => props.theme.name === 'Christmas' && candyCaneBG };
 `;
 

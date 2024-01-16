@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { useCustomTags } from '../../contexts/custom-tags-context';
 import { button, filterButton, filterButtonMobile } from '../../styles/mixins';
+import { CloseBar } from '../../styles/components';
 
 interface TaggingInstructionsMainProps {
   tagColor: string;
@@ -36,6 +37,15 @@ const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
   }
 `;
 
+const ConfirmButton = styled(CloseBar)`
+  margin: 0px 6px;
+  height: 22px;
+  
+  &:first-of-type {
+    background-color: ${ props => props.theme.colors.borderGreen };
+  }
+`;
+
 interface TaggingInstructionsProps {
   tagName: string;
   tagColor: string;
@@ -49,12 +59,12 @@ const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor }
       <p>
         { `Currently tagging sounds for: ${ tagName }` }
       </p>
-      <button type='button' onClick={ saveTagged }>
-        Save
-      </button>
-      <button type='button' onClick={ discardTagged }>
-        Discard
-      </button>
+      <ConfirmButton onClick={ saveTagged }>
+        <p>Save</p>
+      </ConfirmButton>
+      <ConfirmButton onClick={ discardTagged }>
+        <p>Discard</p>
+      </ConfirmButton>
     </TaggingInstructionsMain>
   );
 };
