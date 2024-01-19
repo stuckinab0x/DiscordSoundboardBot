@@ -20,6 +20,7 @@ const PreviewVolumeMain = styled.div`
     text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
 
     ${ props => props.theme.name === 'Christmas' && 'filter: brightness(1.4) saturate(1.4);' }
+    ${ props => props.theme.name === 'Boomer' && 'color: white;' }
   }
 
   @media only screen and (max-width: 780px) {

@@ -54,16 +54,17 @@ const EmptyNewTag = styled.button<EmptyNewTagProps>`
 interface TagTileContainerProps {
   customTags: CustomTag[];
   editMode: boolean;
-  currentlyEditing: CustomTag | null;
-  setEditMode: (editmode: boolean) => void;
-  newTagProps: { name: string, color: string }
+  creatingNew: boolean;
+  beginCreatingNew: () => void;
+  currentName: string | undefined;
+  currentColor: string | undefined;
   handleEditTagClick: (id: string) => void;
 }
 
-const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, currentlyEditing, setEditMode, newTagProps, handleEditTagClick }) => (
+const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, creatingNew, beginCreatingNew, currentName, currentColor, handleEditTagClick }) => (
   <TagsContainer>
     { editMode ? <DisabledNewTag>New</DisabledNewTag> : (
-      <NewTagButton onClick={ () => setEditMode(true) }>
+      <NewTagButton onClick={ beginCreatingNew }>
         New
       </NewTagButton>
     ) }
@@ -77,7 +78,7 @@ const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, cur
         handleEditTagClick={ handleEditTagClick }
       />
     )) }
-    { (editMode && !currentlyEditing) && <EmptyNewTag color={ newTagProps.color } disabled>{ newTagProps.name || '???' }</EmptyNewTag> }
+    { (editMode && creatingNew) && <EmptyNewTag color={ currentColor || '' } disabled>{ currentName || '???' }</EmptyNewTag> }
   </TagsContainer>
 );
 

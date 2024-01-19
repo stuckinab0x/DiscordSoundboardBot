@@ -22,8 +22,9 @@ const ButtonMain = styled.button<ButtonStyleProps>`
   ${ props => css`
     --a: ${ props.gradient[0] };
     --b: ${ props.gradient[1] };
+    --c: ${ props.gradient[2] };
     background: var(--a);
-    background: linear-gradient(90deg, var(--a) 0%, var(--b) 100%);
+    background: linear-gradient(90deg, var(--a) 0%, var(--c) 50%, var(--b) 100%);
   ` }
 
   @media only screen and (max-width: 780px) {
@@ -38,6 +39,7 @@ interface ThemeButtonProps {
 
 const ThemeButton: FC<ThemeButtonProps> = ({ name, handleClick }) => {
   const getButtonColors = useCallback((theme: DefaultTheme) => [
+    theme.colors.nav,
     theme.colors.accent,
     theme.colors.innerA,
   ], []);

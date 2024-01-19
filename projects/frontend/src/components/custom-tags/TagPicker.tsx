@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';
@@ -34,42 +34,45 @@ const ColumnDiv = styled.div`
 const TagPicker: FC = () => {
   const { data: customTags, mutate } = useSWR<CustomTag[]>('/api/tags');
 
-  const [editMode, setEditMode] = useState(false);
+  const { editingTag, setEditingTag } = useCustomTags();
+
   const [currentlyEditing, setCurrentlyEditing] = useState<CustomTag | null>(null);
-  const [newTagProps, setNewTagProps] = useState({ name: '', color: '' });
-  const { setDisableEditTagsButton } = useCustomTags();
+  const [creatingNew, setCreatingNew] = useState(false);
 
   const handleEditTagClick = useCallback((id: string) => {
     const tag = customTags?.find(x => (x.id === id));
     if (tag) {
-      setCurrentlyEditing(tag);
-      setEditMode(true);
+      setCurrentlyEditing({ ...tag });
+      setEditingTag(true);
     }
   }, [customTags]);
 
-  useEffect(() => {
-    if (editMode) setDisableEditTagsButton(true);
-    else setDisableEditTagsButton(false);
-  });
+  const beginCreatingNew = useCallback(() => {
+    setEditingTag(true);
+    setCreatingNew(true);
+    setCurrentlyEditing({ id: '', name: '', color: '', sounds: [] });
+  }, []);
 
   return (
     <TagPickerMain>
       <ColumnDiv>
         <TagToolbar
-          editMode={ editMode }
-          setEditMode={ setEditMode }
+          editMode={ editingTag }
+          setEditMode={ setEditingTag }
           customTags={ customTags ?? [] }
           currentlyEditing={ currentlyEditing }
           setCurrentlyEditing={ setCurrentlyEditing }
-          setNewTagProps={ setNewTagProps }
+          creatingNew={ creatingNew }
+          cancelCreatingNew={ () => setCreatingNew(false) }
           mutateTags={ mutate }
         />
         <TagTileContainer
           customTags={ customTags ?? [] }
-          editMode={ editMode }
-          currentlyEditing={ currentlyEditing }
-          setEditMode={ setEditMode }
-          newTagProps={ newTagProps }
+          editMode={ editingTag }
+          creatingNew={ creatingNew }
+          beginCreatingNew={ beginCreatingNew }
+          currentName={ currentlyEditing?.name }
+          currentColor={ currentlyEditing?.color }
           handleEditTagClick={ handleEditTagClick }
         />
       </ColumnDiv>

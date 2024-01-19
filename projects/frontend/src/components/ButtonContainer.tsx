@@ -97,26 +97,25 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
   }, 2000, true), []);
 
   const updateFavoritesRequest = useCallback((soundId: string) => {
-    if (soundsData) {
-      const sound = soundsData.sounds.find(x => x.id === soundId);
-      if (sound) {
-        const newSounds = [...soundsData.sounds];
-        const soundIndex = newSounds.findIndex(x => x.id === sound.id);
-        newSounds[soundIndex] = { ...(sound), isFavorite: !sound.isFavorite };
-        const updateFav = async () => {
-          await fetch(
-            '/api/favorites',
-            {
-              method: sound?.isFavorite ? 'DELETE' : 'POST',
-              body: JSON.stringify({ soundId: sound.id }),
-              headers: { 'Content-Type': 'application/json' },
-            },
-          );
-          return { introSound: soundsData.introSound, sounds: newSounds };
-        };
-        mutateSounds(updateFav(), { optimisticData: { introSound: soundsData.introSound, sounds: newSounds }, rollbackOnError: true });
-      }
-    }
+    if (!soundsData)
+      return;
+    const soundIndex = soundsData.sounds.findIndex(x => x.id === soundId);
+    if (soundIndex === -1)
+      return;
+    const sound = soundsData.sounds[soundIndex];
+    const newSounds: Sound[] = [...soundsData.sounds.slice(0, soundIndex), { ...sound, isFavorite: !sound.isFavorite }, ...soundsData.sounds.slice(soundIndex + 1)];
+    const updateFav = async () => {
+      await fetch(
+        '/api/favorites',
+        {
+          method: sound?.isFavorite ? 'DELETE' : 'POST',
+          body: JSON.stringify({ soundId: sound.id }),
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+      return { introSound: soundsData.introSound, sounds: newSounds };
+    };
+    mutateSounds(updateFav(), { optimisticData: { introSound: soundsData.introSound, sounds: newSounds }, rollbackOnError: true });
   }, [soundsData]);
 
   const updateMySound = useCallback((soundId: string) => {

@@ -49,6 +49,7 @@ const ButtonRow = styled.div`
 const OptionsButton = styled(ToggleButtonBase)`
   width: 174px;
   margin: 2px;
+  ${ props => props.theme.name === '20XD6' && 'font-size: 11pt;' }
 
   @media only screen and (max-width: 780px) {
     height: 60px;
@@ -84,7 +85,7 @@ const OptionsContainer: FC = () => {
   const [showAddSound, setShowAddSound] = useState(false);
   const [disableAddSoundButton, setDisableAddSoundButton] = useState(false);
   const { toggleSoundSortOrder, sortRules } = usePrefs();
-  const { showCustomTagPicker, disableEditTagsButton, toggleShowCustomTagPicker } = useCustomTags();
+  const { showCustomTagPicker, editingTag, toggleShowCustomTagPicker } = useCustomTags();
 
   return (
     <OptionsContainerMain>
@@ -92,7 +93,7 @@ const OptionsContainer: FC = () => {
         <EditTagsButton
           toggled={ showCustomTagPicker }
           onClick={ toggleShowCustomTagPicker }
-          disabled={ disableEditTagsButton }
+          disabled={ editingTag }
         >
           <InnerShadow />
           Edit Custom Tags

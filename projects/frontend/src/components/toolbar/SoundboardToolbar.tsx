@@ -1,5 +1,5 @@
-import React, { FC, useMemo } from 'react';
-import styled, { css } from 'styled-components';
+import React, { FC } from 'react';
+import styled from 'styled-components';
 import { iconButton, textShadowVisibility } from '../../styles/mixins';
 import PreviewVolume from './PreviewVolume';
 import TaggingInstructions from './TaggingInstructions';
@@ -17,11 +17,7 @@ const ToolbarMain = styled.div`
   position: relative;
 `;
 
-interface ThemeButtonProps {
-  glow: boolean;
-}
-
-const ThemeButton = styled.div<ThemeButtonProps>`
+const ThemeButton = styled.div`
   display: flex;
   align-items: center;
   background-color: ${ props => props.theme.colors.innerA };
@@ -52,19 +48,6 @@ const ThemeButton = styled.div<ThemeButtonProps>`
   > span, h4 {
     ${ textShadowVisibility }
   }
-
-  ${ props => props.glow && css`
-    animation: neon3 1.5s ease-in-out infinite alternate;
-
-    @keyframes neon3 {
-      from {
-        box-shadow: 0 0 4px 3px #ffd000;
-      }
-      to {
-        box-shadow: 0 0 30px 5px #ffd000;
-      }
-    }
-  ` }
 `;
 
 const ResizeIcon = styled.div`
@@ -97,6 +80,8 @@ const ResizeSpan = styled.span`
   }
 `;
 
+const seasonalName = getSeasonalThemeName();
+
 interface SoundboardToolbarProps {
   setPreviewVolume: (volume: string) => void;
 }
@@ -104,16 +89,14 @@ interface SoundboardToolbarProps {
 const SoundboardToolbar: FC<SoundboardToolbarProps> = ({ setPreviewVolume }) => {
   const { toggleSmallButtons } = usePrefs();
   const { currentlyTagging } = useCustomTags();
-  const { themePrefs: { theme }, showThemePicker, setShowThemePicker } = usePrefs();
-
-  const isHoliday = useMemo(() => getSeasonalThemeName() !== 'Classic', []);
+  const { themePrefs: { theme, useSeasonal }, showThemePicker, setShowThemePicker } = usePrefs();
 
   return (
     <ToolbarMain>
-      <ThemeButton onClick={ () => setShowThemePicker(!showThemePicker) } glow={ isHoliday }>
+      <ThemeButton onClick={ () => setShowThemePicker(!showThemePicker) }>
         <InnerShadow />
         <span className="material-symbols-outlined">palette</span>
-        <h4>{ theme }</h4>
+        <h4>{ theme === 'Classic' && useSeasonal ? seasonalName : theme }</h4>
       </ThemeButton>
       <PreviewVolume setPreviewVolume={ setPreviewVolume } />
       { currentlyTagging && (

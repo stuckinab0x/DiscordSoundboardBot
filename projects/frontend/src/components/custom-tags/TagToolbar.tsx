@@ -1,5 +1,5 @@
-import React, { FC, useState, useCallback, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { FC, useState, useCallback, SetStateAction } from 'react';
+import styled, { css } from 'styled-components';
 import { KeyedMutator } from 'swr';
 import * as mixins from '../../styles/mixins';
 import CustomTag from '../../models/custom-tag';
@@ -49,7 +49,7 @@ const NameField = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  margin-left: 12px;
+  margin: 0px 5px 0px 12px;
   
   > p {
     font-weight: bold;
@@ -78,14 +78,12 @@ const ToolbarButton = styled.button`
   ${ mixins.filterButton }
   ${ mixins.filterButtonMobile }
 
-  margin-left: 10px;
-`;
+  ${ props => props.disabled && css`
+    pointer-events: none;
+    opacity: 0.5;
+  ` }
 
-const DisabledButton = styled.button`
-  ${ mixins.filterButton }
-
-  margin-left: 10px;
-  opacity: 0.5;
+  margin: 0px 5px;
 `;
 
 const ConfirmDelete = styled(ToolbarButton)`
@@ -104,7 +102,7 @@ const ColorButton = styled.div<ColorButtonProps>`
   width: 60px;
   cursor: pointer;
   position: relative;
-  margin-left: 10px;
+  margin: 0px 5px;
   background-color: ${ props => props.color };
   z-index: 10;
 
@@ -118,18 +116,21 @@ interface TagToolbarProps {
   setEditMode: (editMode: boolean) => void;
   customTags: CustomTag[];
   currentlyEditing: CustomTag | null;
-  setCurrentlyEditing: (tag: CustomTag | null) => void;
-  setNewTagProps: (props: { name: string; color: string }) => void;
+  setCurrentlyEditing: React.Dispatch<SetStateAction<CustomTag | null>>;
+  creatingNew: boolean;
+  cancelCreatingNew: () => void;
   mutateTags: KeyedMutator<CustomTag[]>
 }
 
-const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, currentlyEditing, setCurrentlyEditing, setNewTagProps, mutateTags }) => {
-  const [nameInput, setNameInput] = useState('');
-  const [tagColor, setTagColor] = useState('');
-  const [disableSaveButton, setDisableSaveButton] = useState(true);
+const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, currentlyEditing, setCurrentlyEditing, creatingNew, cancelCreatingNew, mutateTags }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const selectColor = useCallback((color: string) => {
-    setTagColor(color);
+
+  const selectColor = useCallback((newColor: string) => {
+    setCurrentlyEditing(oldState => {
+      if (!oldState)
+        return null;
+      return { ...oldState, color: newColor };
+    });
     setShowColorPicker(false);
   }, []);
 
@@ -137,48 +138,42 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
 
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
-  useEffect(() => {
-    if (currentlyEditing) {
-      setNameInput(currentlyEditing.name);
-      setTagColor(currentlyEditing.color);
-      setDisableSaveButton(false);
-    }
-  }, [currentlyEditing, editMode]);
-
-  useEffect(() => {
-    setDisableSaveButton(!nameInput || !tagColor);
-    setNewTagProps({ name: nameInput, color: tagColor });
-  }, [nameInput, tagColor]);
-
   const resetToolbar = useCallback(() => {
-    setNameInput('');
-    setTagColor('');
-    setDisableSaveButton(true);
     setShowColorPicker(false);
     setEditMode(false);
     setCurrentlyEditing(null);
+    cancelCreatingNew();
     setShowConfirmDelete(false);
   }, []);
 
+  const handleInputChange = useCallback((newValue: string) => {
+    setCurrentlyEditing(oldState => {
+      if (!oldState)
+        return null;
+      return ({ ...oldState, name: newValue });
+    });
+  }, []);
+
   const addOrEditTagRequest = useCallback(async () => {
-    let tag: CustomTag = { id: '', name: nameInput, color: tagColor, sounds: [] };
+    if (!currentlyEditing || !customTags)
+      return;
+    const tag: CustomTag = { ...currentlyEditing };
     let method = 'POST';
-    let newTags = [...customTags];
-    if (customTags && currentlyEditing) {
-      const foundTag = customTags.find(x => x.id === currentlyEditing.id);
-      if (foundTag) tag = foundTag;
+    let newTags: CustomTag[] = [];
+
+    if (!creatingNew) {
+      const foundTag = customTags.findIndex(x => x.id === currentlyEditing.id);
       method = 'PUT';
-      newTags[newTags.findIndex(x => x.id === tag.id)] = { ...(tag), name: nameInput, color: tagColor };
+      newTags = [...customTags.splice(0, foundTag), tag, ...customTags.splice(foundTag + 1)];
     } else if (customTags) {
-      tag.id = 'arealtag';
-      newTags = [...newTags, tag];
+      newTags = [...customTags, tag];
     }
     const tagRequest = async () => {
       await fetch(
         `/api/tags/${ method === 'PUT' ? `${ tag.id }` : '' }`,
         {
           method,
-          body: JSON.stringify({ name: nameInput, color: tagColor }),
+          body: JSON.stringify({ name: currentlyEditing.name, color: currentlyEditing.color }),
           headers: { 'Content-Type': 'application/json' },
         },
       );
@@ -186,7 +181,7 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
     };
     mutateTags(tagRequest(), { optimisticData: newTags, rollbackOnError: true });
     resetToolbar();
-  }, [nameInput, customTags, currentlyEditing, tagColor]);
+  }, [customTags, currentlyEditing, creatingNew]);
 
   const deleteTagRequest = useCallback(async () => {
     if (customTags && currentlyEditing) {
@@ -214,16 +209,14 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
       <ToolbarRight>
         <NameField>
           <p>Name:</p>
-          <input type='text' value={ nameInput } onChange={ event => setNameInput(event.currentTarget.value) } />
+          <input type='text' value={ currentlyEditing?.name } onChange={ event => handleInputChange(event.target.value) } />
         </NameField>
-        <ColorButton color={ tagColor } onClick={ () => setShowColorPicker(!showColorPicker) }>
+        <ColorButton color={ currentlyEditing?.color || '' } onClick={ () => setShowColorPicker(!showColorPicker) }>
           { showColorPicker && <TagColorPicker selectColor={ selectColor } /> }
         </ColorButton>
-        { disableSaveButton ? <DisabledButton>Save</DisabledButton> : (
-          <ToolbarButton onClick={ addOrEditTagRequest }>
-            Save
-          </ToolbarButton>
-        ) }
+        <ToolbarButton onClick={ addOrEditTagRequest } disabled={ !currentlyEditing?.name || !currentlyEditing.color }>
+          Save
+        </ToolbarButton>
         <ToolbarButton onClick={ resetToolbar }>
           Discard Changes
         </ToolbarButton>

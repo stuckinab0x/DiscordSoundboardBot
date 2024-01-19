@@ -45,13 +45,14 @@ const StyledSlider = styled.input`
   box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
 
   @media only screen and (max-width: 780px) {
+    width: 90px;
     &[type="range"] {
-      height: 5px;
+      height: 4px;
     }
   
     &[type="range"]::-webkit-slider-thumb {
-      height: 18px;
-      width: 18px;
+      height: 16px;
+      width: 16px;
     }
   
     &[type=range]::-webkit-slider-runnable-track {

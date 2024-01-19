@@ -23,6 +23,17 @@ const NavMain = styled.div`
 
     z-index: 150;
   }
+
+  ${ props => props.theme.name === 'Boomer' && css`
+    border: 4px solid ${ props.theme.colors.accent };
+    > div:first-of-type {
+      --a: ${ props.theme.colors.nav };
+      --b: #00d4ff;
+      background: var(--a);
+      background: linear-gradient(90deg, var(--a) 0%, var(--b) 100%);
+      box-shadow: none;
+    }
+  ` }
 `;
 
 const LeavesContainer = styled.div`
@@ -61,9 +72,10 @@ const Title = styled.div<TitleProps>`
   overflow: hidden;
   
   > h1 {
-    ${ props => props.theme.name === 'America' && 'color: white;' }
+    ${ props => (props.theme.name === 'America' || props.theme.name === 'Boomer') && 'color: white;' }
     font-size: 2rem;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
+    ${ props => props.theme.name === 'Boomer' && 'text-shadow: none; ' }
     position: relative;
     user-select: none;
     white-space: nowrap;

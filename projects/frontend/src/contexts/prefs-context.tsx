@@ -2,7 +2,6 @@ import React, { FC, createContext, useContext, useCallback, useState, useMemo, R
 import cookies from 'js-cookie';
 import SortRules, { GroupOrder, SortOrder } from '../models/sort-rules';
 import useInitialSortRules from '../hooks/use-initial-sort-rules';
-import { getSeasonalThemeName } from '../utils';
 
 interface ThemePrefs {
   theme: string;
@@ -15,14 +14,7 @@ const getInitialTheme = (): ThemePrefs => {
     useSeasonal: !!(cookies.get('useSeasonal')! === 'true'),
   };
 
-  let { theme } = prefs;
-
-  if (prefs.useSeasonal && theme === 'Classic')
-    theme = getSeasonalThemeName();
-  return {
-    theme,
-    useSeasonal: prefs.useSeasonal,
-  };
+  return prefs;
 };
 
 interface PrefsContextProps {
@@ -111,17 +103,13 @@ const PrefsProvider: FC<PrefsProviderProps> = ({ children }) => {
   const toggleSoundGrouping = useCallback(async () => {
     let newMode: GroupOrder = 'none';
     if (sortRules.groupOrder === 'none') newMode = 'start';
-    if (sortRules.groupOrder === 'start') newMode = 'end';
+    else if (sortRules.groupOrder === 'start') newMode = 'end';
     setSortRules(oldState => ({ ...oldState, groupOrder: newMode }));
     saveSortPrefs(sortRules.sortOrder, newMode);
   }, [sortRules]);
 
   const toggleTagFilter = useCallback((tagId: string) => {
-    const newTagRules = [...sortRules.tags];
-    const index = newTagRules.indexOf(tagId);
-    if (index >= 0) newTagRules.splice(index, 1);
-    else newTagRules.push(tagId);
-    setSortRules(oldState => ({ ...oldState, tags: newTagRules }));
+    setSortRules(oldState => ({ ...oldState, tags: sortRules.tags.find(x => x === tagId) ? [...sortRules.tags.filter(x => x !== tagId)] : [...sortRules.tags, tagId] }));
   }, [sortRules.tags]);
 
   const context = useMemo(() => ({

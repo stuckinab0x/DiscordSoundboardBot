@@ -6,8 +6,8 @@ import TagProps from '../models/tag-props';
 interface CustomTagsContextProps {
   showCustomTagPicker: boolean;
   toggleShowCustomTagPicker: () => void;
-  disableEditTagsButton: boolean;
-  setDisableEditTagsButton: (disable: boolean) => void;
+  editingTag: boolean;
+  setEditingTag: (disable: boolean) => void;
   unsavedTagged: string[];
   currentlyTagging: TagProps | null;
   beginTagging: (tagId: string) => void;
@@ -42,7 +42,7 @@ const CustomTagsProvider: FC<CustomTagsProviderProps> = ({ children }) => {
   const toggleShowCustomTagPicker = useCallback(() => {
     setShowCustomTagPicker(!showCustomTagPicker);
   }, [showCustomTagPicker]);
-  const [disableEditTagsButton, setDisableEditTagsButton] = useState(false);
+  const [editingTag, setEditingTag] = useState(false);
 
   const beginTagging = useCallback((tagId: string) => {
     if (customTags) {
@@ -51,75 +51,60 @@ const CustomTagsProvider: FC<CustomTagsProviderProps> = ({ children }) => {
         setUnsavedTagged([...tag.sounds]);
         setShowCustomTagPicker(false);
         setCurrentlyTagging(tag);
-        setDisableEditTagsButton(true);
+        setEditingTag(true);
       }
     }
   }, [customTags]);
 
   const toggleSoundOnTag = useCallback((soundId: string) => {
-    if (!currentlyTagging) return;
-    let newTaggedSounds = [...unsavedTagged];
-    if (newTaggedSounds.includes(soundId))
-      newTaggedSounds = unsavedTagged.filter(x => (x !== soundId));
-    else newTaggedSounds.push(soundId);
-    setUnsavedTagged(newTaggedSounds);
-  }, [currentlyTagging, unsavedTagged]);
+    const found = unsavedTagged.find(x => x === soundId);
+    setUnsavedTagged(oldState => found ? [...oldState.filter(x => x !== soundId)] : [...oldState, soundId]);
+  }, [unsavedTagged]);
 
   const saveTagged = useCallback(async () => {
     if (!customTags || !currentlyTagging) return;
     const tagIndex = customTags.findIndex(x => x.id === currentlyTagging?.id);
-    if (customTags[tagIndex]) {
-      const oldCurrentTagSounds = [...customTags[tagIndex].sounds];
-      const newCustomTags = [...customTags];
+    if (tagIndex === -1)
+      return;
+    const oldTagSounds = [...customTags[tagIndex].sounds];
+    const added = unsavedTagged.filter(x => !oldTagSounds.includes(x));
+    const deleted = [
+      ...unsavedTagged.filter(x => customTags.filter(tag => tag.id !== currentlyTagging.id).find(tag => tag.sounds.includes(x))),
+      ...oldTagSounds.filter(x => !unsavedTagged.includes(x)),
+    ];
 
-      const deleted: string[] = [];
+    const newTags = customTags.filter(x => x.id !== currentlyTagging.id).map(x => ({ ...x, sounds: x.sounds.filter(sound => !added.includes(sound)) }));
+    newTags.splice(tagIndex, 0, { id: currentlyTagging.id, name: currentlyTagging.name, color: currentlyTagging.color, sounds: unsavedTagged });
 
-      unsavedTagged.forEach(newSound => {
-        const oldTagWithSound = newCustomTags.find(oldTag => oldTag.sounds.includes(newSound));
-        if (oldTagWithSound && oldTagWithSound.id !== currentlyTagging.id) {
-          deleted.push(newSound);
-          const soundOldIndex = oldTagWithSound.sounds.indexOf(newSound);
-          const oldTagIndex = newCustomTags.indexOf(oldTagWithSound);
-          newCustomTags[oldTagIndex].sounds.splice(soundOldIndex, 1);
-        }
-      });
-
-      newCustomTags[tagIndex].sounds = [...unsavedTagged];
-
-      const currentDeleted = oldCurrentTagSounds.filter(x => !unsavedTagged.includes(x));
-      deleted.push(...currentDeleted);
-
-      const updateTagSounds = async () => {
-        const added = unsavedTagged.filter(x => !oldCurrentTagSounds.includes(x));
-        const body = { added, deleted };
-        await fetch(`/api/tags/${ currentlyTagging.id }/sounds`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        return newCustomTags;
-      };
-      mutate(updateTagSounds(), { optimisticData: newCustomTags, rollbackOnError: true });
-      setCurrentlyTagging(null);
-      setUnsavedTagged([]);
-      setDisableEditTagsButton(false);
-    }
+    const updateTagSounds = async () => {
+      const body = { added, deleted };
+      await fetch(`/api/tags/${ currentlyTagging.id }/sounds`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      return newTags;
+    };
+    mutate(updateTagSounds(), { optimisticData: newTags, rollbackOnError: true });
+    setCurrentlyTagging(null);
+    setUnsavedTagged([]);
+    setEditingTag(false);
   }, [customTags, currentlyTagging, unsavedTagged]);
 
   const discardTagged = useCallback(() => {
     setCurrentlyTagging(null);
     setUnsavedTagged([]);
-    setDisableEditTagsButton(false);
+    setEditingTag(false);
   }, []);
 
   const context = useMemo<CustomTagsContextProps>(() => ({
     showCustomTagPicker,
     toggleShowCustomTagPicker,
-    disableEditTagsButton,
-    setDisableEditTagsButton,
+    editingTag,
+    setEditingTag,
     unsavedTagged,
     currentlyTagging,
     beginTagging,
     toggleSoundOnTag,
     saveTagged,
     discardTagged,
-  }), [showCustomTagPicker, toggleShowCustomTagPicker, disableEditTagsButton, unsavedTagged, currentlyTagging, beginTagging, toggleSoundOnTag, saveTagged, discardTagged]);
+  }), [showCustomTagPicker, toggleShowCustomTagPicker, editingTag, setEditingTag, unsavedTagged, currentlyTagging, beginTagging, toggleSoundOnTag, saveTagged, discardTagged]);
 
   return (
     <CustomTagsContext.Provider value={ context }>
