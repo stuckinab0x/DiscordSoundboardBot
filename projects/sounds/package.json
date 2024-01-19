@@ -7,7 +7,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@azure/storage-blob": "^12.14.0",
+    "@azure/storage-blob": "^12.17.0",
     "botman-mongo": "*",
     "file-type": "^16.5.4",
     "mongodb": "^6.3.0",
