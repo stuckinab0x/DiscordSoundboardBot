@@ -139,6 +139,13 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
     return sortSoundGroups(sortByDate(soundsData.sounds, sortOrder), groupOrder, customTags);
   }, [soundsData?.sounds, sortOrder, groupOrder, customTags]);
 
+  if (orderedSounds && !orderedSounds.length)
+    return (
+      <Buttons>
+        <h1>There are no sounds, except a cricket that has snuck into the database.</h1>
+      </Buttons>
+    );
+
   if (orderedSounds && customTags)
     return (
       <ContainerMain>

@@ -40,7 +40,7 @@ export class PrefsService extends UsersService {
   async getUserTheme(userId: string): Promise<ThemePrefs | undefined> {
     const collection = await this.usersCollection;
     const user = await collection.findOne({ userId }, { projection: { themePrefs: 1 } });
-    return { theme: user?.themePrefs?.theme || 'Classic', useSeasonal: user?.themePrefs?.useSeasonal === undefined ? true : user?.themePrefs?.useSeasonal };
+    return { theme: user?.themePrefs?.theme ?? 'Classic', useSeasonal: user?.themePrefs?.useSeasonal ?? true };
   }
 
   async setUserTheme(userId: string, newThemePrefs: ThemePrefs): Promise<void> {

@@ -11,6 +11,8 @@ const SearchBarMain = styled.div`
   > input {
     ${ mixins.textInput }
     ${ mixins.textInputMobile }
+
+    ${ props => props.theme.name === 'Boomer' && 'font-size: 1.45rem;' }
   
     &::placeholder {
       color: rgb(199, 199, 199);
