@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useMemo, createContext, useContext, ReactNode } from 'react';
+import { FC, useCallback, useState, useMemo, createContext, useContext, ReactNode } from 'react';
 import useSWR from 'swr';
 import CustomTag from '../models/custom-tag';
 import TagProps from '../models/tag-props';

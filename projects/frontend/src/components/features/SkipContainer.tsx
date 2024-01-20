@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import styled from 'styled-components';
 import { button } from '../../styles/mixins';
 import { InnerShadow } from '../../styles/components';

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';

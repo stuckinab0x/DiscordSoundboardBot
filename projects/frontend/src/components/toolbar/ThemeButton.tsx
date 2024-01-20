@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import styled, { DefaultTheme, css } from 'styled-components';
 import { button, filterButton, textShadowVisibility } from '../../styles/mixins';
 import themes from '../../styles/themes';

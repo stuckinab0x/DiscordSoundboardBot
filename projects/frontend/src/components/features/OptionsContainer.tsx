@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { buttonGreen, button } from '../../styles/mixins';
 import { InnerShadow, ToggleButtonBase } from '../../styles/components';

@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from 'react';
+import { FC, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';

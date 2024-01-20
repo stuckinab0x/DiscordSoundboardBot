@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import styled from 'styled-components';
 import useUser from '../../hooks/use-user';

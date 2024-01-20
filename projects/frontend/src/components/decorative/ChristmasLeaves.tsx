@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 
 const ChristmasLeavesMain = styled.svg`

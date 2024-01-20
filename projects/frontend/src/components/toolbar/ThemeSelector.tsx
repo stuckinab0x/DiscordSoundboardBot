@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import styled from 'styled-components';
 import { usePrefs } from '../../contexts/prefs-context';
 import useUser from '../../hooks/use-user';

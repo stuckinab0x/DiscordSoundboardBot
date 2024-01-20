@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useEffect, useMemo } from 'react';
+import { FC, useCallback, useState, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import styled from 'styled-components';
 import { CSSTransition, TransitionStatus } from 'react-transition-group';

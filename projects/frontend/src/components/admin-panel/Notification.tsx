@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styled, { css } from 'styled-components';
 import { CSSTransition, TransitionStatus } from 'react-transition-group';
 

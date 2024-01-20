@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { usePrefs } from '../../contexts/prefs-context';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';

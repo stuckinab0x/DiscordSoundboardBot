@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import { TransitionStatus } from 'react-transition-group';
 import useSoundPreview from '../hooks/use-sound-preview';

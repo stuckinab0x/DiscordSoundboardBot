@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useEffect } from 'react';
+import { FC, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { InnerShadow, ToggleButtonBase } from '../../styles/components';
 import useInitialSortRules from '../../hooks/use-initial-sort-rules';

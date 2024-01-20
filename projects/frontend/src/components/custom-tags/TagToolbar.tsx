@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, SetStateAction } from 'react';
+import { FC, useState, useCallback, SetStateAction } from 'react';
 import styled, { css } from 'styled-components';
 import { KeyedMutator } from 'swr';
 import * as mixins from '../../styles/mixins';

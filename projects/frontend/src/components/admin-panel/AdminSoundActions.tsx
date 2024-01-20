@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useEffect, useRef } from 'react';
+import { FC, useCallback, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useSWRConfig } from 'swr';
 import useSoundPreview from '../../hooks/use-sound-preview';

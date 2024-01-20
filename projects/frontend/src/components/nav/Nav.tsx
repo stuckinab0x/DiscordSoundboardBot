@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 import useUser from '../../hooks/use-user';

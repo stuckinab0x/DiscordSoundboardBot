@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 import Nav from './nav/Nav';

@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from 'react';
+import { FC, useState, useCallback } from 'react';
 import { useSWRConfig } from 'swr';
 import styled, { css } from 'styled-components';
 import * as mixins from '../../styles/mixins';

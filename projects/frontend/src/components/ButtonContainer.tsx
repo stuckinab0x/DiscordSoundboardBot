@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import styled, { useTheme } from 'styled-components';
 import { debounce } from '../utils';

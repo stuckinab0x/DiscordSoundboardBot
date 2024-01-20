@@ -18,7 +18,8 @@ services:
       dockerfile: projects/frontend/Dockerfile
       context: .
     environment:
-      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
     volumes:
       - ./projects:/app/projects
     ports:

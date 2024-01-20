@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import { useCustomTags } from '../../contexts/custom-tags-context';
 import { button } from '../../styles/mixins';

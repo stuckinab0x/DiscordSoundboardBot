@@ -1,4 +1,4 @@
-import React, { FC, createContext, useContext, useCallback, useState, useMemo, ReactNode, SetStateAction } from 'react';
+import { FC, createContext, useContext, useCallback, useState, useMemo, ReactNode, SetStateAction } from 'react';
 import cookies from 'js-cookie';
 import SortRules, { GroupOrder, SortOrder } from '../models/sort-rules';
 import useInitialSortRules from '../hooks/use-initial-sort-rules';

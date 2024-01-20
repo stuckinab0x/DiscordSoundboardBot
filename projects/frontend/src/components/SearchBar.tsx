@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useRef, useEffect } from 'react';
+import { FC, useCallback, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import * as mixins from '../styles/mixins';
 

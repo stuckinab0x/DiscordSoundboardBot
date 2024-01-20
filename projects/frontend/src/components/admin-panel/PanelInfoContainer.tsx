@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Sound from '../../models/sound';
 import { textShadowVisibility } from '../../styles/mixins';
