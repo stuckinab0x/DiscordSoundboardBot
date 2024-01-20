@@ -18,7 +18,7 @@ WORKDIR ../users
 COPY projects/users/package.json projects/users/tsconfig.json ./
 COPY projects/users/src/ src/
 WORKDIR ../frontend
-COPY projects/frontend/package.json projects/frontend/tsconfig.json ./
+COPY projects/frontend/package.json projects/frontend/tsconfig.json projects/frontend/tsconfig.node.json projects/frontend/vite.config.ts projects/frontend/index.html ./
 COPY projects/frontend/src/ src/
 COPY projects/frontend/public/ public/
 RUN yarn --pure-lockfile
