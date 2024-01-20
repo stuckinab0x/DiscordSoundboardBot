@@ -159,14 +159,14 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
       return;
     const tag: CustomTag = { ...currentlyEditing };
     let method = 'POST';
-    let newTags: CustomTag[] = [];
+    let newTags: CustomTag[] = [...customTags];
 
     if (!creatingNew) {
       const foundTag = customTags.findIndex(x => x.id === currentlyEditing.id);
       method = 'PUT';
-      newTags = [...customTags.splice(0, foundTag), tag, ...customTags.splice(foundTag + 1)];
-    } else if (customTags) {
-      newTags = [...customTags, tag];
+      newTags = newTags.with(foundTag, tag);
+    } else {
+      newTags.push(tag);
     }
     const tagRequest = async () => {
       await fetch(

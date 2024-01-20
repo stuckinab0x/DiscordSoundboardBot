@@ -73,8 +73,8 @@ const CustomTagsProvider: FC<CustomTagsProviderProps> = ({ children }) => {
       ...oldTagSounds.filter(x => !unsavedTagged.includes(x)),
     ];
 
-    const newTags = customTags.filter(x => x.id !== currentlyTagging.id).map(x => ({ ...x, sounds: x.sounds.filter(sound => !added.includes(sound)) }));
-    newTags.splice(tagIndex, 0, { id: currentlyTagging.id, name: currentlyTagging.name, color: currentlyTagging.color, sounds: unsavedTagged });
+    const newTags = customTags.map(x => ({ ...x, sounds: x.sounds.filter(sound => !added.includes(sound)) }))
+      .with(tagIndex, { id: currentlyTagging.id, name: currentlyTagging.name, color: currentlyTagging.color, sounds: unsavedTagged });
 
     const updateTagSounds = async () => {
       const body = { added, deleted };

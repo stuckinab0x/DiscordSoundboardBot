@@ -103,7 +103,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
     if (soundIndex === -1)
       return;
     const sound = soundsData.sounds[soundIndex];
-    const newSounds: Sound[] = [...soundsData.sounds.slice(0, soundIndex), { ...sound, isFavorite: !sound.isFavorite }, ...soundsData.sounds.slice(soundIndex + 1)];
+    const newSounds: Sound[] = soundsData.sounds.with(soundIndex, { ...sound, isFavorite: !sound.isFavorite });
     const updateFav = async () => {
       await fetch(
         '/api/favorites',
