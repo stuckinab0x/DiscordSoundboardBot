@@ -9,7 +9,7 @@
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
     "botman-mongo": "*",
-    "file-type": "^16.5.4",
+    "file-type": "^19.0.0",
     "mongodb": "^6.3.0",
     "sanitize-filename": "^1.6.3",
     "uuid": "^9.0.1"
