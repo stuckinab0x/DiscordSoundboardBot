@@ -12,11 +12,11 @@
     "file-type": "^16.5.4",
     "mongodb": "^6.3.0",
     "sanitize-filename": "^1.6.3",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.6",
-    "@types/uuid": "^9.0.1",
+    "@types/uuid": "^9.0.7",
     "typescript": "^5.3.3"
   }
 }
