@@ -1,7 +1,7 @@
 import { Collection, Filter, ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import sanitize from 'sanitize-filename';
-import fileType, { FileTypeResult } from 'file-type';
+import type { FileTypeResult } from 'file-type' with { "resolution-mode": "import" };
 import { Readable } from 'node:stream';
 import { MongoService } from 'botman-mongo';
 import { Sound, SoundFile } from './sound';
@@ -150,17 +150,18 @@ export class SoundsService extends ReadOnlySoundsService {
   }
 
   private static async determineStreamFileType(stream: Readable): Promise<FileTypeResultWrapper<Readable>> {
-    const streamWithFileType = await fileType.stream(stream);
-    const fileTypeResult = streamWithFileType.fileType;
+    const fileType = await import('file-type');
+    const fileTypeResult = await fileType.fileTypeFromStream(stream);
 
     return {
-      file: streamWithFileType,
+      file: stream,
       fileTypeResult,
     };
   }
 
   private static async determineBufferFileType(buffer: Buffer): Promise<FileTypeResultWrapper<Buffer>> {
-    const fileTypeResult = await fileType.fromBuffer(buffer);
+    const fileType = await import('file-type');
+    const fileTypeResult = await fileType.fileTypeFromBuffer(buffer);
 
     return {
       file: buffer,
