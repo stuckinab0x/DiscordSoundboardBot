@@ -1,7 +1,7 @@
 import { Collection, Filter, ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import sanitize from 'sanitize-filename';
-import type { FileTypeResult } from 'file-type' with { "resolution-mode": "import" };
+import type { FileTypeResult } from 'file-type' with { 'resolution-mode': 'import' };
 import { Readable } from 'node:stream';
 import { MongoService } from 'botman-mongo';
 import { Sound, SoundFile } from './sound';
