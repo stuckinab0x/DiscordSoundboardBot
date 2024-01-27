@@ -1,6 +1,7 @@
 {
   "name": "botman-frontend",
   "version": "1.0.0",
+  "type":"module",
   "private": true,
   "dependencies": {
     "@types/js-cookie": "^3.0.6",
