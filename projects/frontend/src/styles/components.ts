@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from './mixins';
 
 interface ButtonProps {
-  toggled?: boolean;
+  $toggled?: boolean;
 }
 
 export const ToggleButtonBase = styled.button<ButtonProps>`
@@ -12,7 +12,7 @@ export const ToggleButtonBase = styled.button<ButtonProps>`
   ${ textShadowVisibility }
   user-select: none;
 
-  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+  ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;
 
 export const InnerShadow = styled.div`

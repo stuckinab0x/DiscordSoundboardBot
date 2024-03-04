@@ -64,7 +64,7 @@ const TitleAndUsername = styled.div`
 `;
 
 interface TitleProps {
-  secret: boolean;
+  $secret: boolean;
 }
 
 const Title = styled.div<TitleProps>`
@@ -82,7 +82,7 @@ const Title = styled.div<TitleProps>`
 
     ${ props => props.theme.name === 'Christmas' && 'filter: brightness(1.7) saturate(1.3);' }
 
-    ${ props => props.secret && css`
+    ${ props => props.$secret && css`
       cursor: pointer;
 
       &:hover {
@@ -118,7 +118,7 @@ const Username = styled.div`
 `;
 
 interface AdminButtonStyleProps {
-  toggled: boolean;
+  $toggled: boolean;
 }
 
 const AdminButton = styled.button<AdminButtonStyleProps>`
@@ -127,7 +127,7 @@ const AdminButton = styled.button<AdminButtonStyleProps>`
   position: relative;
   min-width: max-content;
 
-  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+  ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
   border-width: 2px;
   font-size: 0.7rem;
 
@@ -189,11 +189,11 @@ const Nav: FC<NavProps> = ({ showAdminPanel, setShowAdminPanel }) => {
     <NavMain>
       <div>
         <TitleAndUsername>
-          <Title secret={ title === 'he said the thing' }>
+          <Title $secret={ title === 'he said the thing' }>
             <h1 role='presentation' onClick={ playSecretSound }>{ title }</h1>
           </Title>
           <Username>
-            { user.role === 'admin' && <AdminButton toggled={ showAdminPanel } onClick={ () => setShowAdminPanel(!showAdminPanel) }>Admin Panel</AdminButton> }
+            { user.role === 'admin' && <AdminButton $toggled={ showAdminPanel } onClick={ () => setShowAdminPanel(!showAdminPanel) }>Admin Panel</AdminButton> }
             <h2>
               { user.name }
             </h2>

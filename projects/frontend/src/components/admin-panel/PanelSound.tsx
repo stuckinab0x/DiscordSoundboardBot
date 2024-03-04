@@ -21,7 +21,7 @@ const PanelSoundMain = styled.div`
 `;
 
 interface SoundSectionStyleProps {
-  isSelected?: boolean;
+  $isSelected?: boolean;
 }
 
 const PanelSoundSection = styled.div<SoundSectionStyleProps>`
@@ -33,7 +33,7 @@ const PanelSoundSection = styled.div<SoundSectionStyleProps>`
   border-radius: 3px;
   padding: 5px 15px;
   margin: 4px;
-  background-color: ${ props => props.isSelected ? props.theme.colors.buttonHighlighted : props.theme.colors.innerA };
+  background-color: ${ props => props.$isSelected ? props.theme.colors.buttonHighlighted : props.theme.colors.innerA };
   ${ textShadowVisibility }
   
   h4 {
@@ -60,7 +60,7 @@ interface PanelSoundProps {
 
 const PanelSound: FC<PanelSoundProps> = ({ sound, selectedSoundId, setSelectedSound, soundPreview }) => (
   <PanelSoundMain>
-    <PanelSoundSection onClick={ () => setSelectedSound(sound) } isSelected={ selectedSoundId === sound.id }>
+    <PanelSoundSection onClick={ () => setSelectedSound(sound) } $isSelected={ selectedSoundId === sound.id }>
       <InnerShadow />
       <h4>{ sound.name }</h4>
       { (sound.volume && sound.volume !== 1) && <span className='material-icons'>equalizer</span> }

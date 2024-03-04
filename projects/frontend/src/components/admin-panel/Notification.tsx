@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { CSSTransition, TransitionStatus } from 'react-transition-group';
 
 interface NotifcationStyleProps {
-  state: TransitionStatus;
+  $state: TransitionStatus;
   color: string;
 }
 
@@ -13,7 +13,7 @@ const transition = css`
 `;
 
 const NotificationText = styled.h2<NotifcationStyleProps>`
-  ${ props => (props.state === 'exiting' || props.state === 'exited') && transition };
+  ${ props => (props.$state === 'exiting' || props.$state === 'exited') && transition };
   color: ${ props => props.color || props.theme.colors.borderGreen };
 `;
 
@@ -24,7 +24,7 @@ interface NotificationProps {
 
 const Notification: FC<NotificationProps> = ({ show, textProps: { text, color } }) => (
   <CSSTransition in={ show } timeout={ 2500 } unmountOnExit>
-    { state => <NotificationText state={ state } color={ color }>{ text }</NotificationText> }
+    { state => <NotificationText $state={ state } color={ color }>{ text }</NotificationText> }
   </CSSTransition>
 );
 

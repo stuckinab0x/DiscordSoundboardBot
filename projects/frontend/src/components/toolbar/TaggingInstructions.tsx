@@ -5,7 +5,7 @@ import { button, filterButton, filterButtonMobile } from '../../styles/mixins';
 import { CloseBar } from '../../styles/components';
 
 interface TaggingInstructionsMainProps {
-  tagColor: string;
+  $tagColor: string;
 }
 
 const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
@@ -15,12 +15,12 @@ const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
   margin: 0px 100px;
   flex-grow: 2;
   justify-content: center;
-  border: solid ${ props => props.tagColor };
+  border: solid ${ props => props.$tagColor };
   border-width: 5px 15px;
   border-radius: 5px;
   
   > p {
-    color: ${ props => props.tagColor };
+    color: ${ props => props.$tagColor };
     font-weight: bold;
     text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
     margin: 0;
@@ -55,7 +55,7 @@ const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor }
   const { saveTagged, discardTagged } = useCustomTags();
 
   return (
-    <TaggingInstructionsMain tagColor={ tagColor }>
+    <TaggingInstructionsMain $tagColor={ tagColor }>
       <p>
         { `Currently tagging sounds for: ${ tagName }` }
       </p>

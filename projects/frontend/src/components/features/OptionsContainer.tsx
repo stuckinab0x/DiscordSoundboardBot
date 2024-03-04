@@ -74,7 +74,7 @@ const EditTagsButton = styled(OptionsButton)`
 
 const AddSoundButton = styled(OptionsButton)`
   border-color: ${ props => props.theme.colors.borderGold };
-  ${ props => props.toggled ? buttonGreen : button }
+  ${ props => props.$toggled ? buttonGreen : button }
 
   @media only screen and (max-width: 780px) {
     border-color: ${ props => props.theme.colors.borderGold };
@@ -91,7 +91,7 @@ const OptionsContainer: FC = () => {
     <OptionsContainerMain>
       <ButtonRow>
         <EditTagsButton
-          toggled={ showCustomTagPicker }
+          $toggled={ showCustomTagPicker }
           onClick={ toggleShowCustomTagPicker }
           disabled={ editingTag }
         >
@@ -99,7 +99,7 @@ const OptionsContainer: FC = () => {
           Edit Custom Tags
         </EditTagsButton>
         <AddSoundButton
-          toggled={ disableAddSoundButton }
+          $toggled={ disableAddSoundButton }
           disabled={ disableAddSoundButton }
           onClick={ () => setShowAddSound(!showAddSound) }
         >
@@ -108,13 +108,13 @@ const OptionsContainer: FC = () => {
         </AddSoundButton>
       </ButtonRow>
       <ButtonRow>
-        <OptionsButton toggled={ false } onClick={ toggleSoundSortOrder }>
+        <OptionsButton $toggled={ false } onClick={ toggleSoundSortOrder }>
           <InnerShadow />
           { `Sort: ${ sortRules.sortOrder }` }
         </OptionsButton>
         <GroupTagsButton />
       </ButtonRow>
-      { showAddSound && <AddSoundDialog setShowAddsound={ setShowAddSound } setDisableAddSoundButton={ setDisableAddSoundButton } /> }
+      { showAddSound && <AddSoundDialog close={ () => setShowAddSound(false) } setDisableAddSoundButton={ setDisableAddSoundButton } /> }
     </OptionsContainerMain>
   );
 };

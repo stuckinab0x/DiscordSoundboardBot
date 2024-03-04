@@ -6,7 +6,7 @@ import { InnerShadow } from '../../styles/components';
 
 interface ButtonMainProps {
   color: string;
-  toggled: boolean;
+  $toggled: boolean;
 }
 
 const ButtonMain = styled.button<ButtonMainProps>`
@@ -18,7 +18,7 @@ const ButtonMain = styled.button<ButtonMainProps>`
   box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
 
   background-color: ${ props => props.color };
-  ${ props => props.toggled ? `border-color: ${ props.theme.colors.borderGreen }` : null };
+  ${ props => props.$toggled ? `border-color: ${ props.theme.colors.borderGreen }` : null };
 
   @media only screen and (max-width: 780px) {
     margin: 2px;
@@ -40,7 +40,7 @@ const TagFilterButton: FC<TagFilterButtonProps> = ({ id, name, color }) => {
   }, [toggled]);
 
   return (
-    <ButtonMain color={ color } toggled={ toggled } onClick={ () => { toggleTagFilter(id); handleClick(); } }>
+    <ButtonMain color={ color } $toggled={ toggled } onClick={ () => { toggleTagFilter(id); handleClick(); } }>
       <InnerShadow />
       { name }
     </ButtonMain>

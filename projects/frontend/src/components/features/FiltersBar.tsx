@@ -18,7 +18,7 @@ const FiltersBarMain = styled.div`
 `;
 
 interface ButtonProps {
-  toggled: boolean;
+  $toggled: boolean;
 }
 
 const ButtonToggle = styled.button<ButtonProps>`
@@ -34,7 +34,7 @@ const ButtonToggle = styled.button<ButtonProps>`
     margin: 2px;
   }
 
-  ${ props => props.toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+  ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;
 
 const FiltersBar: FC = () => {
@@ -44,7 +44,7 @@ const FiltersBar: FC = () => {
   return (
     <FiltersBarMain>
       <ButtonToggle
-        toggled={ sortRules.favorites }
+        $toggled={ sortRules.favorites }
         onClick={ toggleFavs }
       >
         <InnerShadow />

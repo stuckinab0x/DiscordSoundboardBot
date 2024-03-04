@@ -9,7 +9,7 @@ import TagPicker from './custom-tags/TagPicker';
 import ButtonContainer from './ButtonContainer';
 
 interface SoundboardStyleProps {
-  state: TransitionStatus;
+  $state: TransitionStatus;
 }
 
 const SoundboardMain = styled.div<SoundboardStyleProps>`
@@ -17,7 +17,7 @@ const SoundboardMain = styled.div<SoundboardStyleProps>`
   flex: 1;
 
   transition: opacity 0.4s ease-out;
-  opacity: ${ props => props.state === 'entered' || props.state === 'entering' ? '1' : '0' };
+  opacity: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '1' : '0' };
 
   &::-webkit-scrollbar {
     width: 15px;
@@ -42,7 +42,7 @@ const Soundboard: FC<SoundboardProps> = ({ state }) => {
   const { soundPreview, setPreviewVolume } = useSoundPreview();
 
   return (
-    <SoundboardMain state={ state }>
+    <SoundboardMain $state={ state }>
       <Features />
       <SoundBoardToolbar
         setPreviewVolume={ setPreviewVolume }

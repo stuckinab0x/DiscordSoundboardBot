@@ -34,11 +34,11 @@ const selectSoundTileMainBorder = (statusBorder: string) => {
 };
 
 interface SoundTileMainProps {
-  statusBorder: string;
-  small: boolean;
-  tagColor: string | null;
-  taggingModeOn: boolean;
-  disableBorder: boolean;
+  $statusBorder: string;
+  $small: boolean;
+  $tagColor: string | null;
+  $taggingModeOn: boolean;
+  $disableBorder: boolean;
 }
 
 const SoundTileMain = styled.div<SoundTileMainProps>`
@@ -53,18 +53,18 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     color: white;
     border: 5px solid ${ props => props.theme.colors.accent };
     border-radius: 3px;
-    ${ props => props.taggingModeOn && 'border-style: dotted;' }
+    ${ props => props.$taggingModeOn && 'border-style: dotted;' }
     box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
     height: 150px;
     width: 150px;
     margin: 6px 6px;
-    background-color: ${ props => props.tagColor ? props.tagColor : props.theme.colors.innerA };
+    background-color: ${ props => props.$tagColor ? props.$tagColor : props.theme.colors.innerA };
     word-wrap: break-word;
     ${ mixins.textShadowVisibility }
   
-    ${ props => props.small && soundTileSmall }
+    ${ props => props.$small && soundTileSmall }
 
-    ${ props => props.disableBorder ? null : selectSoundTileMainBorder(props.statusBorder) }
+    ${ props => props.$disableBorder ? null : selectSoundTileMainBorder(props.$statusBorder) }
   
     @media only screen and (max-width: 780px) {
       border: 3px solid ${ props => props.theme.colors.accent };
@@ -73,14 +73,14 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       width: 20vw;
       height: 20vw;
 
-      ${ props => props.small && soundTileSmallMobile }
+      ${ props => props.$small && soundTileSmallMobile }
     }
   }
 `;
 
 interface ButtonBaseProps {
-  small: boolean;
-  toggled?: boolean;
+  $small: boolean;
+  $toggled?: boolean;
 }
 
 const ButtonBase = styled.span<ButtonBaseProps>`
@@ -90,11 +90,11 @@ const ButtonBase = styled.span<ButtonBaseProps>`
     
   position: absolute;
     
-  ${ props => props.small && css`
+  ${ props => props.$small && css`
     font-size: 15px;
   ` }
 
-  ${ props => props.toggled && css`
+  ${ props => props.$toggled && css`
     color:#fcc82a;
     opacity: 1;
   ` }
@@ -106,7 +106,7 @@ const ButtonBase = styled.span<ButtonBaseProps>`
   @media only screen and (max-width: 780px) {
     font-size: 1.4rem;
     
-    ${ props => props.small && css`
+    ${ props => props.$small && css`
       font-size: 12px;
     ` }
   }
@@ -117,7 +117,7 @@ const FavStarButton = styled(ButtonBase)`
   top: 14px;
   ${ props => props.theme.name === 'Halloween' && 'opacity: 0.4;' }
 
-  ${ props => props.small && css`
+  ${ props => props.$small && css`
     right: 8px;
     top: 8px;
   ` }
@@ -127,14 +127,14 @@ const MySoundButton = styled(ButtonBase)`
   right: 14px;
   bottom: 14px;
 
-  ${ props => props.small && css`
+  ${ props => props.$small && css`
     right: 8px;
     bottom: 8px;
   ` }
 `;
 
 interface PreviewButtonStyleProps {
-  small: boolean;
+  $small: boolean;
 }
 
 const PreviewButton = styled(ButtonBase)<PreviewButtonStyleProps>`
@@ -145,7 +145,7 @@ const PreviewButton = styled(ButtonBase)<PreviewButtonStyleProps>`
   text-shadow: 0px 0px 6px ${ props => props.theme.colors.shadowDefault };
   ${ mixins.iconButton }
 
-  ${ props => props.small && css`
+  ${ props => props.$small && css`
     left: 8px;
     bottom: 8px;
   ` }
@@ -154,7 +154,7 @@ const PreviewButton = styled(ButtonBase)<PreviewButtonStyleProps>`
     content: 'Preview';
     display: none;
     padding-left: 2px;
-    font-size: ${ props => props.small ? '0.6rem' : '0.8rem' };
+    font-size: ${ props => props.$small ? '0.6rem' : '0.8rem' };
     font-family: ${ props => props.theme.font };
     font-weight: bold;
   }
@@ -164,7 +164,7 @@ const PreviewButton = styled(ButtonBase)<PreviewButtonStyleProps>`
   }
   
   @media only screen and (max-width: 780px) {
-    font-size: ${ props => props.small ? '1rem' : '1.3rem' };
+    font-size: ${ props => props.$small ? '1rem' : '1.3rem' };
   }
 
   @media only screen and (min-width: 780px) {
@@ -223,11 +223,11 @@ const SoundTile: FC<SoundTileProps> = ({
 
   return (
     <SoundTileMain
-      statusBorder={ statusBorder }
-      small={ small }
-      tagColor={ tagColor ?? null }
-      taggingModeOn={ currentlyTagging }
-      disableBorder={ disableBorder }
+      $statusBorder={ statusBorder }
+      $small={ small }
+      $tagColor={ tagColor ?? null }
+      $taggingModeOn={ currentlyTagging }
+      $disableBorder={ disableBorder }
     >
       <button
         type="button"
@@ -236,13 +236,13 @@ const SoundTile: FC<SoundTileProps> = ({
         { name }
         <InnerShadow />
       </button>
-      <FavStarButton className='material-icons' small={ small } toggled={ isFavorite } onClick={ updateFavRequest }>
+      <FavStarButton className='material-icons' $small={ small } $toggled={ isFavorite } onClick={ updateFavRequest }>
         { isFavorite ? isFavIcon : isNotFavIcon }
       </FavStarButton>
-      <PreviewButton small={ small } className='material-icons' onClick={ soundPreview }>
+      <PreviewButton $small={ small } className='material-icons' onClick={ soundPreview }>
         play_circle
       </PreviewButton>
-      <MySoundButton className='material-icons' small={ small } onClick={ updateMySound } toggled={ isIntroSound }>
+      <MySoundButton className='material-icons' $small={ small } onClick={ updateMySound } $toggled={ isIntroSound }>
         face
       </MySoundButton>
     </SoundTileMain>

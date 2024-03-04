@@ -12,15 +12,15 @@ import useSoundPreview from '../../hooks/use-sound-preview';
 import { CloseBar } from '../../styles/components';
 
 interface AdminStyleProps {
-  state?: TransitionStatus;
+  $state?: TransitionStatus;
 }
 
 const AdminPanelMain = styled.div<AdminStyleProps>`
   position: absolute;
   transition: bottom 0.4s ease-out;
-  bottom: ${ props => props.state === 'entered' || props.state === 'entering' ? '0px' : '-110vh' };
+  bottom: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '0px' : '-110vh' };
   transition: top 0.4s ease-out;
-  top: ${ props => props.state === 'entered' || props.state === 'entering' ? '104px' : '100vh' };
+  top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '104px' : '100vh' };
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -29,7 +29,7 @@ const AdminPanelMain = styled.div<AdminStyleProps>`
   background-color: ${ props => props.theme.colors.bg };
 
   @media only screen and (max-width: 780px) {
-    top: ${ props => props.state === 'entered' || props.state === 'entering' ? '90px' : '100vh' };
+    top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '90px' : '100vh' };
   }
 `;
 
@@ -143,7 +143,7 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
     return (
       <CSSTransition in={ show } timeout={ 410 } unmountOnExit>
         { state => (
-          <AdminPanelMain state={ state }>
+          <AdminPanelMain $state={ state }>
             <AdminFeatures>
               <CloseBar onClick={ () => adminPanelClosed() }>
                 <p>Close (Esc)</p>

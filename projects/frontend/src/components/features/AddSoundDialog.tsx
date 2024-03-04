@@ -1,4 +1,4 @@
-import { FC, useState, useCallback } from 'react';
+import { FC, useState, useCallback, useMemo, useEffect } from 'react';
 import { useSWRConfig } from 'swr';
 import styled, { css } from 'styled-components';
 import * as mixins from '../../styles/mixins';
@@ -9,8 +9,6 @@ function randomSuccessMessage() {
   return messages[Math.floor(Math.random() * messages.length)];
 }
 
-const defaultMessage = 'Upload a new sound file';
-
 const AddSoundSuccess = css`
   transition-property: top;
   transition-timing-function: ease-in;
@@ -20,14 +18,17 @@ const AddSoundSuccess = css`
   ${ mixins.buttonGreen }
 `;
 
-interface AddSoundDialogMainProps {
-  statusStyle: string;
-}
-
 const AddSoundError = css`
   animation: shake 0.5s 1 linear;
   ${ mixins.buttonRed }
 `;
+
+type Status = 'success' | 'error' | 'pending' | null;
+
+interface AddSoundDialogMainProps {
+  $statusStyle: Status
+  $confirmActive: boolean;
+}
 
 const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   color: white;
@@ -44,8 +45,8 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   box-shadow: 0px 5px 10px 3px ${ props => props.theme.colors.innerB };
 
   ${ props => {
-    if (props.statusStyle === 'success') return AddSoundSuccess;
-    if (props.statusStyle === 'error') return AddSoundError;
+    if (props.$statusStyle === 'success') return AddSoundSuccess;
+    if (props.$statusStyle === 'error') return AddSoundError;
     return null;
   } }
 
@@ -61,7 +62,14 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   > button {
     ${ mixins.button }
     ${ mixins.filterButton }
-    border-color: ${ props => props.theme.colors.borderGold };
+    border-color: ${ props => props.$confirmActive && props.theme.colors.borderGold };
+    
+    > p {
+      margin: 0;
+      &:first-child {
+        opacity: 0.4;
+      }
+    }
   }
 
   @keyframes shake {
@@ -89,19 +97,20 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   }
 `;
 
+const defaultMessage = 'Upload a new sound file';
+
 interface AddSoundDialogProps {
-  setShowAddsound: (show: boolean) => void;
+  close: () => void;
   setDisableAddSoundButton: (disable: boolean) => void;
 }
 
-const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAddSoundButton }) => {
+const AddSoundDialog: FC<AddSoundDialogProps> = ({ close, setDisableAddSoundButton }) => {
   const [message, setMessage] = useState(defaultMessage);
-  const [addSoundStyle, setAddSoundStyle] = useState('');
+  const [addSoundStatus, setAddSoundStatus] = useState<Status>(null);
   const [fileInputValue, setFileInputValue] = useState('');
   const [fileInputFiles, setFileInputFiles] = useState<FileList | null>(null);
   const [nameInputValue, setNameInputValue] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
-  const [disableInputs, setDisableInputs] = useState(false);
 
   const { mutate } = useSWRConfig();
 
@@ -112,7 +121,7 @@ const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAd
     if (fileInputFiles) formData.append('sound-file', fileInputFiles[0]);
 
     try {
-      setShowConfirm(false);
+      setAddSoundStatus('pending');
       const addSoundRes = await fetch('/api/sounds/', {
         method: 'POST',
         body: formData,
@@ -120,27 +129,26 @@ const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAd
       if (addSoundRes.status === 409) throw new Error('Sound already exists');
       setDisableAddSoundButton(true);
       setMessage(randomSuccessMessage());
-      setAddSoundStyle('success');
-      setDisableInputs(true);
+      setAddSoundStatus('success');
+      setShowConfirm(false);
       await mutate('/api/sounds');
       setTimeout(() => {
-        setShowAddsound(false);
+        close();
         setFileInputValue('');
         setNameInputValue('');
         setFileInputFiles(null);
-        setDisableInputs(false);
         setMessage(defaultMessage);
-        setAddSoundStyle('');
+        setAddSoundStatus(null);
         setDisableAddSoundButton(false);
-      }, 2100);
+      }, 2000);
     } catch (error: any) {
-      setAddSoundStyle('error');
+      setAddSoundStatus('error');
       if (error.message === 'Sound already exists') setMessage('Whoops, a sound already has that name');
       else setMessage('Yikes! Something went wrong');
       setTimeout(() => {
-        setAddSoundStyle('');
+        setAddSoundStatus(null);
         setMessage(defaultMessage);
-      }, 3500);
+      }, 2000);
     }
   }, [fileInputValue, nameInputValue]);
 
@@ -148,56 +156,72 @@ const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAd
     const supportedFileTypes = ['wav', 'mp3', 'webm', 'ogg'];
     const path = event.target.value.split('.');
     const extension = path[path.length - 1].toLowerCase();
+    setFileInputFiles(null);
+    setNameInputValue('');
+    setFileInputValue('');
 
     if (!supportedFileTypes.includes(extension) && event.target.value) {
-      event.target.value = '';
       setFileInputValue('');
-      setShowConfirm(false);
-      setAddSoundStyle('error');
+      setAddSoundStatus('error');
       setMessage('WRONG FILE TYPE (try: wav mp3 webm ogg)');
       setTimeout(() => {
-        setAddSoundStyle('');
-        setMessage('Upload a new sound file');
-      }, 3500);
+        setAddSoundStatus(null);
+        setMessage(defaultMessage);
+      }, 2000);
       return;
     }
 
     setFileInputValue(event.target.value);
     setFileInputFiles(event.target.files);
-    if (event.target.value && nameInputValue) setShowConfirm(true);
-    else setShowConfirm(false);
   }, [nameInputValue]);
 
   const handleNameInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setNameInputValue(event.target.value);
-    if (!fileInputValue || !event.target.value) {
-      setShowConfirm(false);
-      return;
-    }
-    if (fileInputValue && event.target.value) setShowConfirm(true);
   }, [fileInputValue]);
 
+  const autoSoundName = useMemo(() => {
+    if (!fileInputFiles)
+      return null;
+    const extIndex = fileInputFiles[0].name.lastIndexOf('.');
+    if (extIndex === -1)
+      return null;
+    const withSpaces = fileInputFiles[0].name.slice(0, extIndex).replace(/_/g, ' ').replace(/-/g, ' ');
+    return withSpaces.toLowerCase().split(' ').map(x => x.charAt(0).toUpperCase() + x.slice(1, x.length)).join(' ');
+  }, [fileInputFiles]);
+
+  const autoFillName = useCallback(() => {
+    if (!autoSoundName || !fileInputValue)
+      return;
+    setNameInputValue(autoSoundName);
+  }, [autoSoundName]);
+
+  useEffect(() => {
+    if (fileInputFiles && nameInputValue)
+      setShowConfirm(true);
+    else
+      setShowConfirm(false);
+  }, [fileInputFiles, nameInputValue]);
+
   return (
-    <AddSoundDialogMain statusStyle={ addSoundStyle }>
+    <AddSoundDialogMain $statusStyle={ addSoundStatus } $confirmActive={ showConfirm }>
       <h4>{ message }</h4>
       <input
         type="file"
         accept=".wav, .mp3, .webm, .ogg"
         value={ fileInputValue }
-        disabled={ disableInputs }
+        disabled={ addSoundStatus === 'success' }
         onChange={ event => handleFileInputChange(event) }
       />
       <input
         type="text"
-        name=""
         placeholder="Enter a name for the sound"
         enterKeyHint="done"
         value={ nameInputValue }
         onChange={ event => handleNameInputChange(event) }
-        disabled={ disableInputs }
+        disabled={ addSoundStatus === 'success' }
         onKeyDown={ e => { if (e.key === 'Enter') e.currentTarget.blur(); } }
       />
-      { showConfirm
+      { showConfirm && !addSoundStatus
         ? (
           <button
             type="submit"
@@ -207,6 +231,12 @@ const AddSoundDialog: FC<AddSoundDialogProps> = ({ setShowAddsound, setDisableAd
           </button>
         )
         : null }
+      { !showConfirm && addSoundStatus !== 'success' && addSoundStatus !== 'pending' && autoSoundName && (
+      <button type='button' onClick={ autoFillName }>
+        <p>use suggested name</p>
+        <p>{ autoSoundName }</p>
+      </button>
+      ) }
     </AddSoundDialogMain>
   );
 };

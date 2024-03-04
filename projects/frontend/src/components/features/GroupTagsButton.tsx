@@ -37,7 +37,7 @@ const GroupTagsButton: FC = () => {
   }, [mode]);
 
   return (
-    <ButtonMain toggled={ mode !== 'none' } onClick={ () => { handleClick(); toggleSoundGrouping(); } }>
+    <ButtonMain $toggled={ mode !== 'none' } onClick={ () => { handleClick(); toggleSoundGrouping(); } }>
       <InnerShadow />
       { `Group Tags: ${ text }` }
     </ButtonMain>
