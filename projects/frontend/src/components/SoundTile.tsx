@@ -4,6 +4,7 @@ import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
 import { useCustomTags } from '../contexts/custom-tags-context';
 import { InnerShadow } from '../styles/components';
+import { SortOrder } from '../models/sort-rules';
 
 const soundTileSmall = css`
   font-size: 0.6rem;
@@ -23,18 +24,33 @@ const soundTileSmallMobile = css`
     height: 15vw;
 `;
 
-const selectSoundTileMainBorder = (statusBorder: string) => {
-  if (statusBorder === 'success') return mixins.buttonGreen;
-  if (statusBorder === 'error') return mixins.buttonRed;
+type Status = 'pending' | 'success' | 'error' | 'idle';
+
+const getPlaybackResultStyle = (status: Status) => {
+  if (status === 'success') return css`
+    ${ mixins.buttonGreen }
+
+    > p {
+      opacity: 0;
+    }
+  `;
+  if (status === 'pending') return css`
+    border-color: yellow;
+  `;
+  if (status === 'error') return mixins.buttonRed;
   return css`
     transition-property: border-color;
     transition-duration: 1s;
-    transition-delay: 2s;
+    transition-delay: 1.5s;
+    
+    > p {
+      transition: opacity 2s cubic-bezier(1,.01,.54,.75);
+    }
   `;
 };
 
 interface SoundTileMainProps {
-  $statusBorder: string;
+  $status: Status;
   $small: boolean;
   $tagColor: string | null;
   $taggingModeOn: boolean;
@@ -60,12 +76,17 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     margin: 6px 6px;
     background-color: ${ props => props.$tagColor ? props.$tagColor : props.theme.colors.innerA };
     word-wrap: break-word;
+    
     ${ mixins.textShadowVisibility }
   
     ${ props => props.$small && soundTileSmall }
 
-    ${ props => props.$disableBorder ? null : selectSoundTileMainBorder(props.$statusBorder) }
-  
+    > p {
+      opacity: 1;
+    }
+
+    ${ props => props.$disableBorder ? null : getPlaybackResultStyle(props.$status) }
+
     @media only screen and (max-width: 780px) {
       border: 3px solid ${ props => props.theme.colors.accent };
       border-width: 3px;
@@ -133,6 +154,35 @@ const MySoundButton = styled(ButtonBase)`
   ` }
 `;
 
+interface CounterStyleProps {
+  $status: Status;
+  $alwaysShow: boolean;
+  $in: boolean;
+}
+
+const Counter = styled.div<CounterStyleProps>`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: -5px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: ${ props => props.$alwaysShow ? 0.3 : 0 };
+  text-shadow: none;
+
+  ${ props => props.$in && 'transition: opacity 2s, text-shadow 2s;' }
+  ${ props => props.$status === 'success' && 'opacity: 1; text-shadow: 0px 0px 6px black; transition: none;' }
+
+  > p {
+    color: white;
+    font-size: 5rem;
+    font-weight: 400;
+  }
+`;
+
 interface PreviewButtonStyleProps {
   $small: boolean;
 }
@@ -179,7 +229,10 @@ interface SoundTileProps {
   sound: Sound;
   isIntroSound: boolean;
   tagColor: string | undefined;
-  soundRequest: (soundId: string, borderCallback: () => void) => void;
+  sortOrder: SortOrder;
+  cooldown: boolean;
+  soundRequest: (soundId: string) => Promise<number>;
+  refreshCooldown: () => void;
   soundPreview: () => Promise<void>;
   updateFavRequest: () => void;
   updateMySound: () => void;
@@ -190,10 +243,13 @@ interface SoundTileProps {
 
 const SoundTile: FC<SoundTileProps> = ({
   small,
-  sound: { id, name, isFavorite },
+  sound: { id, name, isFavorite, playCount },
   isIntroSound,
   tagColor,
+  sortOrder,
+  cooldown,
   soundRequest,
+  refreshCooldown,
   soundPreview,
   updateFavRequest,
   updateMySound,
@@ -201,29 +257,39 @@ const SoundTile: FC<SoundTileProps> = ({
   unsavedTagged,
   disableBorder,
 }) => {
-  const [statusBorder, setStatusBorder] = useState('');
+  const [status, setStatus] = useState<Status>('idle');
+  const [counter, setCounter] = useState(playCount);
+  const [counterIn, setCounterIn] = useState(false);
   const { name: themeName } = useTheme();
   const { toggleSoundOnTag } = useCustomTags();
 
-  const raiseStatusSet = useCallback(() => setStatusBorder('success'), []);
-
-  const handleSoundPlayClick = useCallback(() => {
-    setStatusBorder('error');
-    soundRequest(id, raiseStatusSet);
-    setTimeout(() => setStatusBorder(''), 1);
-  }, []);
+  const handleSoundPlayClick = useCallback(async () => {
+    refreshCooldown();
+    setCounterIn(false);
+    setStatus('pending');
+    if (!cooldown) {
+      const result = await soundRequest(id);
+      setStatus(result === 204 ? 'success' : 'error');
+      if (result === 204) {
+        setCounter(oldState => oldState + 1);
+        setCounterIn(true);
+        setTimeout(() => setCounterIn(false), 2000);
+      }
+    }
+    setTimeout(() => setStatus('idle'), 500);
+  }, [cooldown, refreshCooldown, soundRequest]);
 
   const handleButtonClick = useCallback(() => {
     if (currentlyTagging) return toggleSoundOnTag(id);
     return handleSoundPlayClick();
-  }, [currentlyTagging, unsavedTagged]);
+  }, [currentlyTagging, unsavedTagged, handleSoundPlayClick]);
 
   const isFavIcon = themeName === 'Halloween' ? '💀' : 'star';
   const isNotFavIcon = themeName === 'Halloween' ? '💀' : 'star_outline';
 
   return (
     <SoundTileMain
-      $statusBorder={ statusBorder }
+      $status={ status }
       $small={ small }
       $tagColor={ tagColor ?? null }
       $taggingModeOn={ currentlyTagging }
@@ -233,7 +299,7 @@ const SoundTile: FC<SoundTileProps> = ({
         type="button"
         onClick={ handleButtonClick }
       >
-        { name }
+        <p>{ name }</p>
         <InnerShadow />
       </button>
       <FavStarButton className='material-icons' $small={ small } $toggled={ isFavorite } onClick={ updateFavRequest }>
@@ -245,6 +311,7 @@ const SoundTile: FC<SoundTileProps> = ({
       <MySoundButton className='material-icons' $small={ small } onClick={ updateMySound } $toggled={ isIntroSound }>
         face
       </MySoundButton>
+      <Counter $status={ status } $alwaysShow={ sortOrder === 'Popularity' } $in={ counterIn }><p>{ counter }</p></Counter>
     </SoundTileMain>
   );
 };

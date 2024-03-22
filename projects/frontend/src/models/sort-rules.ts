@@ -1,4 +1,4 @@
-export type SortOrder = 'A-Z' | 'Date - New' | 'Date - Old';
+export type SortOrder = 'A-Z' | 'Date - New' | 'Date - Old' | 'Popularity';
 export type GroupOrder = 'none' | 'start' | 'end';
 
 export default interface SortRules {

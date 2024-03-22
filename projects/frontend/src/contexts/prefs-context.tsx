@@ -93,17 +93,17 @@ const PrefsProvider: FC<PrefsProviderProps> = ({ children }) => {
   }, []);
 
   const toggleSoundSortOrder = useCallback(async () => {
-    let newOrder: SortOrder = 'A-Z';
-    if (sortRules.sortOrder === 'A-Z') newOrder = 'Date - New';
-    else if (sortRules.sortOrder === 'Date - New') newOrder = 'Date - Old';
+    const sortTypes: SortOrder[] = ['A-Z', 'Date - New', 'Date - Old', 'Popularity'];
+    const last = sortTypes.findIndex(x => x === sortRules.sortOrder);
+    const newOrder = sortTypes[last === sortTypes.length - 1 ? 0 : last + 1];
     setSortRules(oldState => ({ ...oldState, sortOrder: newOrder }));
     saveSortPrefs(newOrder, sortRules.groupOrder);
   }, [sortRules]);
 
   const toggleSoundGrouping = useCallback(async () => {
-    let newMode: GroupOrder = 'none';
-    if (sortRules.groupOrder === 'none') newMode = 'start';
-    else if (sortRules.groupOrder === 'start') newMode = 'end';
+    const modeTypes: GroupOrder[] = ['none', 'start', 'end'];
+    const last = modeTypes.findIndex(x => x === sortRules.groupOrder);
+    const newMode = modeTypes[last === modeTypes.length - 1 ? 0 : last + 1];
     setSortRules(oldState => ({ ...oldState, groupOrder: newMode }));
     saveSortPrefs(sortRules.sortOrder, newMode);
   }, [sortRules]);

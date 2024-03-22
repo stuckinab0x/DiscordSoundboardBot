@@ -22,6 +22,7 @@ function soundsRouter(soundsService: SoundsService, favoritesService: FavoritesS
         date: x.createdAt,
         url: `${ soundsBaseUrl }/${ x.file.fullName }`,
         isFavorite: favorites.indexOf(x.id) !== -1,
+        playCount: x.playCount ?? 0,
         volume: x.volume,
       })),
     });

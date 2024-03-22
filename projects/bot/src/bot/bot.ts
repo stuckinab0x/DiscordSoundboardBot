@@ -144,23 +144,25 @@ export default class Bot {
     return (await this.client.guilds.fetch(this.environment.homeGuildId)).voiceStates.cache.find(x => x.id === userId);
   }
 
-  playSound = async (userId: string, soundId: string) => {
+  playSound = async (userId: string, soundId: string): Promise<boolean> => {
     const userVoiceState = await this.getUserVoiceState(userId);
 
     if (!userVoiceState?.channel) {
       logger.info('Sound request received but user is not connected');
-      return;
+      return false;
     }
 
     const sound = await this.context.soundsService.getSound(soundId);
 
     if (!sound) {
       logger.error('Couldn\'t find sound "%s"', soundId);
-      return;
+      return false;
     }
 
     this.context.soundQueue.add({ sound, channel: userVoiceState.channel });
+    await this.context.soundsService.updateSoundPlayCount(soundId);
     logger.info(`Server sound request. User: ${ userId }. Queue length: ${ this.context.soundQueue.length }.`);
+    return true;
   };
 
   skipSounds = async (userId: string, skipAll: boolean) => {

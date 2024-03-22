@@ -76,6 +76,7 @@ export class ReadOnlySoundsService extends MongoService {
       name: document.name,
       file: ReadOnlySoundsService.mapFileNameToSoundFile(document.fileName),
       createdAt: document.createdAt,
+      playCount: document.playCount,
       volume: document.volume,
     };
   }
@@ -121,7 +122,7 @@ export class SoundsService extends ReadOnlySoundsService {
 
     try {
       const collection = await this.soundsCollection;
-      await collection.insertOne({ _id: new ObjectId(), name, fileName: uniqueFileName, createdAt: new Date() });
+      await collection.insertOne({ _id: new ObjectId(), name, fileName: uniqueFileName, createdAt: new Date(), playCount: 0 });
     } catch (error: any) {
       await this.filesService.deleteFile(uniqueFileName);
 
@@ -147,6 +148,11 @@ export class SoundsService extends ReadOnlySoundsService {
   async renameSound({ id, name }: RenameSoundOptions) {
     const collection = await this.soundsCollection;
     await collection.updateOne({ _id: new ObjectId(id) }, { $set: { name } });
+  }
+
+  async updateSoundPlayCount(soundId: string) {
+    const collection = await this.soundsCollection;
+    await collection.updateOne({ _id: new ObjectId(soundId) }, { $inc: { playCount: 1 } });
   }
 
   private static async determineStreamFileType(stream: Readable): Promise<FileTypeResultWrapper<Readable>> {

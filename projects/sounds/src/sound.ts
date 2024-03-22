@@ -9,5 +9,6 @@ export interface Sound {
   name: string;
   file: SoundFile;
   createdAt: Date;
+  playCount: number;
   volume?: number;
 }

@@ -65,6 +65,7 @@ export class SoundCommand extends Command {
       });
 
     context.soundQueue.add({ sound, channel: voiceChannel });
+    await context.soundsService.updateSoundPlayCount(sound.id);
     logger.info('%s: Sound "%s" added to queue, length: %s', interaction.id, soundName, context.soundQueue.length);
 
     const successMessage = {

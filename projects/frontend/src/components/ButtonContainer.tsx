@@ -1,7 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import styled, { useTheme } from 'styled-components';
-import { debounce } from '../utils';
 import SoundTile from './SoundTile';
 import Sound from '../models/sound';
 import FullMoon from './decorative/FullMoon';
@@ -50,15 +49,17 @@ const IntroError = styled.div`
   }
 `;
 
-function sortByDate(sounds: Sound[], sortOrder: SortOrder) {
+function sortBySortPref(sounds: Sound[], sortOrder: SortOrder) {
   if (sortOrder === 'A-Z') return sounds;
 
-  const compareFn = (a: Sound, b: Sound) => {
+  if (sortOrder === 'Popularity') return sounds.toSorted((a, b) => b.playCount - a.playCount);
+
+  const dateCompareFn = (a: Sound, b: Sound) => {
     if (sortOrder === 'Date - New') return a.date > b.date ? -1 : 1;
     return a.date < b.date ? -1 : 1;
   };
 
-  return [...sounds].sort(compareFn);
+  return [...sounds].toSorted(dateCompareFn);
 }
 
 function sortSoundGroups(sounds: Sound[], groupOrder: GroupOrder, customTags: CustomTag[]) {
@@ -77,24 +78,32 @@ interface ButtonContainerProps {
 const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
   const { data: soundsData, error, mutate: mutateSounds } = useSWR<{ introSound: string | undefined, sounds: Sound[] }>('/api/sounds');
   const { data: customTags } = useSWR<CustomTag[]>('/api/tags');
-
   const { name: themeName } = useTheme();
   const { sortRules: { favorites, small, searchTerm, sortOrder, groupOrder, tags }, showThemePicker } = usePrefs();
   const { currentlyTagging, unsavedTagged } = useCustomTags();
 
   const [showIntroError, setShowIntroError] = useState(false);
+  const [cooldown, setCooldown] = useState(false);
+  const [cooldownId, setCooldownId] = useState<NodeJS.Timeout | undefined>();
+
+  const refreshCooldown = useCallback(() => {
+    clearTimeout(cooldownId);
+    setCooldown(true);
+    const newCooldown = setTimeout(() => setCooldown(false), 2000);
+    setCooldownId(newCooldown);
+  }, [cooldownId]);
 
   useEffect(() => {
     if (soundsData?.introSound && soundsData.sounds.every(x => x.id !== soundsData.introSound))
       setShowIntroError(true);
   }, [soundsData]);
 
-  const soundRequest = useCallback(debounce(async (soundId: string, borderCallback: () => void) => {
-    borderCallback();
+  const soundRequest = useCallback(async (soundId: string) => {
     const res = await fetch(`/api/queue/${ soundId }`, { method: 'POST' });
     if (res.status === 401)
       window.location.reload();
-  }, 2000, true), []);
+    return res.status;
+  }, []);
 
   const updateFavoritesRequest = useCallback((soundId: string) => {
     if (!soundsData)
@@ -136,7 +145,7 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
   const orderedSounds = useMemo(() => {
     if (!soundsData?.sounds || !customTags)
       return null;
-    return sortSoundGroups(sortByDate(soundsData.sounds, sortOrder), groupOrder, customTags);
+    return sortSoundGroups(sortBySortPref(soundsData.sounds, sortOrder), groupOrder, customTags);
   }, [soundsData?.sounds, sortOrder, groupOrder, customTags]);
 
   if (orderedSounds && !orderedSounds.length)
@@ -172,8 +181,11 @@ const ButtonContainer: FC<ButtonContainerProps> = ({ soundPreview }) => {
                 isIntroSound={ x.id === soundsData?.introSound }
                 sound={ x }
                 soundRequest={ soundRequest }
+                refreshCooldown={ refreshCooldown }
                 soundPreview={ () => soundPreview(x.url, x.volume) }
+                cooldown={ cooldown }
                 tagColor={ tagColor }
+                sortOrder={ sortOrder }
                 updateFavRequest={ () => updateFavoritesRequest(x.id) }
                 updateMySound={ () => updateMySound(x.id) }
                 currentlyTagging={ !!currentlyTagging }
