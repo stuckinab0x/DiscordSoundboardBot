@@ -35,7 +35,7 @@ const ActionContainer = styled.div`
 
 interface AdminSoundActionsProps {
   selectedSound: Sound;
-  setSelectedSound: (sound: Sound) => void;
+  setSelectedSound: (sound: Sound | null) => void;
   showConfirmDelete: boolean;
   setShowConfirmDelete: (show: boolean) => void;
   showRenameInput: boolean;
@@ -87,7 +87,7 @@ const AdminSoundActions: FC<AdminSoundActionsProps> = ({
     setNotification(`Deleted sound "${ selectedSound.name }" o7`, '');
     setShowConfirmDelete(false);
     setRenameInput('');
-    setSelectedSound({ name: 'ded', id: 'nope', date: 'Dedcember 31st, 1969', url: 'okay', isFavorite: false });
+    setSelectedSound(null);
     await mutate('/api/sounds');
   }, [selectedSound?.name]);
 
