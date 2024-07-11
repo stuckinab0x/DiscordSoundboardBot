@@ -19,7 +19,7 @@
     "react-transition-group": "^4.4.5",
     "styled-components": "^6.1.11",
     "swr": "^2.2.5",
-    "vite": "^5.2.8"
+    "vite": "^5.3.3"
   },
   "devDependencies": {
     "eslint-config-airbnb": "^19.0.4",
