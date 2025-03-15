@@ -9,7 +9,7 @@
   "dependencies": {
     "botman-mongo": "*",
     "mongodb": "^6.14.0",
-    "uuid": "^9.0.1"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
