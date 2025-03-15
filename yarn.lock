@@ -2994,7 +2994,8 @@ env-paths@^2.2.0:
 
 "erlpack@git+https://github.com/discord/erlpack.git":
   version "0.1.3"
-  resolved "git+https://github.com/discord/erlpack.git#b25ebd51ae4c097bd7f756fd4e1c841b61bfe50b"
+  uid "936ba12231719af096fe1c37525e966f3690a225"
+  resolved "git+https://github.com/discord/erlpack.git#936ba12231719af096fe1c37525e966f3690a225"
   dependencies:
     bindings "^1.5.0"
     nan "^2.15.0"
