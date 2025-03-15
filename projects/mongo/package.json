@@ -9,7 +9,7 @@
     "down": "migrate-mongo down"
   },
   "dependencies": {
-    "migrate-mongo": "^11.0.0",
+    "migrate-mongo": "^12.1.3",
     "mongodb": "^6.14.0"
   }
 }
