@@ -7,11 +7,12 @@ function prefsRouter(prefsService: PrefsService) {
   router.put('/', async (req, res) => {
     if (req.body.sortOrder) {
       await prefsService.setSortPrefs(String(req.cookies.userid), { sortOrder: req.body.sortOrder, tagGroups: req.body.groupOrder });
-      return res.sendStatus(204);
+      res.sendStatus(204);
+      return;
     }
 
     await prefsService.setUserTheme(String(req.cookies.userid), { theme: req.body.themeName, useSeasonal: req.body.useSeasonal });
-    return res.sendStatus(204);
+    res.sendStatus(204);
   });
 
   router.put('/:introsound', async (req, res) => {

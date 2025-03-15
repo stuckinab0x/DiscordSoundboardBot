@@ -53,7 +53,7 @@ export default class WebServer {
       try { next(); } catch (error: any) { res.sendStatus(500); }
     });
 
-    app.get('/health', (req, res) => res.sendStatus(204));
+    app.get('/health', (req, res) => { res.sendStatus(204); });
 
     app.post('/logout', (req, res) => {
       res.clearCookie('accesstoken');
