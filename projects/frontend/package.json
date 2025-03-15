@@ -19,11 +19,11 @@
     "react-transition-group": "^4.4.5",
     "styled-components": "^6.1.11",
     "swr": "^2.2.5",
-    "vite": "^5.4.12"
+    "vite": "^6.2.2"
   },
   "devDependencies": {
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.3.0",
     "typescript": "^5.5.3"

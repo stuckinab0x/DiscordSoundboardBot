@@ -1,4 +1,4 @@
-﻿FROM alpine:3.19 as builder
+﻿FROM alpine:3.19 AS builder
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 RUN apk add git yarn python3 make gcc g++ musl-dev

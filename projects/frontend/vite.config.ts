@@ -6,8 +6,9 @@ export default defineConfig({
     react({ include: /\.(js|jsx|ts|tsx)$/ }),
   ],
   server: {
+    allowedHosts: ['frontend'],
+    hmr: { port: 3000 },
     host: true,
     port: 3000,
-    hmr: { port: 3000 },
   },
 });
