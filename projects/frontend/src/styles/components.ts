@@ -15,6 +15,20 @@ export const ToggleButtonBase = styled.button<ButtonProps>`
   ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
 `;
 
+export const OptionsButton = styled(ToggleButtonBase)`
+   margin: 2px;
+  ${ props => props.theme.name === '20XD6' && 'font-size: 11pt;' }
+
+  @media only screen and (max-width: 780px) {
+    height: 60px;
+    font-size: 1.4rem;
+  }
+
+  @media only screen and (max-width: 550px) {
+    font-size: 1.2rem;
+  }
+`;
+
 export const InnerShadow = styled.div`
   position: absolute;
   top: 0px;

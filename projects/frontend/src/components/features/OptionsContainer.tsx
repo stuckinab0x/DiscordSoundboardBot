@@ -1,22 +1,20 @@
 import { FC, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { buttonGreen, button } from '../../styles/mixins';
-import { InnerShadow, ToggleButtonBase } from '../../styles/components';
+import { InnerShadow, OptionsButton } from '../../styles/components';
 import AddSoundDialog from './AddSoundDialog';
 import GroupTagsButton from './GroupTagsButton';
 import { usePrefs } from '../../contexts/prefs-context';
 import { useCustomTags } from '../../contexts/custom-tags-context';
 
 const OptionsContainerMain = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   background-color: ${ props => props.theme.colors.innerA };
-  padding: 3px 2px;
+  padding: 3px;
   margin-left: 14px;
-  height: 94px;
-  border-radius: 5px;
+  border-radius: 4px;
   position: relative;
-  z-index: 20;
   box-shadow: 0px 0px 10px 2px ${ props => props.theme.colors.shadowDefault };
 
   button {
@@ -24,41 +22,10 @@ const OptionsContainerMain = styled.div`
   }
 
   @media only screen and (max-width: 780px) {
-    flex-direction: row;
-    align-items: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     margin: 4px 8px;
     height: auto;
     width: 100%;
-  }
-`;
-
-const ButtonRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  position: relative;
-
-  @media only screen and (min-width: 780px) {
-    &:first-of-type {
-      margin-bottom: 2px;
-    }
-  }
-`;
-
-const OptionsButton = styled(ToggleButtonBase)`
-  width: 174px;
-  margin: 2px;
-  ${ props => props.theme.name === '20XD6' && 'font-size: 11pt;' }
-
-  @media only screen and (max-width: 780px) {
-    height: 60px;
-    width: 50%;
-    font-size: 1.4rem;
-  }
-
-  @media only screen and (max-width: 550px) {
-    font-size: 1.2rem;
   }
 `;
 
@@ -89,31 +56,27 @@ const OptionsContainer: FC = () => {
 
   return (
     <OptionsContainerMain>
-      <ButtonRow>
-        <EditTagsButton
-          $toggled={ showCustomTagPicker }
-          onClick={ toggleShowCustomTagPicker }
-          disabled={ editingTag }
-        >
-          <InnerShadow />
-          Edit Custom Tags
-        </EditTagsButton>
-        <AddSoundButton
-          $toggled={ disableAddSoundButton }
-          disabled={ disableAddSoundButton }
-          onClick={ () => setShowAddSound(!showAddSound) }
-        >
-          <InnerShadow />
-          Add Sound
-        </AddSoundButton>
-      </ButtonRow>
-      <ButtonRow>
-        <OptionsButton $toggled={ false } onClick={ toggleSoundSortOrder }>
-          <InnerShadow />
-          { `Sort: ${ sortRules.sortOrder }` }
-        </OptionsButton>
-        <GroupTagsButton />
-      </ButtonRow>
+      <EditTagsButton
+        $toggled={ showCustomTagPicker }
+        onClick={ toggleShowCustomTagPicker }
+        disabled={ editingTag }
+      >
+        <InnerShadow />
+        Edit Custom Tags
+      </EditTagsButton>
+      <AddSoundButton
+        $toggled={ disableAddSoundButton }
+        disabled={ disableAddSoundButton }
+        onClick={ () => setShowAddSound(!showAddSound) }
+      >
+        <InnerShadow />
+        Add Sound
+      </AddSoundButton>
+      <OptionsButton $toggled={ false } onClick={ toggleSoundSortOrder }>
+        <InnerShadow />
+        { `Sort: ${ sortRules.sortOrder }` }
+      </OptionsButton>
+      <GroupTagsButton />
       { showAddSound && <AddSoundDialog close={ () => setShowAddSound(false) } setDisableAddSoundButton={ setDisableAddSoundButton } /> }
     </OptionsContainerMain>
   );

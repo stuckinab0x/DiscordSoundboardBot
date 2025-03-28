@@ -29,22 +29,25 @@ const AdminPanelMain = styled.div<AdminStyleProps>`
   background-color: ${ props => props.theme.colors.bg };
 
   @media only screen and (max-width: 780px) {
-    top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '90px' : '100vh' };
+    top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '80px' : '100vh' };
   }
 `;
 
 const AdminFeatures = styled.div`
   padding: 12px 30px 20px 30px;
   box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
+
+  @media only screen and (max-width: 780px) {
+    padding: 12px 16px 10px;
+  }
 `;
 
 const FeaturesHeader = styled.div`
   display: flex;
-  align-items: left;
 
   > h2 {
     ${ textShadowVisibility }
-    margin: 18px 20px 10px 0px;
+    margin: 10px 20px 10px 0px;
 
     @media only screen and (max-width: 780px) {
       margin-top: 10px;
@@ -72,13 +75,6 @@ const SoundsContainer = styled.div`
   overflow-y: scroll;
   padding: 20px 30px;
   border-right: 5px solid ${ props => props.theme.colors.accent };
-
-  > h2 {
-    color: ${ props => props.theme.colors.accent };
-    margin: 5px 0px;
-    
-    ${ textShadowVisibility }
-  }
 
   &::-webkit-scrollbar {
     width: 15px;
@@ -156,7 +152,6 @@ const AdminPanel: FC<AdminPanelProps> = ({ show, adminPanelClosed }) => {
             </AdminFeatures>
             <LowerContainer>
               <SoundsContainer>
-                <h2>Select a sound for info/settings</h2>
                 { visibleSounds.map(x =>
                   (
                     <PanelSound

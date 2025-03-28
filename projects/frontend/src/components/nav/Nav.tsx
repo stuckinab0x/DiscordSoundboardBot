@@ -13,6 +13,7 @@ import Sound from '../../models/sound';
 const NavMain = styled.div`
   background-color: ${ props => props.theme.colors.nav };
   position: relative;
+  z-index: 150;
   
   > div:first-of-type {
     display: flex;

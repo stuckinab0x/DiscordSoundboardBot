@@ -19,9 +19,8 @@ const SkipContainerMain = styled.div`
     font-size: 1.3rem;
     color: white;
     background-color: ${ props => props.theme.colors.innerA };
-    border: 5px solid ${ props => props.theme.colors.accent };
+    border: 4px solid ${ props => props.theme.colors.accent };
     box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
-    border-width: 5px;
     border-radius: 3px;
     width: 50%;
     margin-bottom: 6px;

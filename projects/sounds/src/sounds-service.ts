@@ -8,11 +8,10 @@ import { Sound, SoundFile } from './sound';
 import { SoundDocument } from './sound-document';
 import { FilesService } from './files-service';
 import { errors } from './errors';
-import { SaveableSoundFile } from './saveable-sound-file';
 
 export interface AddSoundOptions {
   name: string;
-  file: SaveableSoundFile;
+  file: Buffer;
 }
 
 export interface RenameSoundOptions {
@@ -111,7 +110,7 @@ export class SoundsService extends ReadOnlySoundsService {
   }
 
   async addSound({ name, file }: AddSoundOptions): Promise<void> {
-    const { fileTypeResult, file: cleanFile } = file instanceof Readable ? await SoundsService.determineStreamFileType(file) : await SoundsService.determineBufferFileType(file);
+    const { fileTypeResult, file: cleanFile } = await SoundsService.determineBufferFileType(file);
 
     if (!fileTypeResult || SoundsService.validFileExtensions.indexOf(fileTypeResult.ext) === -1)
       throw new Error(errors.unsupportedFileExtension);
@@ -153,16 +152,6 @@ export class SoundsService extends ReadOnlySoundsService {
   async updateSoundPlayCount(soundId: string) {
     const collection = await this.soundsCollection;
     await collection.updateOne({ _id: new ObjectId(soundId) }, { $inc: { playCount: 1 } });
-  }
-
-  private static async determineStreamFileType(stream: Readable): Promise<FileTypeResultWrapper<Readable>> {
-    const fileType = await import('file-type');
-    const fileTypeResult = await fileType.fileTypeFromStream(stream);
-
-    return {
-      file: stream,
-      fileTypeResult,
-    };
   }
 
   private static async determineBufferFileType(buffer: Buffer): Promise<FileTypeResultWrapper<Buffer>> {

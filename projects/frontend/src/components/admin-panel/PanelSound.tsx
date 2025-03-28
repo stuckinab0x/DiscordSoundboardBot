@@ -35,9 +35,11 @@ const PanelSoundSection = styled.div<SoundSectionStyleProps>`
   margin: 4px;
   background-color: ${ props => props.$isSelected ? props.theme.colors.buttonHighlighted : props.theme.colors.innerA };
   ${ textShadowVisibility }
+  overflow: hidden;
   
   h4 {
     margin: 0px 20px 0px 0px;
+    white-space: nowrap;
   }
 
   &:first-child {

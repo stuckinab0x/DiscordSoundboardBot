@@ -1,21 +1,8 @@
 import { FC, useCallback, useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { InnerShadow, ToggleButtonBase } from '../../styles/components';
+import { InnerShadow, OptionsButton } from '../../styles/components';
 import useInitialSortRules from '../../hooks/use-initial-sort-rules';
 import { usePrefs } from '../../contexts/prefs-context';
 import { GroupOrder } from '../../models/sort-rules';
-
-const ButtonMain = styled(ToggleButtonBase)`
-  width: 174px;
-  margin: 2px;
-  ${ props => props.theme.name === '20XD6' && 'font-size: 11pt;' }
-
-  @media only screen and (max-width: 780px) {
-    height: 60px;
-    width: 50%;
-    font-size: 1.4rem;
-  }
-`;
 
 const GroupTagsButton: FC = () => {
   const [mode, setMode] = useState(useInitialSortRules().groupOrder);
@@ -37,10 +24,10 @@ const GroupTagsButton: FC = () => {
   }, [mode]);
 
   return (
-    <ButtonMain $toggled={ mode !== 'none' } onClick={ () => { handleClick(); toggleSoundGrouping(); } }>
+    <OptionsButton $toggled={ mode !== 'none' } onClick={ () => { handleClick(); toggleSoundGrouping(); } }>
       <InnerShadow />
       { `Group Tags: ${ text }` }
-    </ButtonMain>
+    </OptionsButton>
   );
 };
 

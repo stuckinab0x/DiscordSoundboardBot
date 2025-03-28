@@ -29,7 +29,7 @@ const FiltersContainer = styled.div`
   display: flex;
   margin: 10px 40px;
   padding: 6px;
-  border-radius: 5px;
+  border-radius: 4px;
   background-color: ${ props => props.theme.colors.innerA };
   box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
 
@@ -42,7 +42,6 @@ const FiltersContainer = styled.div`
 const SkipAndSearch = styled.div`
   display: flex;
   flex-direction: column;
-  height: 94px;
   flex-grow: 1;
   margin: 0;
 

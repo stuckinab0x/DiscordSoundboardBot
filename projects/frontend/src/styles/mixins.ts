@@ -19,8 +19,8 @@ export const filterButton = css`
   min-height: 42px;
   font-weight: bold;
   color: white;
-  border: 5px solid ${ props => props.theme.colors.accent };
-  border-radius: 6px;
+  border: 4px solid ${ props => props.theme.colors.accent };
+  border-radius: 4px;
   background-color: ${ props => props.theme.colors.innerB };
   position: relative;
 `;
@@ -43,7 +43,7 @@ export const textInput = css`
   color: white;
   background-color: ${ props => props.theme.colors.innerB };
   font-size: 1.2rem;
-  border: 5px solid ${ props => props.theme.colors.accent };
+  border: 4px solid ${ props => props.theme.colors.accent };
   border-radius: 3px;
   width: 100%;
 

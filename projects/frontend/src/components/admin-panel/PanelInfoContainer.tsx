@@ -8,6 +8,7 @@ import VolumeSlider from '../VolumeSlider';
 
 const InfoContainer = styled.div`
   padding: 20px;
+  min-width: 480px;
   ${ textShadowVisibility }
 
   > div {
@@ -43,6 +44,7 @@ const InfoContainer = styled.div`
 
   @media only screen and (max-width: 780px) {
     box-shadow: 0px 4px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
+    padding: 10px 20px;
   }
 `;
 

@@ -1,6 +1,5 @@
 import { BlobServiceClient, BlockBlobClient, ContainerClient } from '@azure/storage-blob';
 import { Readable } from 'node:stream';
-import { SaveableSoundFile } from './saveable-sound-file';
 
 export class FilesService {
   private readonly soundsContainerClient: ContainerClient;
@@ -10,7 +9,7 @@ export class FilesService {
     this.soundsContainerClient = blobServiceClient.getContainerClient('sounds');
   }
 
-  async saveFile(name: string, file: SaveableSoundFile, mimeType: string): Promise<void> {
+  async saveFile(name: string, file: Buffer, mimeType: string): Promise<void> {
     const blockBlobClient = await this.getBlockBlobClient(name);
 
     if (file instanceof Readable)

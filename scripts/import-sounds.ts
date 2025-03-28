@@ -1,5 +1,4 @@
-import { createReadStream } from 'node:fs';
-import fs from 'node:fs/promises';
+import fs, { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { SoundsService } from 'botman-sounds';
 
@@ -10,13 +9,16 @@ const soundsService = new SoundsService(
   'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;',
 );
 
+const addSound = async (fileName: string) => {
+  const name = fileName.split('.').slice(0, -1).join('.');
+  const file = await readFile(path.join(soundsDirectory, fileName));
+  return soundsService.addSound({ name, file });
+};
+
 (async function run() {
   const files = await fs.readdir(soundsDirectory);
 
-  await Promise.all(files.map(fileName => {
-    const name = fileName.split('.').slice(0, -1).join('.');
-    return soundsService.addSound({ name, file: createReadStream(path.join(soundsDirectory, fileName)) });
-  }));
+  await Promise.all(files.map(fileName => addSound(fileName)));
 
   // Script won't end due to mongo connections still being open.
   // ¯\_(ツ)_/¯

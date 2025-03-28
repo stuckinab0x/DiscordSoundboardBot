@@ -1,9 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
-    react({ include: /\.(js|jsx|ts|tsx)$/ }),
+    react({
+      babel: {
+        plugins: [
+          ['babel-plugin-styled-components',
+            { displayNames: mode === 'development' },
+          ],
+        ],
+      },
+    }),
   ],
   server: {
     allowedHosts: ['frontend'],
@@ -11,4 +19,4 @@ export default defineConfig({
     host: true,
     port: 3000,
   },
-});
+}));

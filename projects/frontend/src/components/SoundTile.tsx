@@ -10,8 +10,8 @@ const soundTileSmall = css`
   font-size: 0.6rem;
   border: 2px solid ${ props => props.theme.colors.accent };
   border-radius: 2px;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 100px;
   margin: 4px 4px;
 `;
 
@@ -22,6 +22,8 @@ const soundTileSmallMobile = css`
     border-radius: 2px;
     width: 15vw;
     height: 15vw;
+    min-width: 100px;
+    min-height: 100px;
 `;
 
 type Status = 'pending' | 'success' | 'error' | 'idle';
@@ -93,6 +95,8 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
       border-radius: 2px;
       width: 20vw;
       height: 20vw;
+      min-height: 100px;
+      min-width: 100px;
 
       ${ props => props.$small && soundTileSmallMobile }
     }
