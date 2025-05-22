@@ -2,7 +2,6 @@ import { FC, useCallback } from 'react';
 import styled, { DefaultTheme, css } from 'styled-components';
 import { button, filterButton, textShadowVisibility } from '../../styles/mixins';
 import themes from '../../styles/themes';
-import { InnerShadow } from '../../styles/components';
 
 interface ButtonStyleProps {
   gradient: string[];
@@ -16,7 +15,6 @@ const ButtonMain = styled.button<ButtonStyleProps>`
   border-width: 3px;
   width: 100%;
   margin: 2px 0px;
-  box-shadow:  0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
   ${ textShadowVisibility }
 
   ${ props => css`
@@ -46,7 +44,6 @@ const ThemeButton: FC<ThemeButtonProps> = ({ name, handleClick }) => {
 
   return (
     <ButtonMain role='presentation' onClick={ () => handleClick(name) } gradient={ getButtonColors(themes.find(x => x.name === name) || themes[0]) }>
-      <InnerShadow />
       { name }
     </ButtonMain>
   );

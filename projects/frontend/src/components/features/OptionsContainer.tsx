@@ -1,31 +1,17 @@
 import { FC, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { buttonGreen, button } from '../../styles/mixins';
-import { InnerShadow, OptionsButton } from '../../styles/components';
+import { OptionsButton } from '../../styles/components';
 import AddSoundDialog from './AddSoundDialog';
 import GroupTagsButton from './GroupTagsButton';
 import { usePrefs } from '../../contexts/prefs-context';
 import { useCustomTags } from '../../contexts/custom-tags-context';
 
 const OptionsContainerMain = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background-color: ${ props => props.theme.colors.innerA };
-  padding: 3px;
-  margin-left: 14px;
-  border-radius: 4px;
   position: relative;
-  box-shadow: 0px 0px 10px 2px ${ props => props.theme.colors.shadowDefault };
-
-  button {
-    box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
-  }
 
   @media only screen and (max-width: 780px) {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    margin: 4px 8px;
-    height: auto;
-    width: 100%;
+
   }
 `;
 
@@ -61,7 +47,6 @@ const OptionsContainer: FC = () => {
         onClick={ toggleShowCustomTagPicker }
         disabled={ editingTag }
       >
-        <InnerShadow />
         Edit Custom Tags
       </EditTagsButton>
       <AddSoundButton
@@ -69,11 +54,9 @@ const OptionsContainer: FC = () => {
         disabled={ disableAddSoundButton }
         onClick={ () => setShowAddSound(!showAddSound) }
       >
-        <InnerShadow />
         Add Sound
       </AddSoundButton>
       <OptionsButton $toggled={ false } onClick={ toggleSoundSortOrder }>
-        <InnerShadow />
         { `Sort: ${ sortRules.sortOrder }` }
       </OptionsButton>
       <GroupTagsButton />

@@ -5,11 +5,10 @@ import { button } from '../../styles/mixins';
 
 const LogOutMenuMain = styled.div`
   position: absolute;
-  top: 90px;
+  top: 56px;
   left: -25px;
 
   @media only screen and (max-width: 780px) {
-    top: 84px;
     left: 0px;
   }
 

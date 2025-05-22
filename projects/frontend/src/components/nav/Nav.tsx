@@ -18,9 +18,10 @@ const NavMain = styled.div`
   > div:first-of-type {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     position: relative;
-    padding: 0px 24px;
-    box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
+    min-height: 60px;
+    padding: 0px 14px;
 
     z-index: 150;
   }
@@ -73,14 +74,15 @@ const Title = styled.div<TitleProps>`
   overflow: hidden;
   
   > h1 {
-    ${ props => (props.theme.name === 'America' || props.theme.name === 'Boomer') && 'color: white;' }
-    font-size: 2rem;
+    font-size: 1.5rem;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
-    ${ props => props.theme.name === 'Boomer' && 'text-shadow: none; ' }
     position: relative;
     user-select: none;
     white-space: nowrap;
+    margin: 0;
 
+    ${ props => (props.theme.name === 'America' || props.theme.name === 'Boomer') && 'color: white;' }
+    ${ props => props.theme.name === 'Boomer' && 'text-shadow: none; ' }
     ${ props => props.theme.name === 'Christmas' && 'filter: brightness(1.7) saturate(1.3);' }
 
     ${ props => props.$secret && css`
@@ -102,11 +104,11 @@ const Username = styled.div`
   align-items: center;
 
   > h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: white;
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
     position: relative;
-    margin: 0px 12px;
+    margin: -2px 6px 2px;
   }
 
   @media only screen and (max-width: 780px) {
@@ -126,11 +128,13 @@ const AdminButton = styled.button<AdminButtonStyleProps>`
   ${ button }
   ${ filterButton }
   position: relative;
-  min-width: max-content;
+  min-height: 32px;
+  border-width: 1px;
+  font-size: 0.8rem;
+  margin: 0 6px;
+
 
   ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
-  border-width: 2px;
-  font-size: 0.7rem;
 
   @media only screen and (max-width: 780px) {
     min-height: 20px;
@@ -194,7 +198,7 @@ const Nav: FC<NavProps> = ({ showAdminPanel, setShowAdminPanel }) => {
             <h1 role='presentation' onClick={ playSecretSound }>{ title }</h1>
           </Title>
           <Username>
-            { user.role === 'admin' && <AdminButton $toggled={ showAdminPanel } onClick={ () => setShowAdminPanel(!showAdminPanel) }>Admin Panel</AdminButton> }
+            { user.role === 'admin' && <AdminButton $toggled={ showAdminPanel } onClick={ () => setShowAdminPanel(!showAdminPanel) }>Admin</AdminButton> }
             <h2>
               { user.name }
             </h2>

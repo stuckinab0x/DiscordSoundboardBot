@@ -1,5 +1,5 @@
 import { FC, useCallback, useState, useEffect } from 'react';
-import { InnerShadow, OptionsButton } from '../../styles/components';
+import { OptionsButton } from '../../styles/components';
 import useInitialSortRules from '../../hooks/use-initial-sort-rules';
 import { usePrefs } from '../../contexts/prefs-context';
 import { GroupOrder } from '../../models/sort-rules';
@@ -25,7 +25,6 @@ const GroupTagsButton: FC = () => {
 
   return (
     <OptionsButton $toggled={ mode !== 'none' } onClick={ () => { handleClick(); toggleSoundGrouping(); } }>
-      <InnerShadow />
       { `Group Tags: ${ text }` }
     </OptionsButton>
   );

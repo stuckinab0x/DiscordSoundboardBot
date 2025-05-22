@@ -5,7 +5,6 @@ import CustomTag from '../../models/custom-tag';
 import TagFilterButton from './TagFilterButton';
 import * as mixins from '../../styles/mixins';
 import { usePrefs } from '../../contexts/prefs-context';
-import { InnerShadow } from '../../styles/components';
 
 const FiltersBarMain = styled.div`
   display: flex;
@@ -27,7 +26,6 @@ const ButtonToggle = styled.button<ButtonProps>`
   ${ mixins.filterButtonMobile }
   ${ mixins.textShadowVisibility }
 
-  box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
   position: relative;
   
   @media only screen and (max-width: 780px) {
@@ -47,7 +45,6 @@ const FiltersBar: FC = () => {
         $toggled={ sortRules.favorites }
         onClick={ toggleFavs }
       >
-        <InnerShadow />
         Favorites
       </ButtonToggle>
       { customTags ? customTags.map(x => <TagFilterButton key={ x.id } id={ x.id } name={ x.name } color={ x.color } />) : <p>loading tags...</p>}

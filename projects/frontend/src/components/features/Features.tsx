@@ -8,51 +8,39 @@ import { candyCaneBG } from '../../styles/mixins';
 import { usePrefs } from '../../contexts/prefs-context';
 
 const FeaturesContainer = styled.div`
-  padding: 16px 0px 8px;
-  box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
+  padding: 12px 10px 8px;
+  background-color: ${ props => props.theme.colors.innerA };
 
   ${ props => props.theme.name === 'Christmas' && candyCaneBG };
 `;
 
-const UpperRow = styled.div`
+const Row = styled.div`
   display: flex;
-  margin: 0px 30px 10px;
   align-items: center;
+  box-sizing: border-box;
+  padding: 2px;
+
+  > :first-child {
+    margin-left: 0;
+  }
+
+  > span {
+    width: 4px;
+    background-color: white;
+    height: 42px;
+    margin: 0 8px;
+  }
 
   @media only screen and (max-width: 780px) {
-    flex-direction: column;
-    margin: 0px 10px 5px;
+
+    > span {
+      display: none;
+    }
   }
 `;
 
-const FiltersContainer = styled.div`
-  display: flex;
-  margin: 10px 40px;
-  padding: 6px;
-  border-radius: 4px;
-  background-color: ${ props => props.theme.colors.innerA };
-  box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
-
-  @media only screen and (max-width: 780px) {
-    padding: 4px;
-    margin: 2px 8px;
-  }
-`;
-
-const SkipAndSearch = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  margin: 0;
-
-  span {
-    top: 8px;
-  }
-
-  @media only screen and (max-width: 780px) {
-    width: 100%;
-    margin-bottom: 2px;
-  }
+const OptionsRow = styled(Row)`
+  justify-content: space-between;
 `;
 
 const Features: FC = () => {
@@ -60,16 +48,16 @@ const Features: FC = () => {
 
   return (
     <FeaturesContainer>
-      <UpperRow>
-        <SkipAndSearch>
-          <SkipContainer />
-          <SearchBar setSearchTerm={ updateSearchTerm } focusOnEnter={ false } />
-        </SkipAndSearch>
-        <OptionsContainer />
-      </UpperRow>
-      <FiltersContainer>
+      <Row>
         <FiltersBar />
-      </FiltersContainer>
+      </Row>
+      <OptionsRow>
+        <SearchBar setSearchTerm={ updateSearchTerm } focusOnEnter={ false } />
+        <span />
+        <SkipContainer />
+        <span />
+        <OptionsContainer />
+      </OptionsRow>
     </FeaturesContainer>
   );
 };

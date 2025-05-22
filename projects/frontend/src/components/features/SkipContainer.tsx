@@ -1,42 +1,11 @@
 import { FC, useCallback } from 'react';
 import styled from 'styled-components';
-import { button } from '../../styles/mixins';
-import { InnerShadow } from '../../styles/components';
+import { InnerShadow, OptionsButton } from '../../styles/components';
 import { debounce } from '../../utils';
 
 const SkipContainerMain = styled.div`
   display: flex;
-  justify-content: space-between;
   margin: 0;
-  position: relative;
-  z-index: 10;
-  height: 100%;
-
-  > button {
-    ${ button }
-    
-    position: relative;
-    font-size: 1.3rem;
-    color: white;
-    background-color: ${ props => props.theme.colors.innerA };
-    border: 4px solid ${ props => props.theme.colors.accent };
-    box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
-    border-radius: 3px;
-    width: 50%;
-    margin-bottom: 6px;
-
-    &:first-child {
-      margin-right: 6px;
-    }
-  }
-
-  @media only screen and (max-width: 780px) {
-    > button {
-      border-width: 3px;
-      min-height: 50px;
-      font-size: 1.6rem;
-    }
-  }
 `;
 
 const SkipContainer: FC = () => {
@@ -48,14 +17,14 @@ const SkipContainer: FC = () => {
 
   return (
     <SkipContainerMain>
-      <button type="button" onClick={ () => skipSound() }>
+      <OptionsButton onClick={ () => skipSound() }>
         <InnerShadow />
         Skip one
-      </button>
-      <button type="button" onClick={ () => skipSound(true) }>
+      </OptionsButton>
+      <OptionsButton onClick={ () => skipSound(true) }>
         <InnerShadow />
         Skip all
-      </button>
+      </OptionsButton>
     </SkipContainerMain>
   );
 };

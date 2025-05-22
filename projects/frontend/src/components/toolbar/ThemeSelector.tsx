@@ -4,7 +4,7 @@ import { usePrefs } from '../../contexts/prefs-context';
 import useUser from '../../hooks/use-user';
 import themes from '../../styles/themes';
 import ThemeButton from './ThemeButton';
-import { CloseBar, InnerShadow } from '../../styles/components';
+import { CloseBar } from '../../styles/components';
 
 const SelectorMain = styled.div`
   position: absolute;
@@ -124,20 +124,19 @@ const ThemeSelector: FC<ThemeSelectorProps> = ({ close }) => {
               { themePrefs.useSeasonal && <span className='material-icons'>check</span> }
             </div>
           </SeasonalOption>
-          { themes.slice(4).map(x => <ThemeButton key={ x.name } name={ x.name } handleClick={ handleThemeClick } />) }
+          { themes.filter(x => !x.seasonal && x.name !== 'Classic').map(x => <ThemeButton key={ x.name } name={ x.name } handleClick={ handleThemeClick } />) }
         </Column>
         { role === 'admin' && (
         <Column>
           <h2>(Admin)</h2>
           <Divider />
-          { themes.slice(1, 4).map(x => <ThemeButton key={ x.name } name={ x.name } handleClick={ handleThemeClick } />) }
+          { themes.filter(x => x.seasonal).map(x => <ThemeButton key={ x.name } name={ x.name } handleClick={ handleThemeClick } />) }
         </Column>
         )}
       </div>
       <CloseBar onClick={ close }>
         <p>Close</p>
       </CloseBar>
-      <InnerShadow />
     </SelectorMain>
   );
 };

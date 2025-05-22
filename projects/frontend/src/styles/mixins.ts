@@ -19,8 +19,8 @@ export const filterButton = css`
   min-height: 42px;
   font-weight: bold;
   color: white;
-  border: 4px solid ${ props => props.theme.colors.accent };
-  border-radius: 4px;
+  border: none;
+  border-radius: 2px;
   background-color: ${ props => props.theme.colors.innerB };
   position: relative;
 `;
@@ -30,7 +30,6 @@ export const filterButtonMobile = css`
     min-height: 30px;
     font-size: 1.2rem;
     font-weight: normal;
-    border: 3px solid ${ props => props.theme.colors.accent };
     border-radius: 3px;
   }
 `;
@@ -43,8 +42,8 @@ export const textInput = css`
   color: white;
   background-color: ${ props => props.theme.colors.innerB };
   font-size: 1.2rem;
-  border: 4px solid ${ props => props.theme.colors.accent };
-  border-radius: 3px;
+  border: none;
+  border-radius: 2px;
   width: 100%;
 
   &::placeholder {
@@ -55,8 +54,7 @@ export const textInput = css`
 export const textInputMobile = css`
   @media only screen and (max-width: 780px) {
     font-size: 1.6rem;
-    border: 3px solid ${ props => props.theme.colors.accent };
-    border-radius: 2px;
+    border: none;
     margin: 0;
   }
 `;

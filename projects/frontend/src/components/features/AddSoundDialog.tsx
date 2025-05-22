@@ -35,14 +35,15 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  background-color: ${ props => props.theme.colors.innerA };
   position: absolute;
-  border: solid 5px ${ props => props.theme.colors.accent };
-  border-radius: 5px;
   right: 5px;
   top: 64px;
+  background-color: ${ props => props.theme.colors.innerA };
+  border: solid 5px ${ props => props.theme.colors.accent };
+  border-radius: 5px;
   padding: 6px 8px;
   box-shadow: 0px 5px 10px 3px ${ props => props.theme.colors.innerB };
+  z-index: 50;
 
   ${ props => {
     if (props.$statusStyle === 'success') return AddSoundSuccess;

@@ -10,16 +10,17 @@ const AvatarContainerMain = styled.div`
   position: relative;
   
   > img {
-    border-radius: 50%;
-    border: 2px solid ${ props => props.theme.colors.accent };
-    border-width: 2px;
+    width: 40px;
+    margin: 0 6px;
+    border-radius: 4px;
+    border: 1px solid ${ props => props.theme.colors.accent };
     overflow: hidden;
     box-shadow: 3px 3px 5px ${ props => props.theme.colors.shadowDefault };
     cursor: pointer;
   }
 
   > img:hover {
-    box-shadow: 0px 0px 3px 2.5px ${ props => props.theme.colors.accent };
+    box-shadow: 0px 0px 3px 2px ${ props => props.theme.colors.accent };
   }
 `;
 
@@ -39,7 +40,6 @@ const AvatarContainer: FC<AvatarContainerProps> = ({ showLogoutMenu, setShowLogo
         src={ `https://cdn.discordapp.com/avatars/${ user.id }/${ user.avatarId }.png` }
         className="avatar"
         alt=""
-        width="50px"
         role="presentation"
         onClick={ () => setShowLogoutMenu(!showLogoutMenu) }
       />

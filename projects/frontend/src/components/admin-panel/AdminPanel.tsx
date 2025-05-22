@@ -20,7 +20,7 @@ const AdminPanelMain = styled.div<AdminStyleProps>`
   transition: bottom 0.4s ease-out;
   bottom: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '0px' : '-110vh' };
   transition: top 0.4s ease-out;
-  top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '104px' : '100vh' };
+  top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '70px' : '100vh' };
   display: flex;
   width: 100%;
   flex-direction: column;

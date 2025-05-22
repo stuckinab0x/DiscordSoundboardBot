@@ -4,7 +4,7 @@ import { TransitionStatus } from 'react-transition-group';
 import useSoundPreview from '../hooks/use-sound-preview';
 import { useCustomTags } from '../contexts/custom-tags-context';
 import Features from './features/Features';
-import SoundBoardToolbar from './toolbar/SoundboardToolbar';
+import SoundBoardToolbar from './toolbar/Toolbar';
 import TagPicker from './custom-tags/TagPicker';
 import ButtonContainer from './ButtonContainer';
 

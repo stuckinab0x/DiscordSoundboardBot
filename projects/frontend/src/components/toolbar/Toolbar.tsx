@@ -6,14 +6,13 @@ import TaggingInstructions from './TaggingInstructions';
 import { usePrefs } from '../../contexts/prefs-context';
 import { useCustomTags } from '../../contexts/custom-tags-context';
 import ThemeSelector from './ThemeSelector';
-import { InnerShadow } from '../../styles/components';
 import { getSeasonalThemeName } from '../../utils';
 
 const ToolbarMain = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 20px 4vw 0px;
+  margin: 14px 4vw 0;
   position: relative;
 `;
 
@@ -21,11 +20,9 @@ const ThemeButton = styled.div`
   display: flex;
   align-items: center;
   background-color: ${ props => props.theme.colors.innerA };
-  border: 2px solid ${ props => props.theme.colors.accent };
-  border-radius: 4px;
+  border-radius: 2px;
   margin-right: 20px;
   padding: 4px 8px;
-  box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
   cursor: pointer;
   user-select: none;
   position: relative;
@@ -86,7 +83,7 @@ interface SoundboardToolbarProps {
   setPreviewVolume: (volume: string) => void;
 }
 
-const SoundboardToolbar: FC<SoundboardToolbarProps> = ({ setPreviewVolume }) => {
+const Toolbar: FC<SoundboardToolbarProps> = ({ setPreviewVolume }) => {
   const { toggleSmallButtons } = usePrefs();
   const { currentlyTagging } = useCustomTags();
   const { themePrefs: { theme, useSeasonal }, showThemePicker, setShowThemePicker } = usePrefs();
@@ -94,7 +91,6 @@ const SoundboardToolbar: FC<SoundboardToolbarProps> = ({ setPreviewVolume }) => 
   return (
     <ToolbarMain>
       <ThemeButton onClick={ () => setShowThemePicker(!showThemePicker) }>
-        <InnerShadow />
         <span className="material-symbols-outlined">palette</span>
         <h4>{ theme === 'Classic' && useSeasonal ? seasonalName : theme }</h4>
       </ThemeButton>
@@ -115,4 +111,4 @@ const SoundboardToolbar: FC<SoundboardToolbarProps> = ({ setPreviewVolume }) => 
   );
 };
 
-export default SoundboardToolbar;
+export default Toolbar;

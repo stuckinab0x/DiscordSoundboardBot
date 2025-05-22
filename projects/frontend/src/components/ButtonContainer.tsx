@@ -19,7 +19,7 @@ const Buttons = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   margin: 0;
-  padding: 10px 15px 0px;
+  padding: 4px 8px;
   position: relative;
   z-index: 0;
 

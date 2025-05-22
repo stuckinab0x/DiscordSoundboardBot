@@ -5,8 +5,9 @@ import * as mixins from '../styles/mixins';
 const SearchBarMain = styled.div`
   display: flex;
   position: relative;
-  box-shadow: 0px 1px 8px 1px ${ props => props.theme.colors.shadowDefault };
-  width: 100%;
+  flex-grow: 1;
+  margin: 2px;
+  min-height: 42px;
 
   > input {
     ${ mixins.textInput }

@@ -3,12 +3,10 @@ import styled, { css, useTheme } from 'styled-components';
 import * as mixins from '../styles/mixins';
 import Sound from '../models/sound';
 import { useCustomTags } from '../contexts/custom-tags-context';
-import { InnerShadow } from '../styles/components';
 import { SortOrder } from '../models/sort-rules';
 
 const soundTileSmall = css`
   font-size: 0.6rem;
-  border: 2px solid ${ props => props.theme.colors.accent };
   border-radius: 2px;
   width: 100px;
   height: 100px;
@@ -17,7 +15,6 @@ const soundTileSmall = css`
 
 const soundTileSmallMobile = css`
     font-size: 1rem;
-    border: 3px solid ${ props => props.theme.colors.accent };
     border-width: 3px;
     border-radius: 2px;
     width: 15vw;
@@ -69,10 +66,10 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     
     font-size: 1.2rem;
     color: white;
-    border: 5px solid ${ props => props.theme.colors.accent };
-    border-radius: 3px;
+    border: none;
+    border-radius: 2px;
     ${ props => props.$taggingModeOn && 'border-style: dotted;' }
-    box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
+    box-shadow: 0px 0 2px 0 ${ props => props.theme.colors.shadowDefault };
     height: 150px;
     width: 150px;
     margin: 6px 6px;
@@ -304,7 +301,6 @@ const SoundTile: FC<SoundTileProps> = ({
         onClick={ handleButtonClick }
       >
         <p>{ name }</p>
-        <InnerShadow />
       </button>
       <FavStarButton className='material-icons' $small={ small } $toggled={ isFavorite } onClick={ updateFavRequest }>
         { isFavorite ? isFavIcon : isNotFavIcon }
