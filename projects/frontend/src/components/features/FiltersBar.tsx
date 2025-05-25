@@ -3,36 +3,37 @@ import styled from 'styled-components';
 import useSWR from 'swr';
 import CustomTag from '../../models/custom-tag';
 import TagFilterButton from './TagFilterButton';
-import * as mixins from '../../styles/mixins';
 import { usePrefs } from '../../contexts/prefs-context';
+import { FilterButton } from '../../styles/components';
 
 const FiltersBarMain = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  box-sizing: border-box;
+  flex-grow: 1;
+  
 
   > button {
-    margin-right: 5px;
+    margin: 0 2px;
   }
-`;
 
-interface ButtonProps {
-  $toggled: boolean;
-}
+  > :first-child {
+    margin-left: 0;
+  }
 
-const ButtonToggle = styled.button<ButtonProps>`
-  ${ mixins.button }
-  ${ mixins.filterButton }
-  ${ mixins.filterButtonMobile }
-  ${ mixins.textShadowVisibility }
+  > :last-child {
+    margin-right: 0;
+  }
 
-  position: relative;
-  
   @media only screen and (max-width: 780px) {
-    margin: 2px;
-  }
+    > button {
+      flex-grow: 1;
+      margin: 0 2px;
+    }
 
-  ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+
+  }
 `;
 
 const FiltersBar: FC = () => {
@@ -41,12 +42,12 @@ const FiltersBar: FC = () => {
 
   return (
     <FiltersBarMain>
-      <ButtonToggle
+      <FilterButton
         $toggled={ sortRules.favorites }
         onClick={ toggleFavs }
       >
         Favorites
-      </ButtonToggle>
+      </FilterButton>
       { customTags ? customTags.map(x => <TagFilterButton key={ x.id } id={ x.id } name={ x.name } color={ x.color } />) : <p>loading tags...</p>}
     </FiltersBarMain>
   );

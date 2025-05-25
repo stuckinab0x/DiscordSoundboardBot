@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from './mixins';
 
 interface ButtonProps {
+  $color?: string;
   $toggled?: boolean;
 }
 
@@ -11,16 +12,20 @@ export const ToggleButtonBase = styled.button<ButtonProps>`
   ${ filterButtonMobile }
   ${ textShadowVisibility }
   user-select: none;
+`;
 
-  ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+export const FilterButton = styled(ToggleButtonBase)`
+  background-color: ${ props => props.$color };
+  opacity: ${ props => props.$toggled ? 1 : 0.5 };
 `;
 
 export const OptionsButton = styled(ToggleButtonBase)`
   margin: 2px 2.5px;
   ${ props => props.theme.name === '20XD6' && 'font-size: 11pt;' }
 
+  ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
+
   @media only screen and (max-width: 780px) {
-    height: 60px;
     font-size: 1.4rem;
   }
 
@@ -47,10 +52,10 @@ export const CloseBar = styled.div`
   flex-grow: 1;
   opacity: 0.5;
   background-color: ${ props => props.theme.colors.closeButton };
+  box-shadow: 0px 0 2px 0 ${ props => props.theme.colors.shadowDefault };
   border-radius: 2px;
   padding: 5px 0px;
   cursor: pointer;
-  box-shadow: 0px 3px 4px ${ props => props.theme.colors.shadowDefault };
 
   &:hover {
     opacity: 0.7;

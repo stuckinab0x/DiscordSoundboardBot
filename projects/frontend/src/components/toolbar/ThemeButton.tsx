@@ -4,7 +4,7 @@ import { button, filterButton, textShadowVisibility } from '../../styles/mixins'
 import themes from '../../styles/themes';
 
 interface ButtonStyleProps {
-  gradient: string[];
+  $gradient: string[];
 }
 
 const ButtonMain = styled.button<ButtonStyleProps>`
@@ -18,9 +18,9 @@ const ButtonMain = styled.button<ButtonStyleProps>`
   ${ textShadowVisibility }
 
   ${ props => css`
-    --a: ${ props.gradient[0] };
-    --b: ${ props.gradient[1] };
-    --c: ${ props.gradient[2] };
+    --a: ${ props.$gradient[0] };
+    --b: ${ props.$gradient[1] };
+    --c: ${ props.$gradient[2] };
     background: var(--a);
     background: linear-gradient(90deg, var(--a) 0%, var(--c) 50%, var(--b) 100%);
   ` }
@@ -43,7 +43,7 @@ const ThemeButton: FC<ThemeButtonProps> = ({ name, handleClick }) => {
   ], []);
 
   return (
-    <ButtonMain role='presentation' onClick={ () => handleClick(name) } gradient={ getButtonColors(themes.find(x => x.name === name) || themes[0]) }>
+    <ButtonMain role='presentation' onClick={ () => handleClick(name) } $gradient={ getButtonColors(themes.find(x => x.name === name) || themes[0]) }>
       { name }
     </ButtonMain>
   );

@@ -11,8 +11,7 @@ const ColorPickerMain = styled.div`
   left: -60px;
 
   background-color: ${ props => props.theme.colors.bg };
-  border: 3px solid ${ props => props.theme.colors.accent };
-  border-radius: 3px;
+  border-radius: 2px;
   box-shadow: 2px 2px 5px ${ props => props.theme.colors.shadowDefault };
 `;
 
@@ -26,6 +25,8 @@ const ColorTile = styled.button<ColorTileProps>`
   ${ button }
   height: 40px;
   width: 40px;
+  border: none;
+  box-shadow: 0 0 2px ${ props => props.theme.colors.shadowDefault };
 `;
 
 interface TagColorPickerProps {

@@ -1,12 +1,6 @@
 import { FC, useCallback } from 'react';
-import styled from 'styled-components';
-import { InnerShadow, OptionsButton } from '../../styles/components';
+import { OptionsButton } from '../../styles/components';
 import { debounce } from '../../utils';
-
-const SkipContainerMain = styled.div`
-  display: flex;
-  margin: 0;
-`;
 
 const SkipContainer: FC = () => {
   const skipSound = useCallback(debounce(async (all?: boolean) => {
@@ -16,16 +10,14 @@ const SkipContainer: FC = () => {
   }, 500, true), []);
 
   return (
-    <SkipContainerMain>
+    <div>
       <OptionsButton onClick={ () => skipSound() }>
-        <InnerShadow />
         Skip one
       </OptionsButton>
       <OptionsButton onClick={ () => skipSound(true) }>
-        <InnerShadow />
         Skip all
       </OptionsButton>
-    </SkipContainerMain>
+    </div>
   );
 };
 

@@ -27,18 +27,20 @@ type Status = 'pending' | 'success' | 'error' | 'idle';
 
 const getPlaybackResultStyle = (status: Status) => {
   if (status === 'success') return css`
-    ${ mixins.buttonGreen }
+    background-color: ${ props => props.theme.colors.borderGreen };
 
     > p {
       opacity: 0;
     }
   `;
   if (status === 'pending') return css`
-    border-color: yellow;
+    background-color: yellow;
   `;
-  if (status === 'error') return mixins.buttonRed;
+  if (status === 'error') return css`
+    background-color: ${ props => props.theme.colors.borderRed };
+  `;
   return css`
-    transition-property: border-color;
+    transition-property: background-color;
     transition-duration: 1s;
     transition-delay: 1.5s;
     
@@ -87,9 +89,6 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     ${ props => props.$disableBorder ? null : getPlaybackResultStyle(props.$status) }
 
     @media only screen and (max-width: 780px) {
-      border: 3px solid ${ props => props.theme.colors.accent };
-      border-width: 3px;
-      border-radius: 2px;
       width: 20vw;
       height: 20vw;
       min-height: 100px;
@@ -106,8 +105,8 @@ interface ButtonBaseProps {
 }
 
 const ButtonBase = styled.span<ButtonBaseProps>`
-  ${ mixins.iconButton }
   ${ mixins.textShadowVisibility }
+  cursor: pointer;
   opacity: 0.6;
     
   position: absolute;
@@ -194,7 +193,6 @@ const PreviewButton = styled(ButtonBase)<PreviewButtonStyleProps>`
   bottom: 14px;
   left: 14px;
   text-shadow: 0px 0px 6px ${ props => props.theme.colors.shadowDefault };
-  ${ mixins.iconButton }
 
   ${ props => props.$small && css`
     left: 8px;

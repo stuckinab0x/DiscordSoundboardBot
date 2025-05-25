@@ -14,13 +14,11 @@ const AddSoundSuccess = css`
   transition-timing-function: ease-in;
   transition-duration: 2s;
   top: -50vh;
-
-  ${ mixins.buttonGreen }
 `;
 
 const AddSoundError = css`
   animation: shake 0.5s 1 linear;
-  ${ mixins.buttonRed }
+  background-color: ${ props => props.theme.colors.borderRed };
 `;
 
 type Status = 'success' | 'error' | 'pending' | null;
@@ -39,8 +37,7 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
   right: 5px;
   top: 64px;
   background-color: ${ props => props.theme.colors.innerA };
-  border: solid 5px ${ props => props.theme.colors.accent };
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 6px 8px;
   box-shadow: 0px 5px 10px 3px ${ props => props.theme.colors.innerB };
   z-index: 50;

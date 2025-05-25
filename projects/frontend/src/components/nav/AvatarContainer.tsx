@@ -12,15 +12,14 @@ const AvatarContainerMain = styled.div`
   > img {
     width: 40px;
     margin: 0 6px;
-    border-radius: 4px;
-    border: 1px solid ${ props => props.theme.colors.accent };
+    border-radius: 2px;
     overflow: hidden;
-    box-shadow: 3px 3px 5px ${ props => props.theme.colors.shadowDefault };
+    box-shadow: 0 0 2px ${ props => props.theme.colors.shadowDefault };
     cursor: pointer;
   }
 
   > img:hover {
-    box-shadow: 0px 0px 3px 2px ${ props => props.theme.colors.accent };
+    box-shadow: 0px 0px 4px 2px ${ props => props.theme.colors.accent };
   }
 `;
 

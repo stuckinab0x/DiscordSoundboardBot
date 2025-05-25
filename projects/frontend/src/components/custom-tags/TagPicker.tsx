@@ -11,12 +11,12 @@ const TagPickerMain = styled.div`
   flex-wrap: wrap;
   
   background-color: ${ props => props.theme.colors.innerA };
-  border: 5px solid ${ props => props.theme.colors.accent };
-  border-radius: 5px;
-  box-shadow: 0px 2px 5px 2px ${ props => props.theme.colors.shadowDefault };
+  border-radius: 2px;
+  box-shadow: 0 0 2px 0 ${ props => props.theme.colors.shadowDefault };
 
   height: max-content;
-  margin: 10px 50px 0px;
+  margin: 2px 0 0px;
+  padding: 10px 50px;
 
   @media only screen and (max-width: 780px) {
     margin: 10px 10px 0px;

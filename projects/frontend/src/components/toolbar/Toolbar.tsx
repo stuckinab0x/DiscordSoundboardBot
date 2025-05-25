@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import styled from 'styled-components';
-import { iconButton, textShadowVisibility } from '../../styles/mixins';
+import { textShadowVisibility } from '../../styles/mixins';
 import PreviewVolume from './PreviewVolume';
 import TaggingInstructions from './TaggingInstructions';
 import { usePrefs } from '../../contexts/prefs-context';
@@ -48,7 +48,7 @@ const ThemeButton = styled.div`
 `;
 
 const ResizeIcon = styled.div`
-  ${ iconButton }
+  cursor: pointer;
 
   @media only screen and (max-width: 780px) {
     width: 100%;
@@ -64,7 +64,6 @@ const ResizeSpan = styled.span`
   font-size: 2.5rem;
   margin-right: -10px;
   user-select: none;
-  text-shadow: 0px 2px 5px ${ props => props.theme.colors.shadowDefault };
 
   ${ props => props.theme.name === 'Christmas' && 'filter: brightness(1.2);' }
 

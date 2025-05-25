@@ -29,7 +29,7 @@ const SoundboardMain = styled.div<SoundboardStyleProps>`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${ props => props.theme.colors.innerA };
+    background: ${ props => props.theme.colors.nav };
   }
 `;
 
@@ -44,12 +44,12 @@ const Soundboard: FC<SoundboardProps> = ({ state }) => {
   return (
     <SoundboardMain $state={ state }>
       <Features />
-      <SoundBoardToolbar
-        setPreviewVolume={ setPreviewVolume }
-      />
       { showCustomTagPicker && (
       <TagPicker />
       ) }
+      <SoundBoardToolbar
+        setPreviewVolume={ setPreviewVolume }
+      />
       <ButtonContainer
         soundPreview={ soundPreview }
       />

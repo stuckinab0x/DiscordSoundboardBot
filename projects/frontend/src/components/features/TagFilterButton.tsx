@@ -1,26 +1,6 @@
 import { FC, useCallback, useState } from 'react';
-import styled from 'styled-components';
 import { usePrefs } from '../../contexts/prefs-context';
-import { button, filterButton, filterButtonMobile, textShadowVisibility } from '../../styles/mixins';
-
-interface ButtonMainProps {
-  color: string;
-  $toggled: boolean;
-}
-
-const ButtonMain = styled.button<ButtonMainProps>`
-  ${ button }
-  ${ filterButton }
-  ${ filterButtonMobile }
-  ${ textShadowVisibility }
-
-  background-color: ${ props => props.color };
-  ${ props => props.$toggled ? `border-color: ${ props.theme.colors.borderGreen }` : null };
-
-  @media only screen and (max-width: 780px) {
-    margin: 2px;
-  }
-`;
+import { FilterButton } from '../../styles/components';
 
 interface TagFilterButtonProps {
   id: string;
@@ -37,9 +17,9 @@ const TagFilterButton: FC<TagFilterButtonProps> = ({ id, name, color }) => {
   }, [toggled]);
 
   return (
-    <ButtonMain color={ color } $toggled={ toggled } onClick={ () => { toggleTagFilter(id); handleClick(); } }>
+    <FilterButton $color={ color } $toggled={ toggled } onClick={ () => { toggleTagFilter(id); handleClick(); } }>
       { name }
-    </ButtonMain>
+    </FilterButton>
   );
 };
 

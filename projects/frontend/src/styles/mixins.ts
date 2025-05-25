@@ -12,7 +12,7 @@ export const button = css`
     &:hover:not(:active) {
       filter: brightness(1.1);
     }
-}
+  }
 `;
 
 export const filterButton = css`
@@ -20,22 +20,18 @@ export const filterButton = css`
   font-weight: bold;
   color: white;
   border: none;
+  box-shadow: 0px 0 2px 0 ${ props => props.theme.colors.shadowDefault };
   border-radius: 2px;
   background-color: ${ props => props.theme.colors.innerB };
   position: relative;
+  
 `;
 
 export const filterButtonMobile = css`
   @media only screen and (max-width: 780px) {
     min-height: 30px;
     font-size: 1.2rem;
-    font-weight: normal;
-    border-radius: 3px;
   }
-`;
-
-export const iconButton = css`
-  cursor: pointer;
 `;
 
 export const textInput = css`
@@ -57,14 +53,6 @@ export const textInputMobile = css`
     border: none;
     margin: 0;
   }
-`;
-
-export const buttonRed = css`
-  border-color: ${ props => props.theme.colors.borderRed };
-`;
-
-export const buttonGreen = css`
-  border-color: ${ props => props.theme.colors.borderGreen };
 `;
 
 export const candyCaneBG = css`

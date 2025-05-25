@@ -13,8 +13,7 @@ const SelectorMain = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${ props => props.theme.colors.innerA };
-  border: 5px solid ${ props => props.theme.colors.accent };
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 5px;
   box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
   z-index: 100;

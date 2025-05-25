@@ -6,7 +6,6 @@ const SearchBarMain = styled.div`
   display: flex;
   position: relative;
   flex-grow: 1;
-  margin: 2px;
   min-height: 42px;
 
   > input {
@@ -19,13 +18,20 @@ const SearchBarMain = styled.div`
       color: rgb(199, 199, 199);
     }
   }
+`;
+
+const ClearButton = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  right: 8px;
+  opacity: 50%;
+  min-height: 42px;
 
   > span {
-    ${ mixins.iconButton }
-    right: 8px;
-    top: 7.5px;
-    position: absolute;
-    opacity: 50%;
+    cursor: pointer;
   
     &:hover {
       opacity: 100%;
@@ -73,13 +79,15 @@ const SearchBar: FC<SearchBarProps> = ({ setSearchTerm, focusOnEnter }) => {
         onChange={ event => handleSearchInput(event) }
       />
       { showCancel ? (
-        <span
-          className="material-icons"
-          role="presentation"
-          onClick={ handleCancelClick }
-        >
-          cancel
-        </span>
+        <ClearButton>
+          <span
+            className="material-icons"
+            role="presentation"
+            onClick={ handleCancelClick }
+          >
+            cancel
+          </span>
+        </ClearButton>
       ) : null }
     </SearchBarMain>
   );

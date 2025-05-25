@@ -10,13 +10,10 @@ import { CloseBar } from '../../styles/components';
 const ToolbarMain = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
+  min-height: 42px;
   
   color: ${ props => props.theme.colors.accent };
-  margin: 3px;
-  border-bottom: 4px solid ${ props => props.theme.colors.accent };
-  border-radius: 4px;
-  height: fit-content;
-  padding-left: 20px;
 
   > ${ CloseBar } {
     margin: 0px 10px;
@@ -28,16 +25,9 @@ const ToolbarMain = styled.div`
   }
 `;
 
-const Dialog = styled.p`
-  text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
-  font-weight: bold;
-`;
-
 const ToolbarRight = styled.div`
   display: flex;
   align-items: center;
-  border-left: 4px solid ${ props => props.theme.colors.accent };
-  margin: 0px 0px 4px 12px;
 
   @media only screen and (max-width: 780px) {
     flex-wrap: wrap;
@@ -48,20 +38,11 @@ const ToolbarRight = styled.div`
 const NameField = styled.div`
   display: flex;
   align-items: center;
-  height: 100%;
-  margin: 0px 5px 0px 12px;
-  
-  > p {
-    font-weight: bold;
-    text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
-  }
+  margin: 0 5px 0 0;
 
   > input {
     ${ mixins.textInput }
     ${ mixins.textInputMobile }
-
-    margin-left: 10px;
-    margin-bottom: 0px;
 
     @media only screen and (max-width: 780px) {
       margin-left: 10px;
@@ -83,7 +64,17 @@ const ToolbarButton = styled.button`
     opacity: 0.5;
   ` }
 
-  margin: 0px 5px;
+  margin: 0 5px;
+
+  &:first-of-type {
+    background-color: ${ props => props.theme.colors.borderGreen };
+    text-shadow: 0 0 4px ${ props => props.theme.colors.shadowDefault };
+  }
+
+  &:last-of-type {
+    background-color: ${ props => props.theme.colors.borderRed };
+    text-shadow: 0 0 4px ${ props => props.theme.colors.shadowDefault };
+  }
 `;
 
 const ConfirmDelete = styled(ToolbarButton)`
@@ -98,7 +89,6 @@ const ColorButton = styled.div<ColorButtonProps>`
   ${ mixins.filterButton }
   ${ mixins.filterButtonMobile }
 
-  min-height: 30px;
   width: 60px;
   cursor: pointer;
   position: relative;
@@ -197,18 +187,14 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
 
   return (
     <ToolbarMain>
-      <Dialog>
-        { editMode ? 'Edit tag properties' : 'Select a tag to begin tagging or create/edit a tag. ' }
-      </Dialog>
       { !editMode && (
         <CloseBar role='presentation' onClick={ toggleShowCustomTagPicker }>
-          <p>Close</p>
+          <p>Close Tag Editor</p>
         </CloseBar>
       ) }
       { editMode && (
       <ToolbarRight>
         <NameField>
-          <p>Name:</p>
           <input type='text' value={ currentlyEditing?.name } onChange={ event => handleInputChange(event.target.value) } />
         </NameField>
         <ColorButton color={ currentlyEditing?.color || '' } onClick={ () => setShowColorPicker(!showColorPicker) }>

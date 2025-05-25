@@ -2,7 +2,6 @@ import { FC } from 'react';
 import styled from 'styled-components';
 import { useCustomTags } from '../../contexts/custom-tags-context';
 import { button } from '../../styles/mixins';
-import { InnerShadow } from '../../styles/components';
 
 interface TagStyleProps {
   color: string;
@@ -15,9 +14,10 @@ const TagTileMain = styled.div<TagStyleProps>`
     font-size: 1.1rem;
     color: white;
     background-color: ${ props => props.color };
-    border: 4px solid ${ props => props.theme.colors.accent };
-    border-radius: 4px;
+    border: none;
+    border-radius: 2px;
     text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
+    box-shadow: 0 0 2px 0 ${ props => props.theme.colors.shadowDefault };
     position: relative;
    
     margin: 3px;
@@ -66,7 +66,6 @@ const TagTile: FC<TagTileProps> = ({ id, name, color, editMode, handleEditTagCli
   return (
     <TagTileMain color={ color }>
       <button type='button' onClick={ () => editMode ? null : beginTagging(id) }>
-        <InnerShadow />
         { name }
       </button>
       <span className='material-icons' role='presentation' onClick={ () => handleEditTagClick(id) }>edit</span>

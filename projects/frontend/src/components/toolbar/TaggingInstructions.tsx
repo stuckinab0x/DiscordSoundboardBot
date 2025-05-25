@@ -15,10 +15,7 @@ const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
   margin: 0px 100px;
   flex-grow: 2;
   justify-content: center;
-  border: solid ${ props => props.$tagColor };
-  border-width: 5px 15px;
-  border-radius: 5px;
-  
+
   > p {
     color: ${ props => props.$tagColor };
     font-weight: bold;
@@ -39,7 +36,6 @@ const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
 
 const ConfirmButton = styled(CloseBar)`
   margin: 0px 6px;
-  height: 22px;
   
   &:first-of-type {
     background-color: ${ props => props.theme.colors.borderGreen };
