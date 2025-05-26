@@ -2,13 +2,12 @@ import { FC, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Sound from '../../models/sound';
 import { textShadowVisibility } from '../../styles/mixins';
-import { AdminPanelDivider as Divider } from '../../styles/components';
+import { AdminPanelDivider } from '../../styles/components';
 import AdminSoundActions from './AdminSoundActions';
 import VolumeSlider from '../VolumeSlider';
 
 const InfoContainer = styled.div`
-  padding: 20px;
-  min-width: 480px;
+  padding: 10px;
   ${ textShadowVisibility }
 
   > div {
@@ -37,14 +36,17 @@ const InfoContainer = styled.div`
       }
     }
 
-    @media only screen and (max-width: 780px) {
+    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
       margin: 4px 0px;
     }
   }
 
-  @media only screen and (max-width: 780px) {
-    box-shadow: 0px 4px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     padding: 10px 20px;
+
+    h2, h3 {
+      font-size: 1rem;
+    }
   }
 `;
 
@@ -70,7 +72,7 @@ const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSele
         <h2>List Volume</h2>
         <VolumeSlider setPreviewVolume={ setPreviewVolume } />
       </div>
-      <Divider />
+      <AdminPanelDivider />
       <div>
         <h2>Name:</h2>
         <h2>{ selectedSound?.name }</h2>
@@ -83,7 +85,7 @@ const PanelInfoContainer:FC<PanelInfoContainerProps> = ({ selectedSound, setSele
         <h2>Created:</h2>
         <h2>{ selectedSound?.date }</h2>
       </div>
-      <Divider />
+      <AdminPanelDivider />
       { selectedSound && selectedSound.id !== 'nope'
       && (
       <AdminSoundActions

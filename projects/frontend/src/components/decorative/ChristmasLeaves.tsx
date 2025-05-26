@@ -8,7 +8,7 @@ const ChristmasLeavesMain = styled.svg`
   width: 2000px;
   min-height: 144px;
   
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     width: 1000px;
     top: -58px;
   }
@@ -17,7 +17,7 @@ const ChristmasLeavesMain = styled.svg`
     filter: brightness(1.4) saturate(1.5);
     top: -30px;
 
-    @media only screen and (max-width: 780px) {
+    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
       top: -40px;
     }
   }

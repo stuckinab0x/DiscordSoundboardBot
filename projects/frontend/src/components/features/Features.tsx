@@ -12,18 +12,12 @@ const FeaturesContainer = styled.div`
   background-color: ${ props => props.theme.colors.innerA };
 
   ${ props => props.theme.name === 'Christmas' && candyCaneBG };
-
 `;
 
 const Row = styled.div`
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding: 2px;
-
-  > :first-child {
-    margin-left: 0;
-  }
 `;
 
 const OptionsRow = styled(Row)`
@@ -31,28 +25,25 @@ const OptionsRow = styled(Row)`
 
   > :last-child {
     display: flex;
-    align-items: center;
+  }
+
+  > :last-child :nth-child(2) button {
+    box-shadow: none;
   }
 
   > :last-child span {
     width: 4px;
     background-color: white;
     height: 42px;
-    margin: 0 8px;
+    margin: 2px;
   }
 
-  @media only screen and (max-width: 1200px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector1 }px) {
     align-items: flex-start;
     flex-direction: column-reverse;
-    padding: 0 2px;
-    
+
     > div {
       width: 100%;
-      padding: 2px 0;
-    }
-
-    > div :first-child {
-      margin-left: 0;
     }
 
     > :last-child span:first-of-type {
@@ -60,7 +51,7 @@ const OptionsRow = styled(Row)`
     }
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     > :last-child span {
       height: 30px;
     }

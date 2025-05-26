@@ -18,15 +18,8 @@ const Buttons = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 0;
-  padding: 4px 8px;
   position: relative;
   z-index: 0;
-
-  @media only screen and (max-width: 780px) {
-    padding: 8px 0px;
-    margin: 0px 8px;
-  }
 `;
 
 const IntroError = styled.div`

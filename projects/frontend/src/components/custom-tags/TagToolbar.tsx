@@ -19,7 +19,7 @@ const ToolbarMain = styled.div`
     margin: 0px 10px;
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     justify-content: center;
     padding: 2px 6px
   }
@@ -29,7 +29,7 @@ const ToolbarRight = styled.div`
   display: flex;
   align-items: center;
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -42,14 +42,13 @@ const NameField = styled.div`
 
   > input {
     ${ mixins.textInput }
-    ${ mixins.textInputMobile }
-
-    @media only screen and (max-width: 780px) {
+    
+    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
       margin-left: 10px;
     }
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     margin-left: 8px;
   }
 `;
@@ -96,7 +95,7 @@ const ColorButton = styled.div<ColorButtonProps>`
   background-color: ${ props => props.color };
   z-index: 10;
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     max-height: 26px;
   }
 `;

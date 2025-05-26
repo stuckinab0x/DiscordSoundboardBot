@@ -2,6 +2,12 @@ import { DefaultTheme } from 'styled-components';
 
 const baseFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
+const params = {
+  widthSelector1: 1200,
+  widthSelector2: 780,
+  widthSelector3: 550,
+};
+
 const themes: DefaultTheme[] = [
   {
     name: 'Classic',
@@ -24,6 +30,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#816eff',
       volumeSliderThumb: '#6b54fc',
     },
+    params,
   },
   {
     name: 'DiscoDark',
@@ -46,6 +53,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#816eff',
       volumeSliderThumb: '#6b54fc',
     },
+    params,
   },
   {
     name: 'Christmas',
@@ -68,6 +76,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#D66C6C',
       volumeSliderThumb: '#B23838',
     },
+    params,
   },
   {
     name: 'Halloween',
@@ -90,6 +99,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#9200d6',
       volumeSliderThumb: '#e8660e',
     },
+    params,
   },
   {
     name: 'America',
@@ -112,6 +122,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#5c89fa',
       volumeSliderThumb: '#4074f7',
     },
+    params,
   },
   {
     name: 'Forest',
@@ -134,6 +145,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#5d4a34',
       volumeSliderThumb: '#775740',
     },
+    params,
   },
   {
     name: 'Goth',
@@ -156,6 +168,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#492d3e',
       volumeSliderThumb: '#4b2c4d',
     },
+    params,
   },
   {
     name: 'Mesa',
@@ -178,6 +191,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#a25e51',
       volumeSliderThumb: '#a13232',
     },
+    params,
   },
   {
     name: 'Black Forest Cake',
@@ -200,6 +214,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#822129',
       volumeSliderThumb: '#b62935',
     },
+    params,
   },
   {
     name: 'Mist',
@@ -222,6 +237,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#816eff',
       volumeSliderThumb: '#6b54fc',
     },
+    params,
   },
   {
     name: '20XD6',
@@ -244,6 +260,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#691d92',
       volumeSliderThumb: '#ff3fd5',
     },
+    params,
   },
   {
     name: 'Boomer',
@@ -266,6 +283,7 @@ const themes: DefaultTheme[] = [
       volumeSliderFill: '#01068a',
       volumeSliderThumb: '#050ce0',
     },
+    params,
   },
 ];
 

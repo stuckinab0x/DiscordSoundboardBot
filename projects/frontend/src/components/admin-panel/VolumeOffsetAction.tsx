@@ -56,7 +56,7 @@ const StyledSlider = styled.input`
   &[type="range"]::-moz-range-thumb {
     ${ sliderThumb }
   }
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     &[type="range"] {
       height: 5px;
     }

@@ -12,27 +12,15 @@ const FiltersBarMain = styled.div`
   align-items: center;
   box-sizing: border-box;
   flex-grow: 1;
-  
 
   > button {
-    margin: 0 2px;
+    margin: 2px;
   }
 
-  > :first-child {
-    margin-left: 0;
-  }
-
-  > :last-child {
-    margin-right: 0;
-  }
-
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     > button {
       flex-grow: 1;
-      margin: 0 2px;
     }
-
-
   }
 `;
 

@@ -7,34 +7,20 @@ import ThemeButton from './ThemeButton';
 import { CloseBar } from '../../styles/components';
 
 const SelectorMain = styled.div`
-  position: absolute;
-  top: 0px;
-  left: 0px;
   display: flex;
   flex-direction: column;
   background-color: ${ props => props.theme.colors.innerA };
   border-radius: 2px;
   padding: 5px;
-  box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
-  z-index: 100;
+  box-shadow: 0px 0px 2px ${ props => props.theme.colors.shadowDefault };
+  z-index: 200;
 
-  > :first-child {
+  > :last-child {
     display: flex;
   }
 
   > ${ CloseBar } {
     margin: 6px;
-  }
-
-  @media only screen and (max-width: 780px) {
-    position: fixed;
-    left: 20px;
-    right: 20px;
-    top: 100px;
-
-    > :first-child {
-      flex-direction: column;
-    }
   }
 `;
 
@@ -48,6 +34,10 @@ const Column = styled.div`
   > h2 {
     color: white;
     margin: 0;
+  }
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    min-width: 100px;
   }
 `;
 
@@ -83,12 +73,6 @@ const SeasonalOption = styled.div`
       color: ${ props => props.theme.colors.accent };
     }
   }
-
-  @media only screen and (max-width: 780px) {
-    > h4 {
-      font-size: 1.4rem;
-    }
-  }
 `;
 
 interface ThemeSelectorProps {
@@ -112,6 +96,9 @@ const ThemeSelector: FC<ThemeSelectorProps> = ({ close }) => {
 
   return (
     <SelectorMain>
+      <CloseBar onClick={ close }>
+        <p>Close Theme Selector</p>
+      </CloseBar>
       <div>
         <Column>
           <h2>Theme Select</h2>
@@ -133,9 +120,6 @@ const ThemeSelector: FC<ThemeSelectorProps> = ({ close }) => {
         </Column>
         )}
       </div>
-      <CloseBar onClick={ close }>
-        <p>Close</p>
-      </CloseBar>
     </SelectorMain>
   );
 };

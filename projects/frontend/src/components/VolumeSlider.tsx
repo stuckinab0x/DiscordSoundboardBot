@@ -9,10 +9,10 @@ const sliderThumb = css`
   -webkit-appearance: none;
   height: 20px;
   width: 20px;
-  border-radius: 50%;
+  border-radius: 6px;
   background: ${ props => props.theme.colors.volumeSliderThumb };
   cursor: ew-resize;
-  box-shadow: 0 0 2px 0 #555;
+  box-shadow: 0 0 2px ${ props => props.theme.colors.shadowDefault };
 `;
 
 const StyledSlider = styled.input`
@@ -33,8 +33,6 @@ const StyledSlider = styled.input`
   
   &[type=range]::-webkit-slider-runnable-track {
     -webkit-appearance: none;
-    box-shadow: none;
-    border: none;
     background: transparent;
   }
 
@@ -42,9 +40,9 @@ const StyledSlider = styled.input`
     ${ sliderThumb }
   }
 
-  box-shadow: 0px 0px 10px 0px ${ props => props.theme.colors.shadowDefault };
+  box-shadow: 0px 0px 2px ${ props => props.theme.colors.shadowDefault };
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     width: 90px;
     &[type="range"] {
       height: 4px;

@@ -6,16 +6,23 @@ const SearchBarMain = styled.div`
   display: flex;
   position: relative;
   flex-grow: 1;
-  min-height: 42px;
 
   > input {
     ${ mixins.textInput }
-    ${ mixins.textInputMobile }
+
+    min-height: 42px;
+    margin: 2px;
 
     ${ props => props.theme.name === 'Boomer' && 'font-size: 1.45rem;' }
   
     &::placeholder {
       color: rgb(199, 199, 199);
+    }
+  }
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
+    > input {
+      min-height: 30px;
     }
   }
 `;
@@ -29,6 +36,7 @@ const ClearButton = styled.div`
   right: 8px;
   opacity: 50%;
   min-height: 42px;
+  margin: 2px 0;
 
   > span {
     cursor: pointer;
@@ -36,6 +44,10 @@ const ClearButton = styled.div`
     &:hover {
       opacity: 100%;
     }
+  }
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
+    min-height: 30px;
   }
 `;
 

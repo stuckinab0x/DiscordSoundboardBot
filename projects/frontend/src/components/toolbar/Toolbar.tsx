@@ -1,82 +1,53 @@
 import { FC } from 'react';
 import styled from 'styled-components';
-import { textShadowVisibility } from '../../styles/mixins';
 import PreviewVolume from './PreviewVolume';
 import TaggingInstructions from './TaggingInstructions';
 import { usePrefs } from '../../contexts/prefs-context';
 import { useCustomTags } from '../../contexts/custom-tags-context';
-import ThemeSelector from './ThemeSelector';
-import { getSeasonalThemeName } from '../../utils';
+import ShowThemeSelectorButton from './ShowThemeSelectorButton';
 
 const ToolbarMain = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 14px 4vw 0;
-  position: relative;
-`;
-
-const ThemeButton = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: ${ props => props.theme.colors.innerA };
-  border-radius: 2px;
-  margin-right: 20px;
-  padding: 4px 8px;
-  cursor: pointer;
-  user-select: none;
+  margin: 12px;
   position: relative;
 
-  &:hover:not(:active) {
-    filter: brightness(1.1);
-  }
-
-  > span {
-    color: ${ props => props.theme.colors.accent };
-    font-size: 1.8rem;
-    margin-right: 4px;
-  }
-
-  > h4 {
-    color: white;
-    margin: 0;
-  }
-
-  > span, h4 {
-    ${ textShadowVisibility }
+  > * {
+    margin: 0 6px;
   }
 `;
 
 const ResizeIcon = styled.div`
   cursor: pointer;
-
-  @media only screen and (max-width: 780px) {
-    width: 100%;
-    display: flex;
-    margin-right: 10px;
-    justify-content: right;
-  }
+  max-height: 42px;
+  display: flex;
 `;
 
 const ResizeSpan = styled.span`
   color: ${ props => props.theme.colors.accent };
 
-  font-size: 2.5rem;
-  margin-right: -10px;
   user-select: none;
+  text-shadow: 0px 0 2px ${ props => props.theme.colors.shadowDefault };
+
+  &.material-symbols-outlined {
+    font-size: 2.5rem;
+    font-weight: 400;
+  }
 
   ${ props => props.theme.name === 'Christmas' && 'filter: brightness(1.2);' }
 
   &:first-child {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    margin: 0 -6px 0 0;
   }
-
-  @media only screen and (max-width: 780px) {
-    margin-right: -4px;
+  
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
+    &:first-child {
+      margin-right: -4px;
+    }
   }
 `;
-
-const seasonalName = getSeasonalThemeName();
 
 interface SoundboardToolbarProps {
   setPreviewVolume: (volume: string) => void;
@@ -85,14 +56,10 @@ interface SoundboardToolbarProps {
 const Toolbar: FC<SoundboardToolbarProps> = ({ setPreviewVolume }) => {
   const { toggleSmallButtons } = usePrefs();
   const { currentlyTagging } = useCustomTags();
-  const { themePrefs: { theme, useSeasonal }, showThemePicker, setShowThemePicker } = usePrefs();
 
   return (
     <ToolbarMain>
-      <ThemeButton onClick={ () => setShowThemePicker(!showThemePicker) }>
-        <span className="material-symbols-outlined">palette</span>
-        <h4>{ theme === 'Classic' && useSeasonal ? seasonalName : theme }</h4>
-      </ThemeButton>
+      <ShowThemeSelectorButton />
       <PreviewVolume setPreviewVolume={ setPreviewVolume } />
       { currentlyTagging && (
       <TaggingInstructions
@@ -102,10 +69,9 @@ const Toolbar: FC<SoundboardToolbarProps> = ({ setPreviewVolume }) => {
       ) }
       <div>
         <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
-          { [0, 1].map(x => <ResizeSpan key={ x } className='material-icons'>crop_square</ResizeSpan>) }
+          { [0, 1].map(x => <ResizeSpan key={ x } className='material-symbols-outlined'>crop_square</ResizeSpan>) }
         </ResizeIcon>
       </div>
-      { showThemePicker && <ThemeSelector close={ () => setShowThemePicker(false) } /> }
     </ToolbarMain>
   );
 };

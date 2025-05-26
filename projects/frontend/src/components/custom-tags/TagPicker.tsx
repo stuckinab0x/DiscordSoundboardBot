@@ -18,7 +18,7 @@ const TagPickerMain = styled.div`
   margin: 2px 0 0px;
   padding: 10px 50px;
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     margin: 10px 10px 0px;
     border: 3px solid ${ props => props.theme.colors.accent };
     border-radius: 3px;

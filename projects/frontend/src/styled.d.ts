@@ -22,5 +22,10 @@ declare module 'styled-components' {
       volumeSliderFill: string;
       volumeSliderThumb: string;
     },
+    params: {
+      widthSelector1: number;
+      widthSelector2: number;
+      widthSelector3: number;
+    }
   }
 }

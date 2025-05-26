@@ -20,18 +20,11 @@ export const FilterButton = styled(ToggleButtonBase)`
 `;
 
 export const OptionsButton = styled(ToggleButtonBase)`
-  margin: 2px 2.5px;
+  margin: 2px;
+  
   ${ props => props.theme.name === '20XD6' && 'font-size: 11pt;' }
 
   ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
-
-  @media only screen and (max-width: 780px) {
-    font-size: 1.4rem;
-  }
-
-  @media only screen and (max-width: 550px) {
-    font-size: 1.2rem;
-  }
 `;
 
 export const InnerShadow = styled.div`
@@ -74,12 +67,12 @@ export const CloseBar = styled.div`
 export const AdminPanelDivider = styled.hr`
   background: ${ props => props.theme.colors.accent };
   border: none;
-  border-radius: 3px;
+  border-radius: 2px;
   height: 10px;
   width: 470px;
   margin: 2px 0px;
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     display: none;
   }
 `;

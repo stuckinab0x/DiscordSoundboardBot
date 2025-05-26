@@ -69,7 +69,7 @@ const Wire = styled.div`
     }
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     display: none;
   }
 `;

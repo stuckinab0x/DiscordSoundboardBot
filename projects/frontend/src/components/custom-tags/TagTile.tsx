@@ -26,7 +26,7 @@ const TagTileMain = styled.div<TagStyleProps>`
     
     ${ button }
 
-    @media only screen and (max-width: 780px) {
+    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
       height: 70px;
       width: 70px;
       border: 3px solid ${ props => props.theme.colors.accent };
@@ -46,7 +46,7 @@ const TagTileMain = styled.div<TagStyleProps>`
       opacity: 100%;
     }
 
-    @media only screen and (max-width: 780px) {
+    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
       font-size: 1.3rem;
     }
   }

@@ -28,9 +28,8 @@ export const filterButton = css`
 `;
 
 export const filterButtonMobile = css`
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     min-height: 30px;
-    font-size: 1.2rem;
   }
 `;
 
@@ -44,14 +43,6 @@ export const textInput = css`
 
   &::placeholder {
     color: rgb(199, 199, 199);
-  }
-`;
-
-export const textInputMobile = css`
-  @media only screen and (max-width: 780px) {
-    font-size: 1.6rem;
-    border: none;
-    margin: 0;
   }
 `;
 

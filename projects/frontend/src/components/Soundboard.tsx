@@ -7,6 +7,8 @@ import Features from './features/Features';
 import SoundBoardToolbar from './toolbar/Toolbar';
 import TagPicker from './custom-tags/TagPicker';
 import ButtonContainer from './ButtonContainer';
+import { usePrefs } from '../contexts/prefs-context';
+import ThemeSelector from './toolbar/ThemeSelector';
 
 interface SoundboardStyleProps {
   $state: TransitionStatus;
@@ -40,6 +42,7 @@ interface SoundboardProps {
 const Soundboard: FC<SoundboardProps> = ({ state }) => {
   const { showCustomTagPicker } = useCustomTags();
   const { soundPreview, setPreviewVolume } = useSoundPreview();
+  const { showThemePicker, setShowThemePicker } = usePrefs();
 
   return (
     <SoundboardMain $state={ state }>
@@ -50,9 +53,11 @@ const Soundboard: FC<SoundboardProps> = ({ state }) => {
       <SoundBoardToolbar
         setPreviewVolume={ setPreviewVolume }
       />
-      <ButtonContainer
-        soundPreview={ soundPreview }
-      />
+      { showThemePicker ? <ThemeSelector close={ () => setShowThemePicker(false) } /> : (
+        <ButtonContainer
+          soundPreview={ soundPreview }
+        />
+      ) }
     </SoundboardMain>
   );
 };

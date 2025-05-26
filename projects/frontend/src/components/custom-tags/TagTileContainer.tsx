@@ -20,7 +20,7 @@ const tagButtonTemplate = css`
   height: 110px;
   width: 110px;
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     height: 70px;
     width: 70px;
   }

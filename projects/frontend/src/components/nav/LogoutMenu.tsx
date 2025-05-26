@@ -8,7 +8,7 @@ const LogOutMenuMain = styled.div`
   top: 56px;
   left: -25px;
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     left: 0px;
   }
 
@@ -36,7 +36,7 @@ const LogOutMenuMain = styled.div`
     border-left-width: 14px;
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     &::after {
       left: 12.5px;
     }

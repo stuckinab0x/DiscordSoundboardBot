@@ -24,7 +24,7 @@ const AddSoundButton = styled(OptionsButton)`
   background-color: ${ props => props.theme.colors.borderGold };
   ${ props => props.$toggled && `background-color: ${ props.theme.colors.borderGreen };` }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     border-color: ${ props => props.theme.colors.borderGold };
   }
 `;

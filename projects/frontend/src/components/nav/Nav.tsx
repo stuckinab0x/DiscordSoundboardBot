@@ -47,9 +47,9 @@ const LeavesContainer = styled.div`
 
 const UsaNavImg = styled.img`
   position: absolute;
-  left: 670px;
+  left: 500px;
   bottom: 0;
-  height: 90px;
+  height: 60px;
   width: auto;
 `;
 
@@ -58,11 +58,7 @@ const TitleAndUsername = styled.div`
   justify-content: space-between;
   flex-grow: 1;
   z-index: 50;
-  min-width: 0;
-
-  @media only screen and (max-width: 780px) {
-    flex-direction: column;
-  }   
+  min-width: 0; 
 `;
 
 interface TitleProps {
@@ -92,10 +88,6 @@ const Title = styled.div<TitleProps>`
         text-shadow: 0px 0px 10px yellow;
       }
   ` }
-
-    @media only screen and (max-width: 780px) {
-      margin: 10px 0px 4px;
-    }
   }
 `;
 
@@ -109,14 +101,6 @@ const Username = styled.div`
     text-shadow: 0px 3px 3px ${ props => props.theme.colors.shadowDefault };
     position: relative;
     margin: -2px 6px 2px;
-  }
-
-  @media only screen and (max-width: 780px) {
-    margin: 4px 0px 12px;
-
-    > h2 {
-      margin-left: 2px;
-    }
   }
 `;
 
@@ -135,12 +119,6 @@ const AdminButton = styled.button<AdminButtonStyleProps>`
 
 
   ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
-
-  @media only screen and (max-width: 780px) {
-    min-height: 20px;
-    font-size: 0.8rem;
-    order: 1;
-  }
 `;
 
 function getTitleFromTheme(themeName: string, name: string) {

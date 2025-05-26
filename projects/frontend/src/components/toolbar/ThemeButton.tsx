@@ -24,10 +24,6 @@ const ButtonMain = styled.button<ButtonStyleProps>`
     background: var(--a);
     background: linear-gradient(90deg, var(--a) 0%, var(--c) 50%, var(--b) 100%);
   ` }
-
-  @media only screen and (max-width: 780px) {
-    font-size: 1.4rem;
-  }
 `;
 
 interface ThemeButtonProps {

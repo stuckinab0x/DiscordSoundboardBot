@@ -11,6 +11,7 @@ import VolumeOffsetAction from './VolumeOffsetAction';
 const ActionContainer = styled.div`
   display: flex;
   justify-content: left;
+  max-width: 90vw;
   
   > span {
     margin: 5px 7px 0px 0px;

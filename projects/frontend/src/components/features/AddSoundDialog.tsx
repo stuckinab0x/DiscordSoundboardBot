@@ -79,7 +79,7 @@ const AddSoundDialogMain = styled.div<AddSoundDialogMainProps>`
     100% { transform: translate(0px); }
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     border-width: 3px;
     padding: 4px 6px;
     position: fixed;

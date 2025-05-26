@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import VolumeSlider from '../VolumeSlider';
 
 const PreviewVolumeMain = styled.div`
-  color: ${ props => props.theme.colors.accent };
+  color: white;
   display: flex;
   align-items: center;
   justify-content: left;
   flex-grow: 1;
 
-  > span {
-    margin-right: 10px;
+  > span, input {
+    margin: 2px 10px 0 0;
   }
 
   > p {
@@ -23,11 +23,13 @@ const PreviewVolumeMain = styled.div`
     ${ props => props.theme.name === 'Boomer' && 'color: white;' }
   }
 
-  @media only screen and (max-width: 780px) {
-    margin-left: 10px;
-
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
     > p {
-      width: min-content;
+      display: none;
+    }
+
+    > span, input {
+      margin: 0;
     }
   }
 `;

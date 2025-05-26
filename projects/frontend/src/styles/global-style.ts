@@ -35,9 +35,9 @@ const GlobalStyle = createGlobalStyle`
     }
   } 
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     html {
-      font-size: 8pt;
+      font-size: 12pt;
     }
   }
 

@@ -88,7 +88,7 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
 
     ${ props => props.$disableBorder ? null : getPlaybackResultStyle(props.$status) }
 
-    @media only screen and (max-width: 780px) {
+    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
       width: 20vw;
       height: 20vw;
       min-height: 100px;
@@ -124,7 +124,7 @@ const ButtonBase = styled.span<ButtonBaseProps>`
     opacity: 100%;
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     font-size: 1.4rem;
     
     ${ props => props.$small && css`
@@ -212,7 +212,7 @@ const PreviewButton = styled(ButtonBase)<PreviewButtonStyleProps>`
     display: inline;
   }
   
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     font-size: ${ props => props.$small ? '1rem' : '1.3rem' };
   }
 

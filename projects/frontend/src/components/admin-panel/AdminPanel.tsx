@@ -20,25 +20,21 @@ const AdminPanelMain = styled.div<AdminStyleProps>`
   transition: bottom 0.4s ease-out;
   bottom: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '0px' : '-110vh' };
   transition: top 0.4s ease-out;
-  top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '70px' : '100vh' };
+  top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '60px' : '100vh' };
   display: flex;
   width: 100%;
   flex-direction: column;
   overflow-y: hidden;
   z-index: 100;
   background-color: ${ props => props.theme.colors.bg };
-
-  @media only screen and (max-width: 780px) {
-    top: ${ props => props.$state === 'entered' || props.$state === 'entering' ? '80px' : '100vh' };
-  }
 `;
 
 const AdminFeatures = styled.div`
-  padding: 12px 30px 20px 30px;
-  box-shadow: 0px 5px 5px 2px ${ props => props.theme.colors.shadowDefault };
+  padding: 16px;
+  background-color: ${ props => props.theme.colors.innerA };
 
-  @media only screen and (max-width: 780px) {
-    padding: 12px 16px 10px;
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
+    padding: 12px;
   }
 `;
 
@@ -49,7 +45,7 @@ const FeaturesHeader = styled.div`
     ${ textShadowVisibility }
     margin: 10px 20px 10px 0px;
 
-    @media only screen and (max-width: 780px) {
+    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
       margin-top: 10px;
     }
 
@@ -64,7 +60,7 @@ const LowerContainer = styled.div`
   overflow-y: hidden;
   flex-grow: 1;
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     flex-direction: column;
   }
 `;
@@ -73,7 +69,7 @@ const SoundsContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
-  padding: 20px 30px;
+  padding: 10px;
   border-right: 5px solid ${ props => props.theme.colors.accent };
 
   &::-webkit-scrollbar {
@@ -85,10 +81,10 @@ const SoundsContainer = styled.div`
     background: ${ props => props.theme.colors.innerA };
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     border-right: none;
     border-bottom: 5px solid ${ props => props.theme.colors.accent };
-    box-shadow: 0px -6px 10px 0px ${ props => props.theme.colors.shadowDefault } inset;
+    box-shadow: 0 0 10px 0 ${ props => props.theme.colors.shadowDefault } inset;
     padding: 15px;
   }
 `;
