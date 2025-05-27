@@ -1,34 +1,21 @@
 import { FC } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import TagTile from './TagTile';
 import CustomTag from '../../models/custom-tag';
-import { button, textShadowVisibility } from '../../styles/mixins';
+import { button, tagButtonTemplate, textShadowVisibility } from '../../styles/mixins';
 
 const TagsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-`;
 
-const tagButtonTemplate = css`
-  color: white;
-  font-weight: bold;
-  background-color: ${ props => props.theme.colors.innerB };
-  border: 3px solid ${ props => props.theme.colors.accent };
-  border-radius: 3px;
-   
-  margin: 3px;
-  height: 110px;
-  width: 110px;
-
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    height: 70px;
-    width: 70px;
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    flex-direction: column;
+    flex-wrap: nowrap;
   }
 `;
 
 const NewTagButton = styled.button`
   ${ tagButtonTemplate }
-  border-color: ${ props => props.theme.colors.borderGold };
   ${ button }
 `;
 
@@ -56,12 +43,13 @@ interface TagTileContainerProps {
   editMode: boolean;
   creatingNew: boolean;
   beginCreatingNew: () => void;
+  currentId: string | undefined;
   currentName: string | undefined;
   currentColor: string | undefined;
   handleEditTagClick: (id: string) => void;
 }
 
-const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, creatingNew, beginCreatingNew, currentName, currentColor, handleEditTagClick }) => (
+const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, creatingNew, beginCreatingNew, currentId, currentName, currentColor, handleEditTagClick }) => (
   <TagsContainer>
     { editMode ? <DisabledNewTag>New</DisabledNewTag> : (
       <NewTagButton onClick={ beginCreatingNew }>
@@ -72,8 +60,8 @@ const TagTileContainer: FC<TagTileContainerProps> = ({ customTags, editMode, cre
       <TagTile
         key={ tag.id }
         id={ tag.id }
-        name={ tag.name }
-        color={ tag.color }
+        name={ currentId === tag.id ? currentName : tag.name }
+        color={ currentId === tag.id ? currentColor : tag.color }
         editMode={ editMode }
         handleEditTagClick={ handleEditTagClick }
       />

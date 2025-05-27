@@ -75,7 +75,10 @@ const Title = styled.div<TitleProps>`
     position: relative;
     user-select: none;
     white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     margin: 0;
+    color: ${ props => props.theme.colors.accent }
 
     ${ props => (props.theme.name === 'America' || props.theme.name === 'Boomer') && 'color: white;' }
     ${ props => props.theme.name === 'Boomer' && 'text-shadow: none; ' }
@@ -116,6 +119,7 @@ const AdminButton = styled.button<AdminButtonStyleProps>`
   border-width: 1px;
   font-size: 0.8rem;
   margin: 0 6px;
+  background-color: ${ props => props.theme.colors.bg };
 
 
   ${ props => props.$toggled && `background-color: ${ props.theme.colors.buttonHighlighted };` }
@@ -140,6 +144,7 @@ function getTitleFromTheme(themeName: string, name: string) {
     'he said the thing',
     'HEY guys WHAT IS UP and today I\'m going to be showing you how to play sounds',
     'I wouldn\'t',
+    'DiscordStoleOurBot',
   ];
 
   return pickRandom(titles);

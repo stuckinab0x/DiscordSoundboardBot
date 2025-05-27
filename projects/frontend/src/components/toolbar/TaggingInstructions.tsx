@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import styled from 'styled-components';
 import { useCustomTags } from '../../contexts/custom-tags-context';
-import { button, filterButton, filterButtonMobile } from '../../styles/mixins';
 import { CloseBar } from '../../styles/components';
 
 interface TaggingInstructionsMainProps {
@@ -11,34 +10,39 @@ interface TaggingInstructionsMainProps {
 const TaggingInstructionsMain = styled.div<TaggingInstructionsMainProps>`
   display: flex;
   align-items: center;
-  padding: 4px 10px;
-  margin: 0px 100px;
-  flex-grow: 2;
+  flex-grow: 1;
   justify-content: center;
 
   > p {
-    color: ${ props => props.$tagColor };
+    display: flex;
+    align-items: center;
+    color: white;
     font-weight: bold;
-    text-shadow: 2px 2px 3px ${ props => props.theme.colors.shadowDefault };
-    margin: 0;
-    margin-right: 12px;
+    text-shadow: 1px 1px 2px ${ props => props.theme.colors.shadowDefault };
+    margin: 2px;
+    padding: 0 6px;
+    min-height: 42px;
+    background-color: ${ props => props.$tagColor };
   }
 
-  > button {
-    ${ button }
-    ${ filterButton }
-    ${ filterButtonMobile }
-
-    margin: 0;
-    margin-left: 12px;
+  @media only screen and (max-width: 780px) {
+    > p {
+      min-height: 30px;
+    }
   }
 `;
 
 const ConfirmButton = styled(CloseBar)`
-  margin: 0px 6px;
-  
+  min-height: 42px;
+  margin: 2px;
+  padding: 0;
+
   &:first-of-type {
     background-color: ${ props => props.theme.colors.borderGreen };
+  }
+
+  @media only screen and (max-width: 780px) {
+    min-height: 30px;
   }
 `;
 
@@ -52,12 +56,12 @@ const TaggingInstructions: FC<TaggingInstructionsProps> = ({ tagName, tagColor }
 
   return (
     <TaggingInstructionsMain $tagColor={ tagColor }>
-      <p>
-        { `Currently tagging sounds for: ${ tagName }` }
-      </p>
       <ConfirmButton onClick={ saveTagged }>
         <p>Save</p>
       </ConfirmButton>
+      <p>
+        { `Tagging: ${ tagName }` }
+      </p>
       <ConfirmButton onClick={ discardTagged }>
         <p>Discard</p>
       </ConfirmButton>

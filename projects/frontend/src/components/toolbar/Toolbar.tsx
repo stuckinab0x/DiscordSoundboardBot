@@ -1,9 +1,7 @@
 import { FC } from 'react';
 import styled from 'styled-components';
 import PreviewVolume from './PreviewVolume';
-import TaggingInstructions from './TaggingInstructions';
 import { usePrefs } from '../../contexts/prefs-context';
-import { useCustomTags } from '../../contexts/custom-tags-context';
 import ShowThemeSelectorButton from './ShowThemeSelectorButton';
 
 const ToolbarMain = styled.div`
@@ -16,12 +14,20 @@ const ToolbarMain = styled.div`
   > * {
     margin: 0 6px;
   }
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    margin: 12px 4px;
+  }
 `;
 
 const ResizeIcon = styled.div`
   cursor: pointer;
   max-height: 42px;
   display: flex;
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    display: none;
+  }
 `;
 
 const ResizeSpan = styled.span`
@@ -55,18 +61,11 @@ interface SoundboardToolbarProps {
 
 const Toolbar: FC<SoundboardToolbarProps> = ({ setPreviewVolume }) => {
   const { toggleSmallButtons } = usePrefs();
-  const { currentlyTagging } = useCustomTags();
 
   return (
     <ToolbarMain>
       <ShowThemeSelectorButton />
       <PreviewVolume setPreviewVolume={ setPreviewVolume } />
-      { currentlyTagging && (
-      <TaggingInstructions
-        tagName={ currentlyTagging.name }
-        tagColor={ currentlyTagging.color }
-      />
-      ) }
       <div>
         <ResizeIcon role="presentation" onClick={ toggleSmallButtons }>
           { [0, 1].map(x => <ResizeSpan key={ x } className='material-symbols-outlined'>crop_square</ResizeSpan>) }

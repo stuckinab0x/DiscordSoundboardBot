@@ -24,7 +24,7 @@ const PreviewVolumeMain = styled.div`
   }
 
   @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
-    > p {
+    > span {
       display: none;
     }
 

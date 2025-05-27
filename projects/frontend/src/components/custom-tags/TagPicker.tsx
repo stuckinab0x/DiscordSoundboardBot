@@ -16,13 +16,7 @@ const TagPickerMain = styled.div`
 
   height: max-content;
   margin: 2px 0 0px;
-  padding: 10px 50px;
-
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    margin: 10px 10px 0px;
-    border: 3px solid ${ props => props.theme.colors.accent };
-    border-radius: 3px;
-  }
+  padding: 10px;
 `;
 
 const ColumnDiv = styled.div`
@@ -71,6 +65,7 @@ const TagPicker: FC = () => {
           editMode={ editingTag }
           creatingNew={ creatingNew }
           beginCreatingNew={ beginCreatingNew }
+          currentId={ currentlyEditing?.id }
           currentName={ currentlyEditing?.name }
           currentColor={ currentlyEditing?.color }
           handleEditTagClick={ handleEditTagClick }

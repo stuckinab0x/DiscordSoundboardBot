@@ -17,10 +17,9 @@ const LogOutMenuMain = styled.div`
 
     color: white;
     background-color: ${ props => props.theme.colors.innerB };
-    border: 2px solid ${ props => props.theme.colors.accent };
-    border-width: 2px;
-    border-radius: 3px;
-    box-shadow: 1.5px 1.5px 6px 0.8px ${ props => props.theme.colors.shadowDefault };
+    border: none;
+    border-radius: 2px;
+    box-shadow: 0 0 6px 0 white;
     min-height: 32px;
   }
 
@@ -30,7 +29,7 @@ const LogOutMenuMain = styled.div`
     top: -12px;
     left: 37.5px;
     border: solid 5px transparent;
-    border-bottom-color: ${ props => props.theme.colors.accent };
+    border-bottom-color: ${ props => props.theme.colors.innerB };
     border-bottom-width: 7px;
     border-right-width: 14px;
     border-left-width: 14px;

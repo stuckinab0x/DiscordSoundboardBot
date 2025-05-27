@@ -6,6 +6,8 @@ import OptionsContainer from './OptionsContainer';
 import SearchBar from '../SearchBar';
 import { candyCaneBG } from '../../styles/mixins';
 import { usePrefs } from '../../contexts/prefs-context';
+import { useCustomTags } from '../../contexts/custom-tags-context';
+import TaggingInstructions from '../toolbar/TaggingInstructions';
 
 const FeaturesContainer = styled.div`
   padding: 12px 10px 8px;
@@ -77,11 +79,12 @@ const OptionsRow = styled(Row)`
 
 const Features: FC = () => {
   const { updateSearchTerm } = usePrefs();
+  const { currentlyTagging } = useCustomTags();
 
   return (
     <FeaturesContainer>
       <Row>
-        <FiltersBar />
+        { currentlyTagging ? <TaggingInstructions tagName={ currentlyTagging.name } tagColor={ currentlyTagging.color } /> : <FiltersBar /> }
       </Row>
       <OptionsRow>
         <SearchBar setSearchTerm={ updateSearchTerm } focusOnEnter={ false } />

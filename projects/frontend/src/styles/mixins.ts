@@ -75,6 +75,28 @@ export const flagStripesBg = css`
   background: repeating-linear-gradient(#f74444, #f74444 30px, #e5e5f7 30px, #e5e5f7 60px );
 `;
 
+export const tagButtonTemplate = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  background-color: ${ props => props.theme.colors.innerB };
+  border: none;
+  border-radius: 2px;
+  margin: 3px;
+  height: 110px;
+  width: 110px;
+  box-shadow: 0 0 6px 0 ${ props => props.theme.colors.borderGold };
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    height: 40px;
+    display: flex;
+    width: unset;
+    flex-grow: 1;
+  }
+`;
+
 export const textShadowVisibility = css`
   text-shadow: 1px 1px 4px ${ props => props.theme.colors.shadowDefault };
 `;

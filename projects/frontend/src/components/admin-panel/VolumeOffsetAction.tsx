@@ -1,9 +1,10 @@
 import { FC, useRef, useState, useEffect, useCallback, useMemo } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useSWRConfig } from 'swr';
 import useSoundPreview from '../../hooks/use-sound-preview';
 import Sound from '../../models/sound';
 import themes from '../../styles/themes';
+import { StyledSlider } from '../../styles/components';
 
 const ActionContainer = styled.div`
   h4 {
@@ -22,54 +23,10 @@ const ActionContainer = styled.div`
   }
 `;
 
-const sliderThumb = css`
-  appearance: none;
-  -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: ${ props => props.theme.colors.volumeSliderThumb };
-  cursor: ew-resize;
-  box-shadow: 0 0 2px 0 #555;
-`;
-
-const StyledSlider = styled.input`
-  &[type="range"] {
-    appearance: none;
-    -webkit-appearance: none;
-    margin-left: 15px;
-    height: 7px;
+const StyledOffsetSlider = styled(StyledSlider)`
+   &[type="range"] {
+    background-image: unset;
     background: rgba(255, 255, 255, 0.6);
-    border-radius: 5px;
-  }
-  
-  &[type="range"]::-webkit-slider-thumb {
-    ${ sliderThumb }
-  }
-  
-  &[type=range]::-webkit-slider-runnable-track {
-    -webkit-appearance: none;
-    box-shadow: none;
-    border: none;
-    background: transparent;
-  }
-  &[type="range"]::-moz-range-thumb {
-    ${ sliderThumb }
-  }
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    &[type="range"] {
-      height: 5px;
-    }
-  
-    &[type="range"]::-webkit-slider-thumb {
-      height: 18px;
-      width: 18px;
-    }
-  
-    &[type=range]::-webkit-slider-runnable-track {
-    }
-    &[type="range"]::-moz-range-thumb {
-    }
   }
 `;
 
@@ -120,7 +77,7 @@ const VolumeOffsetAction: FC<VolumeOffsetActionProps> = ({ sound: { id, name, ur
     <ActionContainer>
       <h3>Offset</h3>
       <span className='material-icons' role='presentation' onClick={ () => soundPreview(url) }>play_circle</span>
-      <StyledSlider
+      <StyledOffsetSlider
         ref={ sliderRef }
         type='range'
         min={ 0 }

@@ -12,26 +12,31 @@ const ToolbarMain = styled.div`
   align-items: center;
   margin-bottom: 10px;
   min-height: 42px;
-  
-  color: ${ props => props.theme.colors.accent };
 
   > ${ CloseBar } {
-    margin: 0px 10px;
-  }
-
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    justify-content: center;
-    padding: 2px 6px
+    font-size: 18px;
   }
 `;
 
-const ToolbarRight = styled.div`
+const EditingBar = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
 
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    flex-wrap: wrap;
-    justify-content: center;
+  > div {
+    display: flex;
+    align-items: center;
+    margin: 3px 0;
+  }
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector1 }px) {
+    flex-direction: column;
+    width: 100%;
+
+    > div {
+      width: 100%;
+      justify-content: center;
+    }
   }
 `;
 
@@ -42,14 +47,13 @@ const NameField = styled.div`
 
   > input {
     ${ mixins.textInput }
-    
-    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-      margin-left: 10px;
-    }
+    min-height: 42px;
+    padding: 0 2px;
   }
 
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    margin-left: 8px;
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector1 }px) {
+    width: 100%;
+    margin: 0;
   }
 `;
 
@@ -57,6 +61,8 @@ const ToolbarButton = styled.button`
   ${ mixins.button }
   ${ mixins.filterButton }
   ${ mixins.filterButtonMobile }
+
+  font-size: 18.6px;
 
   ${ props => props.disabled && css`
     pointer-events: none;
@@ -74,30 +80,14 @@ const ToolbarButton = styled.button`
     background-color: ${ props => props.theme.colors.borderRed };
     text-shadow: 0 0 4px ${ props => props.theme.colors.shadowDefault };
   }
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
+    min-height: 42px;
+  }
 `;
 
 const ConfirmDelete = styled(ToolbarButton)`
   border-color: ${ props => props.theme.colors.borderRed };
-`;
-
-interface ColorButtonProps {
-  color: string;
-}
-
-const ColorButton = styled.div<ColorButtonProps>`
-  ${ mixins.filterButton }
-  ${ mixins.filterButtonMobile }
-
-  width: 60px;
-  cursor: pointer;
-  position: relative;
-  margin: 0px 5px;
-  background-color: ${ props => props.color };
-  z-index: 10;
-
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    max-height: 26px;
-  }
 `;
 
 interface TagToolbarProps {
@@ -112,15 +102,12 @@ interface TagToolbarProps {
 }
 
 const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, currentlyEditing, setCurrentlyEditing, creatingNew, cancelCreatingNew, mutateTags }) => {
-  const [showColorPicker, setShowColorPicker] = useState(false);
-
   const selectColor = useCallback((newColor: string) => {
     setCurrentlyEditing(oldState => {
       if (!oldState)
         return null;
       return { ...oldState, color: newColor };
     });
-    setShowColorPicker(false);
   }, []);
 
   const { toggleShowCustomTagPicker } = useCustomTags();
@@ -128,7 +115,6 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const resetToolbar = useCallback(() => {
-    setShowColorPicker(false);
     setEditMode(false);
     setCurrentlyEditing(null);
     cancelCreatingNew();
@@ -191,31 +177,35 @@ const TagToolbar: FC<TagToolbarProps> = ({ editMode, setEditMode, customTags, cu
           <p>Close Tag Editor</p>
         </CloseBar>
       ) }
-      { editMode && (
-      <ToolbarRight>
-        <NameField>
-          <input type='text' value={ currentlyEditing?.name } onChange={ event => handleInputChange(event.target.value) } />
-        </NameField>
-        <ColorButton color={ currentlyEditing?.color || '' } onClick={ () => setShowColorPicker(!showColorPicker) }>
-          { showColorPicker && <TagColorPicker selectColor={ selectColor } /> }
-        </ColorButton>
-        <ToolbarButton onClick={ addOrEditTagRequest } disabled={ !currentlyEditing?.name || !currentlyEditing.color }>
-          Save
-        </ToolbarButton>
-        <ToolbarButton onClick={ resetToolbar }>
-          Discard Changes
-        </ToolbarButton>
-        { currentlyEditing && (
+      { editMode && currentlyEditing && (
+      <EditingBar>
+        <div>
+          <NameField>
+            <input type='text' value={ currentlyEditing?.name } onChange={ event => handleInputChange(event.target.value) } />
+          </NameField>
+        </div>
+        <div>
+          <TagColorPicker currentColor={ currentlyEditing?.color } selectColor={ selectColor } />
+        </div>
+        <div>
+          <ToolbarButton onClick={ addOrEditTagRequest } disabled={ !currentlyEditing?.name || !currentlyEditing.color }>
+            Save
+          </ToolbarButton>
+          <ToolbarButton onClick={ resetToolbar }>
+            Discard
+          </ToolbarButton>
+          { currentlyEditing && !creatingNew && (
           <ToolbarButton onClick={ () => setShowConfirmDelete(!showConfirmDelete) }>
             { showConfirmDelete ? 'Cancel Delete' : 'Delete' }
           </ToolbarButton>
-        ) }
-        { showConfirmDelete && (
+          ) }
+          { showConfirmDelete && (
           <ConfirmDelete onClick={ () => deleteTagRequest() }>
             Confirm Delete
           </ConfirmDelete>
-        ) }
-      </ToolbarRight>
+          ) }
+        </div>
+      </EditingBar>
       ) }
     </ToolbarMain>
   );

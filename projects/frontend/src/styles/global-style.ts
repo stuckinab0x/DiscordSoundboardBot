@@ -29,10 +29,6 @@ const GlobalStyle = createGlobalStyle`
       display: flex;
       height: 100%;
     }
-
-    h1 {
-      color: ${ props => props.theme.colors.accent }
-    }
   } 
 
   @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {

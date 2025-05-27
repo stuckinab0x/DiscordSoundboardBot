@@ -1,37 +1,26 @@
 import { FC } from 'react';
 import styled from 'styled-components';
 import { useCustomTags } from '../../contexts/custom-tags-context';
-import { button } from '../../styles/mixins';
+import { button, tagButtonTemplate } from '../../styles/mixins';
 
 interface TagStyleProps {
-  color: string;
+  $color: string;
 }
 
 const TagTileMain = styled.div<TagStyleProps>`
   position: relative;
+  display: flex;
   
   > button {
-    font-size: 1.1rem;
-    color: white;
-    background-color: ${ props => props.color };
-    border: none;
-    border-radius: 2px;
+    ${ tagButtonTemplate }
+    background-color: ${ props => props.$color };
     text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
     box-shadow: 0 0 2px 0 ${ props => props.theme.colors.shadowDefault };
     position: relative;
-   
-    margin: 3px;
-    height: 110px;
-    width: 110px;
-    
-    ${ button }
+    overflow: hidden;
+    word-wrap: break-word;
 
-    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-      height: 70px;
-      width: 70px;
-      border: 3px solid ${ props => props.theme.colors.accent };
-      border-radius: 3px;
-    }
+    ${ button }
   }
 
   > span {
@@ -41,21 +30,18 @@ const TagTileMain = styled.div<TagStyleProps>`
     cursor: pointer;
     opacity: 50%;
     text-shadow: 1px 1px 3px ${ props => props.theme.colors.shadowDefault };
+    user-select: none;
 
     &:hover {
-      opacity: 100%;
-    }
-
-    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-      font-size: 1.3rem;
+      opacity: 1;
     }
   }
 `;
 
 interface TagTileProps {
   id: string;
-  name: string;
-  color: string;
+  name: string | undefined;
+  color: string | undefined;
   editMode: boolean;
   handleEditTagClick: (id: string) => void;
 }
@@ -64,7 +50,7 @@ const TagTile: FC<TagTileProps> = ({ id, name, color, editMode, handleEditTagCli
   const { beginTagging } = useCustomTags();
 
   return (
-    <TagTileMain color={ color }>
+    <TagTileMain $color={ color || 'black' }>
       <button type='button' onClick={ () => editMode ? null : beginTagging(id) }>
         { name }
       </button>

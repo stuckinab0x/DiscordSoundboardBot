@@ -6,21 +6,11 @@ import { useCustomTags } from '../contexts/custom-tags-context';
 import { SortOrder } from '../models/sort-rules';
 
 const soundTileSmall = css`
-  font-size: 0.6rem;
+  font-size: 15px;
   border-radius: 2px;
   width: 100px;
   height: 100px;
   margin: 4px 4px;
-`;
-
-const soundTileSmallMobile = css`
-    font-size: 1rem;
-    border-width: 3px;
-    border-radius: 2px;
-    width: 15vw;
-    height: 15vw;
-    min-width: 100px;
-    min-height: 100px;
 `;
 
 type Status = 'pending' | 'success' | 'error' | 'idle';
@@ -66,54 +56,67 @@ const SoundTileMain = styled.div<SoundTileMainProps>`
     ${ mixins.button }
     position: relative;
     
-    font-size: 1.2rem;
+    font-size: 22px;
     color: white;
     border: none;
     border-radius: 2px;
-    ${ props => props.$taggingModeOn && 'border-style: dotted;' }
+    ${ props => props.$taggingModeOn && 'border-style: dashed;' }
     box-shadow: 0px 0 2px 0 ${ props => props.theme.colors.shadowDefault };
     height: 150px;
     width: 150px;
-    margin: 6px 6px;
+    margin: 6px;
     background-color: ${ props => props.$tagColor ? props.$tagColor : props.theme.colors.innerA };
     word-wrap: break-word;
     
     ${ mixins.textShadowVisibility }
   
-    ${ props => props.$small && soundTileSmall }
+    @media only screen and (min-width: ${ props => props.theme.params.widthSelector3 }px) {
+      ${ props => props.$small && soundTileSmall }
+    }
 
     > p {
+      margin: 0;
       opacity: 1;
+      max-height: 80%;
+      overflow: hidden;
     }
 
     ${ props => props.$disableBorder ? null : getPlaybackResultStyle(props.$status) }
+  }
 
-    @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-      width: 20vw;
-      height: 20vw;
-      min-height: 100px;
-      min-width: 100px;
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    display: flex;
+    padding-right: 10px;
 
-      ${ props => props.$small && soundTileSmallMobile }
+    > button {
+      height: 40px;
+      margin: 2px 6px;
+      flex-grow: 1;
+      overflow: hidden;
+
+      > p {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
 `;
 
-interface ButtonBaseProps {
+interface IconButtonBaseProps {
   $small: boolean;
   $toggled?: boolean;
 }
 
-const ButtonBase = styled.span<ButtonBaseProps>`
+const IconButtonBase = styled.span<IconButtonBaseProps>`
   ${ mixins.textShadowVisibility }
+  position: absolute;
   cursor: pointer;
   opacity: 0.6;
-    
-  position: absolute;
-    
-  ${ props => props.$small && css`
-    font-size: 15px;
-  ` }
+  user-select: none;
+
+  @media only screen and (min-width: ${ props => props.theme.params.widthSelector3 }px) {
+    ${ props => props.$small && 'font-size: 16px;' }
+  }
 
   ${ props => props.$toggled && css`
     color:#fcc82a;
@@ -121,19 +124,18 @@ const ButtonBase = styled.span<ButtonBaseProps>`
   ` }
 
   &:hover {
-    opacity: 100%;
+    opacity: 1;
   }
 
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    font-size: 1.4rem;
-    
-    ${ props => props.$small && css`
-      font-size: 12px;
-    ` }
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    position: static;
+    display: flex;
+    align-items: center;
+    margin: 0 4px;
   }
 `;
 
-const FavStarButton = styled(ButtonBase)`
+const FavStarButton = styled(IconButtonBase)`
   right: 14px;
   top: 14px;
   ${ props => props.theme.name === 'Halloween' && 'opacity: 0.4;' }
@@ -144,7 +146,7 @@ const FavStarButton = styled(ButtonBase)`
   ` }
 `;
 
-const MySoundButton = styled(ButtonBase)`
+const MySoundButton = styled(IconButtonBase)`
   right: 14px;
   bottom: 14px;
 
@@ -152,6 +154,38 @@ const MySoundButton = styled(ButtonBase)`
     right: 8px;
     bottom: 8px;
   ` }
+`;
+
+const PreviewButton = styled(IconButtonBase)`
+  display: flex;
+  align-items: center;
+  bottom: 14px;
+  left: 14px;
+  text-shadow: 0px 0px 6px ${ props => props.theme.colors.shadowDefault };
+
+  ${ props => props.$small && css`
+    left: 8px;
+    bottom: 8px;
+  ` }
+
+  &::after {
+    content: 'Preview';
+    display: none;
+    padding-left: 2px;
+    font-size: ${ props => props.$small ? '0.6rem' : '0.8rem' };
+    font-family: ${ props => props.theme.font };
+    font-weight: bold;
+  }
+
+  &:hover::after {
+    display: inline;
+  }
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    &:hover:after {
+      display: none;
+    }
+  }
 `;
 
 interface CounterStyleProps {
@@ -181,44 +215,14 @@ const Counter = styled.div<CounterStyleProps>`
     font-size: 5rem;
     font-weight: 400;
   }
-`;
 
-interface PreviewButtonStyleProps {
-  $small: boolean;
-}
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    left: 20px;
+    top: unset;
+    width: max-content;
 
-const PreviewButton = styled(ButtonBase)<PreviewButtonStyleProps>`
-  display: flex;
-  align-items: center;
-  bottom: 14px;
-  left: 14px;
-  text-shadow: 0px 0px 6px ${ props => props.theme.colors.shadowDefault };
-
-  ${ props => props.$small && css`
-    left: 8px;
-    bottom: 8px;
-  ` }
-
-  &::after {
-    content: 'Preview';
-    display: none;
-    padding-left: 2px;
-    font-size: ${ props => props.$small ? '0.6rem' : '0.8rem' };
-    font-family: ${ props => props.theme.font };
-    font-weight: bold;
-  }
-
-  &:hover::after {
-    display: inline;
-  }
-  
-  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
-    font-size: ${ props => props.$small ? '1rem' : '1.3rem' };
-  }
-
-  @media only screen and (min-width: 780px) {
-    &:hover {
-      opacity: 1;
+    > p {
+      font-size: 3rem;
     }
   }
 `;

@@ -5,6 +5,7 @@ import useUser from '../../hooks/use-user';
 import themes from '../../styles/themes';
 import ThemeButton from './ThemeButton';
 import { CloseBar } from '../../styles/components';
+import { textShadowVisibility } from '../../styles/mixins';
 
 const SelectorMain = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ const Column = styled.div`
   > h2 {
     color: white;
     margin: 0;
+    ${ textShadowVisibility }
   }
 
   @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {

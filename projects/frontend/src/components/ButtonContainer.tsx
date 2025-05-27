@@ -20,6 +20,11 @@ const Buttons = styled.div`
   justify-content: center;
   position: relative;
   z-index: 0;
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
 `;
 
 const IntroError = styled.div`

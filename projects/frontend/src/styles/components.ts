@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { button, filterButton, filterButtonMobile, textShadowVisibility } from './mixins';
 
 interface ButtonProps {
@@ -74,5 +74,63 @@ export const AdminPanelDivider = styled.hr`
 
   @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     display: none;
+  }
+`;
+
+const sliderThumb = css`
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 6px;
+  background: ${ props => props.theme.colors.volumeSliderThumb };
+  cursor: ew-resize;
+  box-shadow: 0 0 2px ${ props => props.theme.colors.shadowDefault };
+`;
+
+export const StyledSlider = styled.input`
+  &[type="range"] {
+    -webkit-appearance: none;
+    margin-left: 15px;
+    height: 7px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+    background-image: linear-gradient( ${ props => props.theme.colors.volumeSliderFill }, ${ props => props.theme.colors.volumeSliderFill } );
+    background-size: 50%;
+    background-repeat: no-repeat;
+  }
+  
+  &[type="range"]::-webkit-slider-thumb {
+    ${ sliderThumb }
+  }
+  
+  &[type=range]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    background: transparent;
+  }
+
+  &[type="range"]::-moz-range-thumb {
+    ${ sliderThumb }
+  }
+
+  box-shadow: 0px 0px 2px ${ props => props.theme.colors.shadowDefault };
+
+  @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
+    width: 90px;
+    &[type="range"] {
+      height: 4px;
+    }
+  
+    &[type="range"]::-webkit-slider-thumb {
+      height: 16px;
+      width: 16px;
+    }
+  
+    &[type=range]::-webkit-slider-runnable-track {
+
+    }
+
+    &[type="range"]::-moz-range-thumb {
+
+    }
   }
 `;

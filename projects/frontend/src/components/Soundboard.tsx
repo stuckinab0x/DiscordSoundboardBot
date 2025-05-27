@@ -24,14 +24,17 @@ const SoundboardMain = styled.div<SoundboardStyleProps>`
   &::-webkit-scrollbar {
     width: 15px;
     height: 100%;
+        border-left: 1px solid black;
   }
 
   &::-webkit-scrollbar-track {
-    background: ${ props => props.theme.colors.innerB }
+    background: ${ props => props.theme.colors.innerB };
+    border-left: 1px solid ${ props => props.theme.colors.innerB };
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${ props => props.theme.colors.nav };
+    background: ${ props => props.theme.colors.innerA };
+    border-left: 1px solid ${ props => props.theme.colors.innerB };
   }
 `;
 
@@ -53,11 +56,10 @@ const Soundboard: FC<SoundboardProps> = ({ state }) => {
       <SoundBoardToolbar
         setPreviewVolume={ setPreviewVolume }
       />
-      { showThemePicker ? <ThemeSelector close={ () => setShowThemePicker(false) } /> : (
-        <ButtonContainer
-          soundPreview={ soundPreview }
-        />
-      ) }
+      { showThemePicker && <ThemeSelector close={ () => setShowThemePicker(false) } /> }
+      <ButtonContainer
+        soundPreview={ soundPreview }
+      />
     </SoundboardMain>
   );
 };
