@@ -17,6 +17,10 @@ const FiltersBarMain = styled.div`
     margin: 2px;
   }
 
+  > p {
+    margin: 0 5px;
+  }
+
   @media only screen and (max-width: ${ props => props.theme.params.widthSelector2 }px) {
     > button {
       flex-grow: 1;

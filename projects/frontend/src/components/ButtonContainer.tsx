@@ -21,6 +21,10 @@ const Buttons = styled.div`
   position: relative;
   z-index: 0;
 
+  > h1 {
+    text-align: center;
+  }
+
   @media only screen and (max-width: ${ props => props.theme.params.widthSelector3 }px) {
     flex-direction: column;
     flex-wrap: nowrap;
