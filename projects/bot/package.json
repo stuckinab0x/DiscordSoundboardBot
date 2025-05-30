@@ -31,7 +31,7 @@
     "bufferutil": "^4.0.9",
     "erlpack": "git+https://github.com/discord/erlpack.git",
     "utf-8-validate": "^5.0.10",
-    "zlib-sync": "^0.1.9"
+    "zlib-sync": "^0.1.10"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
