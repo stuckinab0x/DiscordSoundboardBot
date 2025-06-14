@@ -1,4 +1,15 @@
-import { ButtonInteraction, GuildMember, Message, ActionRowBuilder, ButtonBuilder, ComponentType, ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
+import {
+  ButtonInteraction,
+  GuildMember,
+  Message,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ComponentType,
+  ChatInputCommandInteraction,
+  ApplicationCommandOptionType,
+  MessageFlags,
+  InteractionReplyOptions,
+} from 'discord.js';
 import { Sound } from 'botman-sounds';
 import logger from '../../logger';
 import BotContext from '../bot-context';
@@ -24,7 +35,7 @@ export class SoundCommand extends Command {
       logger.error('%s: Member wasn\'t real :(', interaction.id);
       return interaction.reply({
         content: 'Something went wrong :(.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -34,7 +45,7 @@ export class SoundCommand extends Command {
       logger.info('%s: User was not in a voice channel', interaction.id);
       return interaction.reply({
         content: 'You must be in a voice channel to use this command.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -42,7 +53,7 @@ export class SoundCommand extends Command {
       logger.info('%s: User is in a private voice channel', interaction.id);
       return interaction.reply({
         content: `I'm not allowed in that channel, ${ pickRandom(insults) }.`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -52,7 +63,7 @@ export class SoundCommand extends Command {
       logger.error('%s: No <soundname> argument was specified', interaction.id);
       return interaction.reply({
         content: 'You didn\'t tell me what to play!',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -61,16 +72,16 @@ export class SoundCommand extends Command {
     if (!sound)
       return interaction.reply({
         content: `Couldn't find sound "${ soundName }".`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     context.soundQueue.add({ sound, channel: voiceChannel });
     await context.soundsService.updateSoundPlayCount(sound.id);
     logger.info('%s: Sound "%s" added to queue, length: %s', interaction.id, soundName, context.soundQueue.length);
 
-    const successMessage = {
+    const successMessage: InteractionReplyOptions = {
       content: `Your sound has been added to the queue at position #${ context.soundQueue.length }.`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
 
     if (interaction.replied) return interaction.followUp(successMessage);
@@ -106,7 +117,7 @@ export class SoundCommand extends Command {
     }
     const message = await interaction.reply({
       content,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
       components,
       fetchReply: true,
     });

@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
+import { ChatInputCommandInteraction, ApplicationCommandOptionType, MessageFlags } from 'discord.js';
 import BotContext from '../bot-context';
 import Command from './command';
 
@@ -17,7 +17,7 @@ export class SkipCommand extends Command {
   execute(interaction: ChatInputCommandInteraction, context: BotContext): Promise<any> {
     const skipOption = interaction.options.getString(skipCommandOption);
     if (context.botAudioPlayer.state === 'idle' && context.soundQueue.length === 0)
-      return interaction.reply({ content: 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? :ear_with_hearing_aid: :smile:', ephemeral: true });
+      return interaction.reply({ content: 'No sounds currently playing or in queue! Why not try "/sound limmy are you deaf" ? :ear_with_hearing_aid: :smile:', flags: MessageFlags.Ephemeral });
     if (!skipOption) {
       context.botAudioPlayer.stop();
       return interaction.reply({ content: 'Current sound skipped.', ephemeral: false });
@@ -34,7 +34,7 @@ export class SkipCommand extends Command {
       context.soundQueue.skip(count);
       return interaction.reply({ content: reply, ephemeral: false });
     }
-    return interaction.reply({ content: 'Invalid value for count entered. Try a whole number or "all" without quotes.', ephemeral: true });
+    return interaction.reply({ content: 'Invalid value for count entered. Try a whole number or "all" without quotes.', flags: MessageFlags.Ephemeral });
   }
 }
 export default new SkipCommand();

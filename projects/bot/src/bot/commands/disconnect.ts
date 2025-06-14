@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, MessageFlags } from 'discord.js';
 import { getVoiceConnection } from '@discordjs/voice';
 import Command from './command';
 import { pickRandom } from '../utils';
@@ -24,7 +24,7 @@ export class DisconnectCommand extends Command {
 
     return interaction.reply({
       content: reply,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 }

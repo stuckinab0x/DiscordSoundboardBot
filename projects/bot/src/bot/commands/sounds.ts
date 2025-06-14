@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder } from 'discord.js';
+import { CommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 import Command from './command';
 import constants from '../constants';
 import BotContext from '../bot-context';
@@ -28,7 +28,7 @@ export class SoundsCommand extends Command {
       const col = Math.floor(files.length / 3);
       messageEmbed.setFields([createField(files, 0, col), createField(files, col, col * 2), createField(files, col * 2, files.length)]);
     }
-    return interaction.reply({ embeds: [messageEmbed], ephemeral: true });
+    return interaction.reply({ embeds: [messageEmbed], flags: MessageFlags.Ephemeral });
   }
 }
 

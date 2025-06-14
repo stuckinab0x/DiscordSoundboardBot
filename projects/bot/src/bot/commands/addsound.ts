@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, ApplicationCommandOptionType } from 'discord.js';
+import { ChatInputCommandInteraction, ApplicationCommandOptionType, MessageFlags } from 'discord.js';
 import axios from 'axios';
 import { errors } from 'botman-sounds';
 import Command from './command';
@@ -30,13 +30,13 @@ export class AddSoundCommand extends Command {
       await context.soundsService.addSound({ name: soundName, file: attachmentRes.data });
     } catch (error: any) {
       if (error.message === errors.unsupportedFileExtension)
-        return interaction.reply({ content: `Wrong file type, try ${ constants.soundFileExtensions }`, ephemeral: true });
+        return interaction.reply({ content: `Wrong file type, try ${ constants.soundFileExtensions }`, flags: MessageFlags.Ephemeral });
       if (error.message === errors.soundAlreadyExists)
-        return interaction.reply({ content: 'We already have a sound with that name! :stuck_out_tongue_winking_eye:', ephemeral: true });
-      return interaction.reply({ content: 'Something went wrong :(', ephemeral: true });
+        return interaction.reply({ content: 'We already have a sound with that name! :stuck_out_tongue_winking_eye:', flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: 'Something went wrong :(', flags: MessageFlags.Ephemeral });
     }
 
-    return interaction.reply({ content: 'Your sound has been added!', ephemeral: true });
+    return interaction.reply({ content: 'Your sound has been added!', flags: MessageFlags.Ephemeral });
   }
 }
 
