@@ -36,6 +36,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install dependencies
+        working-directory: projects/infrastructure
+        run: yarn --pure-lockfile
       - name: Deploy Bot
         uses: pulumi/actions@v6
         with:
