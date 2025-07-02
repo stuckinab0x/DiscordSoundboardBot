@@ -34,6 +34,8 @@ jobs:
     needs: migrate-database
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Deploy Bot
         uses: pulumi/actions@v6
         with:
