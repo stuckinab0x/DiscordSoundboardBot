@@ -54,3 +54,4 @@ typings/
 .idea/
 /sounds/
 projects/bot/sounds
+projects/infrastructure/bin/

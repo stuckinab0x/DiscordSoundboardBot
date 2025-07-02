@@ -1,0 +1,7 @@
+config:
+  azure-native:location: WestUS
+  pulumi:template: container-azure-typescript
+  spydoorman-soundboard:appPath: app
+  spydoorman-soundboard:containerPort: "80"
+  spydoorman-soundboard:cpu: "1"
+  spydoorman-soundboard:memory: "2"
