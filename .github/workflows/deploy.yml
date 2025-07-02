@@ -40,7 +40,7 @@ jobs:
         uses: pulumi/actions@v6
         with:
           command: up
-          stack-name: spydoorman-soundboard-dev
+          stack-name: stuckinab0x/dev*
           work-dir: projects/infrastructure
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
