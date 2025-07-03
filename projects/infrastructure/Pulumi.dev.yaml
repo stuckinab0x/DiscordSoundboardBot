@@ -5,3 +5,7 @@ config:
   spydoorman-soundboard:containerPort: "80"
   spydoorman-soundboard:cpu: "1"
   spydoorman-soundboard:memory: "2"
+  spydoorman-soundboard:azureClientId: e8c18313-1e5a-4850-bde9-793d0c0465ae
+  spydoorman-soundboard:azureClientSecret:
+    secure: AAABAAzPwYNFQm4/D3jT/7P1fVW3wSaVlocWWzWg0PBVf1gamE6DV6QhfrsMv+uLoRvZYd0Q03FOnkZQ99EAW0k/hya11+92
+  spydoorman-soundboard:azureTenantId: 7add3b52-52cb-423b-95a6-067270fc7ff5

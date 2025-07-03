@@ -5,6 +5,8 @@ runtime:
   options:
     packagemanager: yarn
 config:
+  azure-native:location: WestUS
+  azure-native:subscriptionId: f593c42d-4ffc-4969-bf17-7e2a10fcba29
   pulumi:tags:
     value:
       pulumi:template: container-azure-typescript

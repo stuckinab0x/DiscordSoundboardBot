@@ -36,7 +36,7 @@ const credentials = containerregistry.listRegistryCredentialsOutput({
 const image = new dockerbuild.Image('image', {
   tags: [pulumi.interpolate`${ registry.loginServer }/${ imageName }:${ imageTag }`],
   dockerfile: { location: '../bot/Dockerfile' },
-  context: { location: '../bot' },
+  context: { location: '../..' },
   platforms: ['linux/amd64'],
   push: true,
   registries: [{
