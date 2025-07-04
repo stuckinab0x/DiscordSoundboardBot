@@ -24,4 +24,4 @@ config:
   spydoorman-soundboard:soundsBaseUrl: https://spydoorman.blob.core.windows.net/sounds
   spydoorman-soundboard:soundsConnectionString:
     secure: AAABAI6/K7VoSue5wW+FqGv1vLm/KkB4l3Dkx9pRy6OpxGPVypAomc3OdSpWaLkfggLVAJ1ooY9c1VjQtvHkQuTAgd1A5/D4jMESuUm4Uggnujz9aC0Vgf+a7smoZYc3dcfcK6KucNAPo/N3F1v/nxYQ7/yGI1ioyFLZ0sE=
-  spydoorman-soundboard:webServerUrl: https://spydoorman-az-pggd0dko.westus.azurecontainer.io
+  spydoorman-soundboard:webServerUrl: https://spydoorman-az50447e84.lemonpond-a4e60a6e.westus.azurecontainerapps.io
