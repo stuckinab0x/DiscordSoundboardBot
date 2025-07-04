@@ -1,55 +1,46 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as resources from '@pulumi/azure-native/resources';
-// import * as containerregistry from '@pulumi/azure-native/containerregistry';
+import * as containerregistry from '@pulumi/azure-native/containerregistry';
 import * as containerinstance from '@pulumi/azure-native/containerinstance';
 import * as random from '@pulumi/random';
 import * as dockerbuild from '@pulumi/docker-build';
 
 // Import the program's configuration settings.
 const config = new pulumi.Config();
-// const imageName = config.get('imageName') || 'my-app';
-// const imageTag = config.get('imageTag') || 'latest';
 const containerPort = config.getNumber('containerPort') || 80;
 const cpu = config.getNumber('cpu') || 1;
 const memory = config.getNumber('memory') || 2;
 
-const imageRegistryUsername = config.get('imageRegistryUsername');
-const imageRegistryPassword = config.get('imageRegistryPassword');
-
-const imageRegistryLoginServer = 'docker.io';
 const imageName = 'spydoorman-az';
-const imageTag = 'latest';
 
 // Create a resource group for the container registry.
 const resourceGroup = new resources.ResourceGroup('resource-group');
 
-// Create a container registry.
-// const registry = new containerregistry.Registry('registry', {
-//   resourceGroupName: resourceGroup.name,
-//   adminUserEnabled: true,
-//   sku: { name: containerregistry.SkuName.Basic },
-// });
+const registry = new containerregistry.Registry('registry', {
+  resourceGroupName: resourceGroup.name,
+  adminUserEnabled: true,
+  sku: { name: containerregistry.SkuName.Basic },
+});
 
-// Fetch login credentials for the registry.
-// const credentials = containerregistry.listRegistryCredentialsOutput({
-//   resourceGroupName: resourceGroup.name,
-//   registryName: registry.name,
-// }).apply(creds => ({
-//   username: creds.username!,
-//   password: creds.passwords![0].value!,
-// }));
+const credentials = containerregistry.listRegistryCredentialsOutput({
+  resourceGroupName: resourceGroup.name,
+  registryName: registry.name,
+}).apply(creds => ({
+  username: creds.username!,
+  password: creds.passwords![0].value!,
+}));
 
 // Create a container image for the service.
 const image = new dockerbuild.Image('image', {
-  tags: [pulumi.interpolate`${ imageRegistryUsername }/${ imageName }:${ imageTag }`],
+  tags: [pulumi.interpolate`${ registry.loginServer }/${ imageName }`],
   dockerfile: { location: '../bot/Dockerfile' },
   context: { location: '../..' },
   platforms: ['linux/amd64'],
   push: true,
   registries: [{
-    address: imageRegistryLoginServer,
-    username: imageRegistryUsername,
-    password: imageRegistryPassword,
+    address: registry.loginServer,
+    username: credentials.username,
+    password: credentials.password,
   }],
 });
 
@@ -66,9 +57,9 @@ const containerGroup = new containerinstance.ContainerGroup('container-group', {
   restartPolicy: 'always',
   imageRegistryCredentials: [
     {
-      server: imageRegistryLoginServer,
-      username: imageRegistryUsername,
-      password: imageRegistryPassword,
+      server: registry.loginServer,
+      username: credentials.username,
+      password: credentials.password,
     },
   ],
   containers: [

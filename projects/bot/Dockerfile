@@ -1,6 +1,6 @@
 ﻿FROM alpine:3.19 AS builder
 ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+ENV NODE_ENV=$NODE_ENV
 RUN apk add git yarn python3 make gcc g++ musl-dev
 RUN yarn global add node-gyp
 WORKDIR app
@@ -26,7 +26,7 @@ RUN if [ "$NODE_ENV" = "production" ] ; then set -e; yarn run build ; mv dist ..
 
 FROM alpine:3.19
 ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+ENV NODE_ENV=$NODE_ENV
 EXPOSE 80
 RUN apk add yarn
 COPY --from=builder app/ app/
