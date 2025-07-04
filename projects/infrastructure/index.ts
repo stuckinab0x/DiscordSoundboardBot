@@ -13,7 +13,7 @@ const blobStorageConnectionString = config.getSecret('blobStorageConnectionStrin
 const botToken = config.getSecret('botToken');
 const clientId = config.getSecret('clientId');
 const clientSecret = config.getSecret('clientSecret');
-const dockerEnableCI = config.getBoolean('dockerEnableCI');
+const dockerEnableCI = config.get('dockerEnableCI');
 const frontendSoundsBaseUrl = config.get('frontendSoundsBaseUrl');
 const homeGuildId = config.getSecret('homeGuildId');
 const soundsBaseUrl = config.get('soundsBaseUrl');
@@ -47,7 +47,7 @@ const envArgs = [
   },
   {
     name: 'DOCKER_ENABLE_CI',
-    value: dockerEnableCI?.toString(),
+    value: dockerEnableCI,
   },
   {
     name: 'FRONTEND_SOUNDS_BASE_URL',
