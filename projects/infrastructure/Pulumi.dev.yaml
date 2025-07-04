@@ -1,10 +1,6 @@
 config:
   azure-native:location: WestUS
   pulumi:template: container-azure-typescript
-  spydoorman-soundboard:appPath: app
-  spydoorman-soundboard:containerPort: "80"
-  spydoorman-soundboard:cpu: "1"
-  spydoorman-soundboard:memory: "2"
   azure-native:clientId: e8c18313-1e5a-4850-bde9-793d0c0465ae
   azure-native:clientSecret:
     secure: AAABAAzPwYNFQm4/D3jT/7P1fVW3wSaVlocWWzWg0PBVf1gamE6DV6QhfrsMv+uLoRvZYd0Q03FOnkZQ99EAW0k/hya11+92
@@ -21,7 +17,7 @@ config:
     secure: AAABANI/u/ztS1VFX8ByvRJxiJUIf5O+PGMDDsjSbBMZ3uAtbzZq4gszC6WkJjHOHAk=
   spydoorman-soundboard:clientSecret:
     secure: AAABAIOu+w7sOdJPTPPJZd+El/X0B9GX0XVOK93rQmK4F5uB6HKhsxN5ASxNM98v2EjLMNtE3CxTwBCneuqJxA==
-  spydoorman-soundboard:dockerEnableCI: true
+  spydoorman-soundboard:dockerEnableCI: "true"
   spydoorman-soundboard:frontendSoundsBaseUrl: https://spydoorman.blob.core.windows.net/sounds
   spydoorman-soundboard:homeGuildId:
     secure: AAABAEQCJusVep0QkyZ3/CBlJBnCVP5i7XcHqUVEppLxkrL/0SnApwjWtwXjBIJHmNOD

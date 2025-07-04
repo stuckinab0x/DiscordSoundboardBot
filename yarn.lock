@@ -1687,14 +1687,14 @@
   dependencies:
     "@pulumi/pulumi" "^3.142.0"
 
-"@pulumi/docker-build@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@pulumi/docker-build/-/docker-build-0.0.6.tgz#8b3ada78102da76aefeed1fd73c86e065362e923"
-  integrity sha512-ELgDPnfi9AB116CiVvSY0LO8UWSoq2xDqcYCxIaar65zOO/95KONzvBNUeE45fZ21mi8UoYYQfnx0FwsaoUN6Q==
+"@pulumi/docker-build@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@pulumi/docker-build/-/docker-build-0.0.12.tgz#7e6f018d625348bfafa904636cac0192a2d4f45a"
+  integrity sha512-NCN9pboxGT/qKkv9c2/7b+S3y/3hZI6FI1+luP4faQeGFmvT4C4GSAw+uKSbayw8EQWqQfavKo9zq2SKrLbxhQ==
   dependencies:
-    "@pulumi/pulumi" "^3.0.0"
+    "@pulumi/pulumi" "^3.142.0"
 
-"@pulumi/pulumi@^3.0.0", "@pulumi/pulumi@^3.113.0", "@pulumi/pulumi@^3.142.0":
+"@pulumi/pulumi@^3.113.0", "@pulumi/pulumi@^3.142.0":
   version "3.181.0"
   resolved "https://registry.yarnpkg.com/@pulumi/pulumi/-/pulumi-3.181.0.tgz#3c2b587b49a5f6cc70b7f181d175b42021094b63"
   integrity sha512-2Qrqpubcqdc9oHF1gacY6Ho8FGwPxvico1B+PexGABq2k4v4qxgP8pc5GS4SfzBHOQc10jpOfe9UziLs9w9x2Q==
@@ -1727,13 +1727,6 @@
     source-map-support "^0.5.6"
     tmp "^0.2.1"
     upath "^1.1.0"
-
-"@pulumi/random@^4.8.2":
-  version "4.18.2"
-  resolved "https://registry.yarnpkg.com/@pulumi/random/-/random-4.18.2.tgz#60b173a10367fa1b14758ba45eb585b7165bff23"
-  integrity sha512-jC0HfgkFKwgUGmocM7Tw6UyOrpLFXGO8kYfV6f5Q9R/yziaVxEVPQ0Uup2HfosDh926EZHJrt2EUIJHWCyOvFA==
-  dependencies:
-    "@pulumi/pulumi" "^3.142.0"
 
 "@rolldown/pluginutils@1.0.0-beta.9":
   version "1.0.0-beta.9"

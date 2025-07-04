@@ -1,17 +1,11 @@
-import * as pulumi from '@pulumi/pulumi';
-import * as resources from '@pulumi/azure-native/resources';
-import * as containerregistry from '@pulumi/azure-native/containerregistry';
-import * as containerinstance from '@pulumi/azure-native/containerinstance';
-import * as random from '@pulumi/random';
 import * as dockerbuild from '@pulumi/docker-build';
+import * as pulumi from '@pulumi/pulumi';
+import * as app from '@pulumi/azure-native/app';
+import * as containerregistry from '@pulumi/azure-native/containerregistry';
+import * as operationalinsights from '@pulumi/azure-native/operationalinsights';
+import * as resources from '@pulumi/azure-native/resources';
 
-const imageName = 'spydoorman-az';
-
-// Import the program's configuration settings.
 const config = new pulumi.Config();
-const containerPort = config.getNumber('containerPort') || 80;
-const cpu = config.getNumber('cpu') || 1;
-const memory = config.getNumber('memory') || 2;
 
 const apiKey = config.getSecret('apiKey');
 const applicationInsightsConnectionString = config.getSecret('applicationInsightsConnectionString');
@@ -77,93 +71,86 @@ const envArgs = [
   },
 ];
 
-// Create a resource group for the container registry.
-const resourceGroup = new resources.ResourceGroup('resource-group');
+const resourceGroup = new resources.ResourceGroup('spydoorman-az');
+
+const workspace = new operationalinsights.Workspace('loganalytics', {
+  resourceGroupName: resourceGroup.name,
+  sku: { name: 'PerGB2018' },
+  retentionInDays: 30,
+});
+
+const workspaceSharedKeys = operationalinsights.getSharedKeysOutput({
+  resourceGroupName: resourceGroup.name,
+  workspaceName: workspace.name,
+});
+
+const managedEnv = new app.ManagedEnvironment('env', {
+  resourceGroupName: resourceGroup.name,
+  appLogsConfiguration: {
+    destination: 'log-analytics',
+    logAnalyticsConfiguration: {
+      customerId: workspace.customerId,
+      sharedKey: workspaceSharedKeys.apply((r: operationalinsights.GetSharedKeysResult) => r.primarySharedKey!),
+    },
+  },
+});
 
 const registry = new containerregistry.Registry('registry', {
   resourceGroupName: resourceGroup.name,
+  sku: { name: 'Basic' },
   adminUserEnabled: true,
-  sku: { name: containerregistry.SkuName.Basic },
 });
 
 const credentials = containerregistry.listRegistryCredentialsOutput({
   resourceGroupName: resourceGroup.name,
   registryName: registry.name,
-}).apply(creds => ({
-  username: creds.username!,
-  password: creds.passwords![0].value!,
-}));
+});
+const adminUsername = credentials.apply((c: containerregistry.ListRegistryCredentialsResult) => c.username!);
+const adminPassword = credentials.apply((c: containerregistry.ListRegistryCredentialsResult) => c.passwords![0].value!);
 
-// Create a container image for the service.
+const customImage = 'spydoorman';
+
 const image = new dockerbuild.Image('image', {
-  tags: [pulumi.interpolate`${ registry.loginServer }/${ imageName }`],
+  tags: [pulumi.interpolate`${ registry.loginServer }/${ customImage }`],
   dockerfile: { location: '../bot/Dockerfile' },
   context: { location: '../..' },
   platforms: ['linux/amd64'],
   push: true,
   registries: [{
     address: registry.loginServer,
-    username: credentials.username,
-    password: credentials.password,
+    username: adminUsername,
+    password: adminPassword,
   }],
 });
 
-// Use a random string to give the service a unique DNS name.
-const dnsName = new random.RandomString('dns-name', {
-  length: 8,
-  special: false,
-}).result.apply(result => `${ imageName }-${ result.toLowerCase() }`);
-
-// Create a container group for the service that makes it publicly accessible.
-const containerGroup = new containerinstance.ContainerGroup('container-group', {
+const containerApp = new app.ContainerApp('spydoorman-az', {
   resourceGroupName: resourceGroup.name,
-  osType: 'linux',
-  restartPolicy: 'always',
-  imageRegistryCredentials: [
-    {
+  managedEnvironmentId: managedEnv.id,
+  configuration: {
+    ingress: {
+      external: true,
+      targetPort: 80,
+    },
+    registries: [{
       server: registry.loginServer,
-      username: credentials.username,
-      password: credentials.password,
-    },
-  ],
-  containers: [
-    {
-      name: imageName,
+      username: adminUsername,
+      passwordSecretRef: 'pwd',
+    }],
+    secrets: [{
+      name: 'pwd',
+      value: adminPassword,
+    }],
+  },
+  template: {
+    containers: [{
+      name: 'spydoorman-az',
       image: image.ref,
-      ports: [
-        {
-          port: containerPort,
-          protocol: 'tcp',
-        },
-      ],
-      environmentVariables: [
+      env: [
         ...envArgs,
-        {
-          name: 'PORT',
-          value: containerPort.toString(),
-        },
       ],
-      resources: {
-        requests: {
-          cpu,
-          memoryInGB: memory,
-        },
-      },
-    },
-  ],
-  ipAddress: {
-    type: containerinstance.ContainerGroupIpAddressType.Public,
-    dnsNameLabel: dnsName,
-    ports: [
-      {
-        port: containerPort,
-        protocol: 'tcp',
-      },
-    ],
+    }],
   },
 });
 
-// Export the service's IP address, hostname, and fully-qualified URL.
-export const hostname = containerGroup.ipAddress.apply(addr => addr!.fqdn!);
-export const ip = containerGroup.ipAddress.apply(addr => addr!.ip!);
-export const url = containerGroup.ipAddress.apply(addr => `http://${ addr!.fqdn! }:${ containerPort }`);
+// eslint-disable-next-line import/prefer-default-export
+export const url = pulumi.interpolate`https://${ containerApp.configuration.apply((c: any) => c?.ingress?.fqdn) }`;
