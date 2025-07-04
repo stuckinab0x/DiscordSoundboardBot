@@ -9,6 +9,23 @@ config:
   azure-native:clientSecret:
     secure: AAABAAzPwYNFQm4/D3jT/7P1fVW3wSaVlocWWzWg0PBVf1gamE6DV6QhfrsMv+uLoRvZYd0Q03FOnkZQ99EAW0k/hya11+92
   azure-native:tenantId: 7add3b52-52cb-423b-95a6-067270fc7ff5
-  spydoorman-soundboard:imageRegistryUsername: stuckinabox
-  spydoorman-soundboard:imageRegistryPassword:
-    secure: AAABAEoVqW+q0mtF6VS3atN4tlUMTMRWFK68DL9VzPMADigP3owK9vVEX9GKecVy9GBp9UIYs8wJWm4L969Q0HHVRDg=
+  spydoorman-soundboard:apiKey:
+    secure: AAABABGlxWx0JPfJcFkhrJeUeq7/IoPpJ9nUZG1L5EWL3SG+qnq7AeUZW2OsECsMhDorB+Wm+Imc5XXFnd+lXUXpLU4=
+  spydoorman-soundboard:applicationInsightsConnectionString:
+    secure: AAABACeg76NEpOk2fxFuOBDcqmx5ftkyDJrCtz84KCnHj4twHvr2jqAoGMZrsCeuDa8Xis4OG6RRqMDsrvUlMCNvlj1l9bOL43zg4oVLH/1wameY9ntw3AE4knx6wvZgnfUYyV10M2Zum+PYL/u9Kp68e4S0YaYz6QroZ7/sD00f82eenSPlxl2flaS4OQ6Bqv4sHa1wrJz3Z3L9qydgGy+kFRjZ5NpsYpuWRjE2uXpvT5gixabWkGwIN4mi8c6YgjCeTHriT4O3kztyzTCGf+pnd3SSZZk/Q3AiOXE=
+  spydoorman-soundboard:blobStorageConnectionString:
+    secure: AAABADwy4KCMSX+OlGTbPJ8CYtnVeEzV1VCsdtF1OkEwpa0irqLzp34dNnqyIwJJzyrB2wiOAFgxDPlpZQSNZdfQVBHF5N5jhfzmapeJ8Rsu0+qW7eelkYVRRmw4XeY5gIsIjG92iIwOH6mCgCIhDQYNRvtk8XdQi+BGeHBtSIXRcnmWAXyD3GsAg+1WV4ym+Lg0gnzfUdYGDIUsV52v5hmEgeRUs+d4TXAXH2xXxCQWTZqAzHjn7lKqqfaNta1+D5BJXj5yTlbEiqtzFfN/tKF9g9SJrcVahA==
+  spydoorman-soundboard:botToken:
+    secure: AAABALaDRx3TFvbPxmo4pnFeCnfxoEl9G46FT+Udl86PAgmOW9yccbVUSaVBF9Zx9CI9jxMXpmrdsGsz5GUT735u+IkaGvBOZC+rdhBCaI2yEPbBxplbOVKEBe40HJWe5kAS3OHE
+  spydoorman-soundboard:clientId:
+    secure: AAABANI/u/ztS1VFX8ByvRJxiJUIf5O+PGMDDsjSbBMZ3uAtbzZq4gszC6WkJjHOHAk=
+  spydoorman-soundboard:clientSecret:
+    secure: AAABAIOu+w7sOdJPTPPJZd+El/X0B9GX0XVOK93rQmK4F5uB6HKhsxN5ASxNM98v2EjLMNtE3CxTwBCneuqJxA==
+  spydoorman-soundboard:dockerEnableCI: true
+  spydoorman-soundboard:frontendSoundsBaseUrl: https://spydoorman.blob.core.windows.net/sounds
+  spydoorman-soundboard:homeGuildId:
+    secure: AAABAEQCJusVep0QkyZ3/CBlJBnCVP5i7XcHqUVEppLxkrL/0SnApwjWtwXjBIJHmNOD
+  spydoorman-soundboard:soundsBaseUrl: https://spydoorman.blob.core.windows.net/sounds
+  spydoorman-soundboard:soundsConnectionString:
+    secure: AAABAI6/K7VoSue5wW+FqGv1vLm/KkB4l3Dkx9pRy6OpxGPVypAomc3OdSpWaLkfggLVAJ1ooY9c1VjQtvHkQuTAgd1A5/D4jMESuUm4Uggnujz9aC0Vgf+a7smoZYc3dcfcK6KucNAPo/N3F1v/nxYQ7/yGI1ioyFLZ0sE=
+  spydoorman-soundboard:webServerUrl: https://spydoorman.azurewebsites.net

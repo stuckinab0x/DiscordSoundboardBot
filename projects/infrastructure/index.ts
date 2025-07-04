@@ -5,13 +5,77 @@ import * as containerinstance from '@pulumi/azure-native/containerinstance';
 import * as random from '@pulumi/random';
 import * as dockerbuild from '@pulumi/docker-build';
 
+const imageName = 'spydoorman-az';
+
 // Import the program's configuration settings.
 const config = new pulumi.Config();
 const containerPort = config.getNumber('containerPort') || 80;
 const cpu = config.getNumber('cpu') || 1;
 const memory = config.getNumber('memory') || 2;
 
-const imageName = 'spydoorman-az';
+const apiKey = config.getSecret('apiKey');
+const applicationInsightsConnectionString = config.getSecret('applicationInsightsConnectionString');
+const blobStorageConnectionString = config.getSecret('blobStorageConnectionString');
+const botToken = config.getSecret('botToken');
+const clientId = config.getSecret('clientId');
+const clientSecret = config.getSecret('clientSecret');
+const dockerEnableCI = config.getBoolean('dockerEnableCI');
+const frontendSoundsBaseUrl = config.get('frontendSoundsBaseUrl');
+const homeGuildId = config.getSecret('homeGuildId');
+const soundsBaseUrl = config.get('soundsBaseUrl');
+const soundsConnectionString = config.getSecret('soundsConnectionString');
+const webServerUrl = config.get('webServerUrl');
+
+const envArgs = [
+  {
+    name: 'API_KEY',
+    value: apiKey,
+  },
+  {
+    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING',
+    value: applicationInsightsConnectionString,
+  },
+  {
+    name: 'BLOB_STORAGE_CONNECTION_STRING',
+    value: blobStorageConnectionString,
+  },
+  {
+    name: 'BOT_TOKEN',
+    value: botToken,
+  },
+  {
+    name: 'CLIENT_ID',
+    value: clientId,
+  },
+  {
+    name: 'CLIENT_SECRET',
+    value: clientSecret,
+  },
+  {
+    name: 'DOCKER_ENABLE_CI',
+    value: dockerEnableCI?.toString(),
+  },
+  {
+    name: 'FRONTEND_SOUNDS_BASE_URL',
+    value: frontendSoundsBaseUrl,
+  },
+  {
+    name: 'HOME_GUILD_ID',
+    value: homeGuildId,
+  },
+  {
+    name: 'SOUNDS_BASE_URL',
+    value: soundsBaseUrl,
+  },
+  {
+    name: 'SOUNDS_CONNECTION_STRING',
+    value: soundsConnectionString,
+  },
+  {
+    name: 'WEB_SERVER_URL',
+    value: webServerUrl,
+  },
+];
 
 // Create a resource group for the container registry.
 const resourceGroup = new resources.ResourceGroup('resource-group');
@@ -73,6 +137,7 @@ const containerGroup = new containerinstance.ContainerGroup('container-group', {
         },
       ],
       environmentVariables: [
+        ...envArgs,
         {
           name: 'PORT',
           value: containerPort.toString(),
