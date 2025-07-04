@@ -147,6 +147,10 @@ const containerApp = new app.ContainerApp('spydoorman-az', {
       image: image.ref,
       env: [
         ...envArgs,
+        {
+          name: 'PORT',
+          value: '80',
+        },
       ],
     }],
   },
