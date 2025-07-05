@@ -3,21 +3,21 @@ ARG NODE_ENV=production
 ENV NODE_ENV=$NODE_ENV
 RUN apk add git yarn python3 make gcc g++ musl-dev
 RUN yarn global add node-gyp
-WORKDIR app
+WORKDIR /app
 COPY package.json yarn.lock tsconfig.json ./
-WORKDIR projects/bot
+WORKDIR /projects/bot
 COPY projects/bot/package.json projects/bot/tsconfig.json ./
 COPY projects/bot/src/ src/
-WORKDIR ../mongo
+WORKDIR /../mongo
 COPY projects/mongo/package.json projects/mongo/tsconfig.json ./
 COPY projects/mongo/src/ src/
-WORKDIR ../sounds
+WORKDIR /../sounds
 COPY projects/sounds/package.json projects/sounds/tsconfig.json ./
 COPY projects/sounds/src/ src/
-WORKDIR ../users
+WORKDIR /../users
 COPY projects/users/package.json projects/users/tsconfig.json ./
 COPY projects/users/src/ src/
-WORKDIR ../frontend
+WORKDIR /../frontend
 COPY projects/frontend/package.json projects/frontend/tsconfig.json projects/frontend/tsconfig.node.json projects/frontend/vite.config.ts projects/frontend/index.html ./
 COPY projects/frontend/src/ src/
 COPY projects/frontend/public/ public/
@@ -30,5 +30,5 @@ ENV NODE_ENV=$NODE_ENV
 EXPOSE 80
 RUN apk add yarn
 COPY --from=builder app/ app/
-WORKDIR app/projects/bot
+WORKDIR /app/projects/bot
 ENTRYPOINT ["yarn", "run", "start"]

@@ -38,7 +38,7 @@ export default class WebServer {
     this.favoritesService = new FavoritesService(environment.dbConnectionString);
     this.tagsService = new TagsService(environment.dbConnectionString);
 
-    this.authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.webServerUrl) }&response_type=code&scope=identify&prompt=none`;
+    this.authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI(environment.appURL) }&response_type=code&scope=identify&prompt=none`;
   }
 
   start() {

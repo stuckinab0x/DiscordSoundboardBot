@@ -21,34 +21,33 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 if (
-  isEnvironmentVariableValid(process.env.BOT_TOKEN, 'BOT_TOKEN')
+  isEnvironmentVariableValid(process.env.APP_URL, 'APP_URL')
+  && isEnvironmentVariableValid(process.env.BOT_TOKEN, 'BOT_TOKEN')
   && isEnvironmentVariableValid(process.env.HOME_GUILD_ID, 'HOME_GUILD_ID')
   && isEnvironmentVariableValid(process.env.SOUNDS_CONNECTION_STRING, 'SOUNDS_CONNECTION_STRING')
   && isEnvironmentVariableValid(process.env.SOUNDS_BASE_URL, 'SOUNDS_BASE_URL')
   && isEnvironmentVariableValid(process.env.BLOB_STORAGE_CONNECTION_STRING, 'BLOB_STORAGE_CONNECTION_STRING')
   && isEnvironmentVariableValid(process.env.CLIENT_ID, 'CLIENT_ID')
   && isEnvironmentVariableValid(process.env.CLIENT_SECRET, 'CLIENT_SECRET')
-  && isEnvironmentVariableValid(process.env.WEB_SERVER_URL, 'WEB_SERVER_URL')
-  && isEnvironmentVariableValid(process.env.FRONTEND_SOUNDS_BASE_URL, 'FRONTEND_SOUNDS_BASE_URL')
   && isEnvironmentVariableValid(process.env.PORT, 'PORT')
 ) {
   const environment: Environment = {
-    environment: process.env.NODE_ENV || 'development',
-    botToken: process.env.BOT_TOKEN,
-    homeGuildId: process.env.HOME_GUILD_ID,
-    dbConnectionString: process.env.SOUNDS_CONNECTION_STRING,
-    soundsBaseUrl: process.env.SOUNDS_BASE_URL,
     blobStorageConnectionString: process.env.BLOB_STORAGE_CONNECTION_STRING,
+    botToken: process.env.BOT_TOKEN,
+    dbConnectionString: process.env.SOUNDS_CONNECTION_STRING,
+    environment: process.env.NODE_ENV || 'development',
+    homeGuildId: process.env.HOME_GUILD_ID,
+    soundsBaseUrl: process.env.SOUNDS_BASE_URL,
   };
 
   const webServerEnvironment: WebServerEnvironment = {
-    environment: environment.environment,
-    dbConnectionString: environment.dbConnectionString,
+    appURL: process.env.APP_URL,
     blobStorageConnectionString: environment.blobStorageConnectionString,
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    webServerUrl: process.env.WEB_SERVER_URL,
-    frontendSoundsBaseUrl: process.env.FRONTEND_SOUNDS_BASE_URL,
+    dbConnectionString: environment.dbConnectionString,
+    environment: environment.environment,
+    frontendSoundsBaseUrl: process.env.SOUNDS_BASE_URL,
     port: process.env.PORT,
   };
 

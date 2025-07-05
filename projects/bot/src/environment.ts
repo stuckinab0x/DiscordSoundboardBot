@@ -8,12 +8,12 @@ export default interface Environment {
 }
 
 export interface WebServerEnvironment {
+  appURL: string;
   environment: string;
   dbConnectionString: string
   blobStorageConnectionString: string;
   clientID: string;
   clientSecret: string;
-  webServerUrl: string;
   frontendSoundsBaseUrl: string;
   port: string | number;
 }

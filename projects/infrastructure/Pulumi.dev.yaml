@@ -17,11 +17,8 @@ config:
     secure: AAABANI/u/ztS1VFX8ByvRJxiJUIf5O+PGMDDsjSbBMZ3uAtbzZq4gszC6WkJjHOHAk=
   spydoorman-soundboard:clientSecret:
     secure: AAABAIOu+w7sOdJPTPPJZd+El/X0B9GX0XVOK93rQmK4F5uB6HKhsxN5ASxNM98v2EjLMNtE3CxTwBCneuqJxA==
-  spydoorman-soundboard:dockerEnableCI: "true"
-  spydoorman-soundboard:frontendSoundsBaseUrl: https://spydoorman.blob.core.windows.net/sounds
   spydoorman-soundboard:homeGuildId:
     secure: AAABAEQCJusVep0QkyZ3/CBlJBnCVP5i7XcHqUVEppLxkrL/0SnApwjWtwXjBIJHmNOD
   spydoorman-soundboard:soundsBaseUrl: https://spydoorman.blob.core.windows.net/sounds
   spydoorman-soundboard:soundsConnectionString:
     secure: AAABAI6/K7VoSue5wW+FqGv1vLm/KkB4l3Dkx9pRy6OpxGPVypAomc3OdSpWaLkfggLVAJ1ooY9c1VjQtvHkQuTAgd1A5/D4jMESuUm4Uggnujz9aC0Vgf+a7smoZYc3dcfcK6KucNAPo/N3F1v/nxYQ7/yGI1ioyFLZ0sE=
-  spydoorman-soundboard:webServerUrl: https://spydoorman-az50447e84.lemonpond-a4e60a6e.westus.azurecontainerapps.io

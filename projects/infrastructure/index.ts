@@ -1,77 +1,11 @@
 import * as dockerbuild from '@pulumi/docker-build';
 import * as pulumi from '@pulumi/pulumi';
-import * as app from '@pulumi/azure-native/app';
-import * as containerregistry from '@pulumi/azure-native/containerregistry';
-import * as operationalinsights from '@pulumi/azure-native/operationalinsights';
-import * as resources from '@pulumi/azure-native/resources';
+import { app, containerregistry, operationalinsights, resources } from '@pulumi/azure-native';
+import envArgs from './bot-env';
 
-const config = new pulumi.Config();
+const appName = 'spydoorman-az';
 
-const apiKey = config.getSecret('apiKey');
-const applicationInsightsConnectionString = config.getSecret('applicationInsightsConnectionString');
-const blobStorageConnectionString = config.getSecret('blobStorageConnectionString');
-const botToken = config.getSecret('botToken');
-const clientId = config.getSecret('clientId');
-const clientSecret = config.getSecret('clientSecret');
-const dockerEnableCI = config.get('dockerEnableCI');
-const frontendSoundsBaseUrl = config.get('frontendSoundsBaseUrl');
-const homeGuildId = config.getSecret('homeGuildId');
-const soundsBaseUrl = config.get('soundsBaseUrl');
-const soundsConnectionString = config.getSecret('soundsConnectionString');
-const webServerUrl = config.get('webServerUrl');
-
-const envArgs = [
-  {
-    name: 'API_KEY',
-    value: apiKey,
-  },
-  {
-    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING',
-    value: applicationInsightsConnectionString,
-  },
-  {
-    name: 'BLOB_STORAGE_CONNECTION_STRING',
-    value: blobStorageConnectionString,
-  },
-  {
-    name: 'BOT_TOKEN',
-    value: botToken,
-  },
-  {
-    name: 'CLIENT_ID',
-    value: clientId,
-  },
-  {
-    name: 'CLIENT_SECRET',
-    value: clientSecret,
-  },
-  {
-    name: 'DOCKER_ENABLE_CI',
-    value: dockerEnableCI,
-  },
-  {
-    name: 'FRONTEND_SOUNDS_BASE_URL',
-    value: frontendSoundsBaseUrl,
-  },
-  {
-    name: 'HOME_GUILD_ID',
-    value: homeGuildId,
-  },
-  {
-    name: 'SOUNDS_BASE_URL',
-    value: soundsBaseUrl,
-  },
-  {
-    name: 'SOUNDS_CONNECTION_STRING',
-    value: soundsConnectionString,
-  },
-  {
-    name: 'WEB_SERVER_URL',
-    value: webServerUrl,
-  },
-];
-
-const resourceGroup = new resources.ResourceGroup('spydoorman-az');
+const resourceGroup = new resources.ResourceGroup(appName);
 
 const workspace = new operationalinsights.Workspace('loganalytics', {
   resourceGroupName: resourceGroup.name,
@@ -108,10 +42,10 @@ const credentials = containerregistry.listRegistryCredentialsOutput({
 const adminUsername = credentials.apply((c: containerregistry.ListRegistryCredentialsResult) => c.username!);
 const adminPassword = credentials.apply((c: containerregistry.ListRegistryCredentialsResult) => c.passwords![0].value!);
 
-const customImage = 'spydoorman';
+const appUrl = pulumi.interpolate`https://${ appName }.${ managedEnv.defaultDomain }`;
 
-const image = new dockerbuild.Image('image', {
-  tags: [pulumi.interpolate`${ registry.loginServer }/${ customImage }`],
+const image = new dockerbuild.Image(appName, {
+  tags: [pulumi.interpolate`${ registry.loginServer }/${ appName }`],
   dockerfile: { location: '../bot/Dockerfile' },
   context: { location: '../..' },
   platforms: ['linux/amd64'],
@@ -123,7 +57,8 @@ const image = new dockerbuild.Image('image', {
   }],
 });
 
-const containerApp = new app.ContainerApp('spydoorman-az', {
+// eslint-disable-next-line no-new
+new app.ContainerApp(appName, {
   resourceGroupName: resourceGroup.name,
   managedEnvironmentId: managedEnv.id,
   configuration: {
@@ -143,13 +78,13 @@ const containerApp = new app.ContainerApp('spydoorman-az', {
   },
   template: {
     containers: [{
-      name: 'spydoorman-az',
+      name: appName,
       image: image.ref,
       env: [
         ...envArgs,
         {
-          name: 'PORT',
-          value: '80',
+          name: 'APP_URL',
+          value: appUrl,
         },
       ],
     }],
@@ -157,4 +92,4 @@ const containerApp = new app.ContainerApp('spydoorman-az', {
 });
 
 // eslint-disable-next-line import/prefer-default-export
-export const url = pulumi.interpolate`https://${ containerApp.configuration.apply((c: any) => c?.ingress?.fqdn) }`;
+export const url = appUrl;
