@@ -29,31 +29,25 @@ const managedEnv = new app.ManagedEnvironment('env', {
   },
 });
 
-const registry = new containerregistry.Registry('registry', {
-  resourceGroupName: resourceGroup.name,
-  sku: { name: 'Basic' },
-  adminUserEnabled: true,
-});
+const config = new pulumi.Config();
 
-const credentials = containerregistry.listRegistryCredentialsOutput({
-  resourceGroupName: resourceGroup.name,
-  registryName: registry.name,
-});
-const adminUsername = credentials.apply((c: containerregistry.ListRegistryCredentialsResult) => c.username!);
-const adminPassword = credentials.apply((c: containerregistry.ListRegistryCredentialsResult) => c.passwords![0].value!);
+const imageRegistryUsername = config.get('imageRegistryUsername');
+const imageRegistryPassword = config.get('imageRegistryPassword');
+
+const registryLoginServer = 'docker.io';
 
 const appUrl = pulumi.interpolate`https://${ appName }.${ managedEnv.defaultDomain }`;
 
 const image = new dockerbuild.Image(appName, {
-  tags: [pulumi.interpolate`${ registry.loginServer }/${ appName }`],
+  tags: [pulumi.interpolate`${ imageRegistryUsername }/${ appName }:latest`],
   dockerfile: { location: '../bot/Dockerfile' },
   context: { location: '../..' },
   platforms: ['linux/amd64'],
   push: true,
   registries: [{
-    address: registry.loginServer,
-    username: adminUsername,
-    password: adminPassword,
+    address: registryLoginServer,
+    username: imageRegistryUsername,
+    password: imageRegistryPassword,
   }],
 });
 
@@ -67,13 +61,13 @@ new app.ContainerApp(appName, {
       targetPort: 80,
     },
     registries: [{
-      server: registry.loginServer,
-      username: adminUsername,
+      server: registryLoginServer,
+      username: imageRegistryUsername,
       passwordSecretRef: 'pwd',
     }],
     secrets: [{
       name: 'pwd',
-      value: adminPassword,
+      value: imageRegistryPassword,
     }],
   },
   template: {

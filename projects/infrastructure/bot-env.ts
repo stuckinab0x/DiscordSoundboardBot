@@ -3,7 +3,6 @@ import { Config } from '@pulumi/pulumi';
 const config = new Config();
 
 const apiKey = config.getSecret('apiKey');
-const applicationInsightsConnectionString = config.getSecret('applicationInsightsConnectionString');
 const blobStorageConnectionString = config.getSecret('blobStorageConnectionString');
 const botToken = config.getSecret('botToken');
 const clientId = config.getSecret('clientId');
@@ -16,10 +15,6 @@ const botEnv = [
   {
     name: 'API_KEY',
     value: apiKey,
-  },
-  {
-    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING',
-    value: applicationInsightsConnectionString,
   },
   {
     name: 'BLOB_STORAGE_CONNECTION_STRING',

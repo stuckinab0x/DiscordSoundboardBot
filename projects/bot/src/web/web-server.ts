@@ -25,12 +25,6 @@ export default class WebServer {
   private readonly bot: Bot;
 
   constructor(private readonly environment: WebServerEnvironment, bot: Bot) {
-    if (environment.environment === 'production') {
-      applicationInsights.setup();
-      applicationInsights.defaultClient.context.tags[applicationInsights.defaultClient.context.keys.cloudRole] = 'Web backend';
-      applicationInsights.start();
-    }
-
     this.bot = bot;
 
     this.soundsService = new SoundsService(environment.dbConnectionString, environment.blobStorageConnectionString);

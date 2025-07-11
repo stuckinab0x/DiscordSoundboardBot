@@ -7,8 +7,6 @@ config:
   azure-native:tenantId: 7add3b52-52cb-423b-95a6-067270fc7ff5
   spydoorman-soundboard:apiKey:
     secure: AAABABGlxWx0JPfJcFkhrJeUeq7/IoPpJ9nUZG1L5EWL3SG+qnq7AeUZW2OsECsMhDorB+Wm+Imc5XXFnd+lXUXpLU4=
-  spydoorman-soundboard:applicationInsightsConnectionString:
-    secure: AAABACeg76NEpOk2fxFuOBDcqmx5ftkyDJrCtz84KCnHj4twHvr2jqAoGMZrsCeuDa8Xis4OG6RRqMDsrvUlMCNvlj1l9bOL43zg4oVLH/1wameY9ntw3AE4knx6wvZgnfUYyV10M2Zum+PYL/u9Kp68e4S0YaYz6QroZ7/sD00f82eenSPlxl2flaS4OQ6Bqv4sHa1wrJz3Z3L9qydgGy+kFRjZ5NpsYpuWRjE2uXpvT5gixabWkGwIN4mi8c6YgjCeTHriT4O3kztyzTCGf+pnd3SSZZk/Q3AiOXE=
   spydoorman-soundboard:blobStorageConnectionString:
     secure: AAABADwy4KCMSX+OlGTbPJ8CYtnVeEzV1VCsdtF1OkEwpa0irqLzp34dNnqyIwJJzyrB2wiOAFgxDPlpZQSNZdfQVBHF5N5jhfzmapeJ8Rsu0+qW7eelkYVRRmw4XeY5gIsIjG92iIwOH6mCgCIhDQYNRvtk8XdQi+BGeHBtSIXRcnmWAXyD3GsAg+1WV4ym+Lg0gnzfUdYGDIUsV52v5hmEgeRUs+d4TXAXH2xXxCQWTZqAzHjn7lKqqfaNta1+D5BJXj5yTlbEiqtzFfN/tKF9g9SJrcVahA==
   spydoorman-soundboard:botToken:
@@ -22,3 +20,6 @@ config:
   spydoorman-soundboard:soundsBaseUrl: https://spydoorman.blob.core.windows.net/sounds
   spydoorman-soundboard:soundsConnectionString:
     secure: AAABAI6/K7VoSue5wW+FqGv1vLm/KkB4l3Dkx9pRy6OpxGPVypAomc3OdSpWaLkfggLVAJ1ooY9c1VjQtvHkQuTAgd1A5/D4jMESuUm4Uggnujz9aC0Vgf+a7smoZYc3dcfcK6KucNAPo/N3F1v/nxYQ7/yGI1ioyFLZ0sE=
+  spydoorman-soundboard:imageRegistryUsername: stuckinabox
+  spydoorman-soundboard:imageRegistryPassword:
+    secure: AAABAACf7SiiB2eXl2praJ4U3iU8NRD7iRUU2desSFVp8lSRNs0GMtcdfx4dyYhDAknmmNFSiQdXoIvV4w0B+878N/A=
